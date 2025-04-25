@@ -23,3 +23,9 @@
 
     --breakpoint-xs: 375px;
 }
+
+@layer base{
+    body{
+        @apply tracking-wide;
+    }
+}
