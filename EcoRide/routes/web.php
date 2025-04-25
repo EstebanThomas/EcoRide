@@ -21,3 +21,4 @@ Route::get('/connexion', function () {
 Route::get('/contact', function () {
     return view('contact');
 });
+
