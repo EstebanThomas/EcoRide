@@ -20,4 +20,6 @@
 
     --font-main: "Main", "sans-serif";
     --font-second: "Second", "sans-serif";
+
+    --breakpoint-xs: 375px;
 }
