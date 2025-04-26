@@ -22,3 +22,6 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
+Route::get('/creation-compte', function () {
+    return view('creation-compte');
+});
