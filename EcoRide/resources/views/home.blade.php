@@ -87,13 +87,13 @@
                 Le covoiturage respecteux<br>de l’environnement.
             </p>
             <div class="w-100 h-75 xl:h-50 rounded-3xl overflow-hidden">
-                <img src="{{ asset('images/VoitureHerbe.jpg') }}" alt="Photo d'un van dans l'herbe" class="max-w-108 xl:max-w-98">
+                <img src="{{ asset('images/VoitureHerbe.jpg') }}" alt="Photo d'un van dans l'herbe" class="max-w-111 xl:max-w-100">
             </div>
         </div>
 
         <div class="flex justify-evenly mt-5 xl:mt-1 items-center">
             <div class="w-100 h-75 xl:h-50 rounded-3xl overflow-hidden">
-                <img src="{{ asset('images/VoitureElectrique.jpg') }}" alt="Photo d'une voiture électrique" class="max-w-108 xl:max-w-98">
+                <img src="{{ asset('images/VoitureElectrique.jpg') }}" alt="Photo d'une voiture électrique" class="max-w-111 xl:max-w-100">
             </div>
             <p class="block xl:hidden font-second text-5xl text-green1 text-center m-2">
                 EcoRide s’engage<br>pour l’environnement<br>grâce à son système<br>de covoiturage avec<br>l’option «voyage écologique».
