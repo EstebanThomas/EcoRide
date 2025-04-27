@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="w-full h-full mt-75 xl:mt-5">
-        <div class="flex flex-col justify-center h-181 overflow-hidden mb-50 ml-20 mr-20 xl:ml-150 xl:mr-150 xl:mb-5">
+    <div class="w-full h-full mt-75 mb-10 xl:mt-5 xl:mb-0">
+        <div class="flex flex-col justify-center h-181 mb-50 ml-20 mr-20 2xl:ml-150 2xl:mr-150 2xl:mb-5">
             <form>
                 <div class="flex flex-col border-2 border-green1 rounded-t-3xl p-20 pt-10 pb-10">
                     <label for="mail" class="font-second text-4xl">MAIL</label>
@@ -25,8 +25,7 @@
                     </div>
                 </div>
             </form>
-            <p>
-            </p>
+            
         </div>
     </div>
 @endsection
