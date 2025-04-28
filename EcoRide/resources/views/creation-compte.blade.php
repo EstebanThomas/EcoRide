@@ -3,7 +3,7 @@
 @section('content')
     <div class="w-full h-full mt-100 mb-10 xl:mt-5 xl:mb-0">
         <div class="flex flex-col justify-center h-181 mb-50 ml-20 mr-20 2xl:ml-150 2xl:mr-150 2xl:mb-5">
-            <form method="POST" id="formCreateAccount">
+            <form method="POST" id="formCreateAccount" action="{{ route('utilisateur.creation') }}">
 
                 @csrf
 
