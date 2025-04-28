@@ -24,15 +24,8 @@ Route::get('/creation-compte', function () {
     return view('creation-compte');
 });
 
-Route::middleware('auth')->get('/espace-utilisateur', function () {
-    return view('espace-utilisateur');
-});
-
 Route::get('/connexion', function () {
     return view('connexion');
 });
 
-
-Route::post('/creation-utilisateur', [UtilisateurController::class, 'store'])->name('utilisateur.creation');
-
-Route::post('/utilisateur', [UtilisateurController::class, 'store'])->name('utilisateur.connexion');
+Route::post('/creation-utilisateur', [UtilisateurController::class, 'createAccount'])->name('utilisateur.creation');
