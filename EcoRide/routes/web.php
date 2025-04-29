@@ -20,12 +20,14 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
-Route::get('/creation-compte', function () {
-    return view('creation-compte');
-});
+Route::get('/connexion', [UtilisateurController::class, 'showConnexion'])->name('connexion');
 
-Route::get('/connexion', function () {
-    return view('connexion');
-});
+Route::get('/creation-compte', [UtilisateurController::class, 'showCreationAccount']);
+
+Route::get('/espace-utilisateur', [UtilisateurController::class, 'showProfile'])->name('espaceUtilisateur');
+
+Route::post('/connexion', [UtilisateurController::class, 'Connexion'])->name('utilisateur.connexion');
 
 Route::post('/creation-utilisateur', [UtilisateurController::class, 'createAccount'])->name('utilisateur.creation');
+
+Route::post('/deconnexion', [UtilisateurController::class, 'Deconnexion'])->name('utilisateur.deconnexion');
