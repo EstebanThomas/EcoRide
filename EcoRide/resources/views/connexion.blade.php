@@ -11,8 +11,8 @@
                     class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl uppercase placeholder-black p-2"/>
                 </div>
                 <div class="flex flex-col border-2 border-t-0 border-b-0 border-green1 p-20 pt-10 pb-10">
-                    <label for="mdp" class="font-second text-4xl">MOT DE PASSE</label>
-                    <input type="password" id="mdp" name="mdp" placeholder="Entrez le mot de passe" required
+                    <label for="password" class="font-second text-4xl">MOT DE PASSE</label>
+                    <input type="password" id="password" name="password" placeholder="Entrez le mot de passe" required
 
                     class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl uppercase placeholder-black p-2"/>
                 </div>
@@ -27,8 +27,18 @@
                     </div>
                 </div>
             </form>
-            
+
+                <!--Show Errors-->
+            <div class="flex justify-center">
+                @if ($errors->any())
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li class="text-red-500 font-second text-2xl">{{$error}}</li>
+                        @endforeach
+                    </ul>
+                @endif   
+            </div>
         </div>
-    </div>
+    </div> 
 
 @endsection

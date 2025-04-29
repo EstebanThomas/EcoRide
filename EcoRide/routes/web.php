@@ -20,7 +20,9 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
-Route::get('/connexion', [UtilisateurController::class, 'showConnexion'])->name('connexion');
+Route::get('/home', [UtilisateurController::class, 'showHome'])->name('home');
+
+Route::get('/connexion', [UtilisateurController::class, 'showConnexion']);
 
 Route::get('/creation-compte', [UtilisateurController::class, 'showCreationAccount']);
 

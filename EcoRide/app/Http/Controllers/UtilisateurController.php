@@ -14,6 +14,11 @@ class UtilisateurController extends Authenticatable
 {
 
     //Views
+    public function showHome()
+    {
+        return view('home');
+    }
+
     public function showCreationAccount()
     {
         return view('creation-compte');
@@ -54,10 +59,15 @@ class UtilisateurController extends Authenticatable
     {
         $validated = $request->validate([
             'mail' => 'required|email',
-            'password' => 'required|text'
+            'password' => 'required'
         ]);
 
-        if (Auth::attempt($validated)){
+        $user =[
+            'email' => $validated['mail'],
+            'password' => $validated['password']
+        ];
+
+        if (Auth::attempt($user)){
             $request->session()->regenerate();
             return redirect()->route('espaceUtilisateur');
         }
@@ -75,6 +85,6 @@ class UtilisateurController extends Authenticatable
         $request->session()->invalidate();
         $request->session()->regenerateToken(); //regenerate the csrf token
 
-        return redirect()->route('connexion');
+        return redirect()->route('home');
     }
 }
