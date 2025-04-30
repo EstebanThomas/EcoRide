@@ -33,3 +33,5 @@ Route::post('/connexion', [UtilisateurController::class, 'Connexion'])->name('ut
 Route::post('/creation-utilisateur', [UtilisateurController::class, 'createAccount'])->name('utilisateur.creation');
 
 Route::post('/deconnexion', [UtilisateurController::class, 'Deconnexion'])->name('utilisateur.deconnexion');
+
+Route::post('/modifierInformations', [UtilisateurController::class, 'modifierInformations'])->name('utilisateur.modifier');

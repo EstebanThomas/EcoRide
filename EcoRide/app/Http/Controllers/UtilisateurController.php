@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class UtilisateurController extends Authenticatable
 {
@@ -86,5 +87,40 @@ class UtilisateurController extends Authenticatable
         $request->session()->regenerateToken(); //regenerate the csrf token
 
         return redirect()->route('home');
+    }
+
+    //Modify user's datas
+    public function modifierInformations(Request $request)
+    {
+        $validated = $request->validate([
+            'pseudo' => 'string|max:50|nullable',
+            'password' => 'min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/|nullable',
+            'nom' => 'string|max:50|nullable',
+            'prenom' => 'string|max:50|nullable',
+            'telephone' => 'string|regex:/^\d{10}$/|nullable',
+            'adresse' => 'string|max:50|nullable',
+            'date_naissance' => 'date|before:today|before:-18 years|nullable',
+            'photo' => 'image|mimes:jpeg,png,jpg|max:2048|nullable',
+        ]);
+
+        //Ignore empty datas
+        foreach ($validated as $key => $value) {
+            if ($value === null || $value === '') {
+                unset($validated[$key]);
+            }
+        }
+
+        //hash password
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        DB::table('Utilisateurs')
+            ->where('utilisateur_id', Auth::id())
+            ->update($validated);
+
+        return redirect()->route('espaceUtilisateur');
     }
 }

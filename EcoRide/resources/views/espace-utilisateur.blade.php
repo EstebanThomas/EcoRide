@@ -6,40 +6,60 @@
 
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
-            <div class="flex flex-col justify-center items-start gap-5 ml-5 mr-5">
+            <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('utilisateur.modifier') }}">
+
+                @csrf
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">pseudo :</p>
-                    <p id="pseudo" class="text-4xl font-second tracking-wide bg-green4"></p>  
+                    <label for="pseudo" class="font-second text-3xl">PSEUDO :</label>
+                    <input type="text" id="pseudo" name="pseudo"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">nom :</p>
-                    <p id="nom" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="nom" class="font-second text-3xl">NOM :</label>
+                    <input type="text" id="nom" name="nom"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">prenom :</p>
-                    <p id="prenom" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="prenom" class="font-second text-3xl">PRENOM :</label>
+                    <input type="text" id="prenom" name="prenom"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">email :</p>
-                    <p id="email" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="email" class="font-second text-3xl">EMAIL :</label>
+                    <input type="email" id="email" name="email"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">telephone :</p>
-                    <p id="telephone" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="telephone" class="font-second text-3xl">TELEPHONE :</label>
+                    <input type="string" id="telephone" name="telephone"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">adresse :</p>
-                    <p id="adresse" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="adresse" class="font-second text-3xl">ADRESSE :</label>
+                    <input type="string" id="adresse" name="adresse"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">date de naissance :</p>
-                    <p id="date_naissance" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <label for="date_naissance" class="font-second text-3xl">DATE DE NAISSANCE :</label>
+                    <input type="date" id="date_naissance" name="date_naissance"
+                    class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
+
                 <div class="flex justify-center items-center gap-2">
                     <p class="text-4xl font-second tracking-wide">photo :</p>
                     <p id="photo" class="text-4xl font-second tracking-wide bg-green4"></p>
                 </div>
-            </div>
+
+                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">MODIFIER</button>
+
+            </form>
 
 
             <div class="flex flex-row justify-center items-center gap-10">
@@ -71,28 +91,28 @@
 
         //User's informations
         let nom = @json(Auth::user()->nom);
-        document.getElementById("nom").textContent = nom || 'Non défini';
+        document.getElementById("nom").placeholder = nom || 'Non défini';
 
         let pseudo = @json(Auth::user()->pseudo);
-        document.getElementById("pseudo").textContent = pseudo || 'Non défini';
+        document.getElementById("pseudo").placeholder = pseudo || 'Non défini';
 
         let prenom = @json(Auth::user()->prenom);
-        document.getElementById("prenom").textContent = prenom || 'Non défini';
+        document.getElementById("prenom").placeholder= prenom || 'Non défini';
 
         let email = @json(Auth::user()->email);
-        document.getElementById("email").textContent = email || 'Non défini';
+        document.getElementById("email").placeholder = email || 'Non défini';
 
         let telephone = @json(Auth::user()->telephone);
-        document.getElementById("telephone").textContent = telephone || 'Non défini';
+        document.getElementById("telephone").placeholder = telephone || 'Non défini';
 
         let adresse = @json(Auth::user()->adresse);
-        document.getElementById("adresse").textContent = adresse || 'Non défini';
+        document.getElementById("adresse").placeholder = adresse || 'Non défini';
 
         let date_naissance = @json(Auth::user()->date_naissance);
-        document.getElementById("date_naissance").textContent = date_naissance || 'Non défini';
+        document.getElementById("date_naissance").placeholder = date_naissance || 'Non défini';
 
         let photo = @json(Auth::user()->photo);
-        document.getElementById("photo").textContent = photo || 'Non défini';
+        document.getElementById("photo").placeholder = photo || 'Non défini';
 
 
         //Select chauffeur/passager
