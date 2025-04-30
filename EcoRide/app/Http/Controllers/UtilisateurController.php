@@ -39,7 +39,7 @@ class UtilisateurController extends Authenticatable
     public function createAccount(Request $request)
     {
         $validated = $request->validate([
-            'pseudo' => 'required',
+            'pseudo' => 'required|max:20',
             'mail' => 'required|email|unique:utilisateurs,email',
             'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
         ]);
@@ -93,7 +93,7 @@ class UtilisateurController extends Authenticatable
     public function modifierInformations(Request $request)
     {
         $validated = $request->validate([
-            'pseudo' => 'string|max:50|nullable',
+            'pseudo' => 'string|max:20|nullable',
             'password' => 'min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/|nullable',
             'nom' => 'string|max:50|nullable',
             'prenom' => 'string|max:50|nullable',
