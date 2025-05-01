@@ -13,7 +13,8 @@
         </nav>
 
         @Auth
-            <button class="hover:bg-green4 active:bg-green1 absolute text-2xl tracking-wide font-second flex justify-center items-center rounded-3xl bg-white p-2 leading-6 top-1/2 left-8/9 -translate-x-1/2 -translate-y-1/2">
+            <button class="hover:bg-green4 active:bg-green1 absolute text-2xl tracking-wide font-second flex justify-center items-center rounded-3xl bg-white p-2 leading-6 top-1/2 left-8/9 -translate-x-1/2 -translate-y-1/2"
+            onclick="window.location.href='/espace-utilisateur'">
             Accéder au profil<br>{{ Auth::user()->pseudo }}
             </button>
         @endAuth

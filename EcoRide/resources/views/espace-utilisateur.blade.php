@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="flex flex-col justify-center items-center m-75">
+    <div class="flex flex-col justify-center items-center m-75 xl:mt-5">
 
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
@@ -70,20 +70,53 @@
 
 
                 <div>
-                    <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-2 border-green1 rounded-3xl p-5"></button>
+                    <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 rounded-3xl p-3"></button>
                 </div>
             </div>
 
         </div>
 
-        <div id="sectionChauffeur" class="flex-col justify-center items-center w-150 h-150 mt-10 mb-10 bg-green4 rounded-3xl hidden">
-            <p class="text-4xl font-second tracking-wide">Véhicules</p>
-            <p class="text-4xl font-second tracking-wide">Préférences</p>
-            <p class="text-4xl font-second tracking-wide">Propres préférences</p>
-            <p class="text-4xl font-second tracking-wide">Saisir un voyage</p>
-            <p class="text-4xl font-second tracking-wide">Historique covoiturages</p>
-            <button id="start/stop" class="text-4xl tracking-wide font-second border-2 border-green1"></button>
+        <div id="sectionChauffeur" class="flex-row justify-center items-center w-200 p-5 mt-10 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <button id="sectionVehicules" onclick="ShowSection('sectionVehicules')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            Véhicules
+            </button>
+            <button id="sectionPreferences" onclick="ShowSection('sectionPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            Préférences
+            </button>
+            <button id="sectionPropresPreferences" onclick="ShowSection('sectionPropresPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            Propres préférences
+            </button>
+            <button id="sectionSaisirVoyage" onclick="ShowSection('sectionSaisirVoyage')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            Saisir un voyage
+            </button>
+            <button id="sectionHistorique" onclick="ShowSection('sectionHistorique')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            Historique
+            </button>
+            <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1"></button>
         </div>
+
+    <div id="sections" class="hidden">
+        <div id="sectionVehicules" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+        <p>Vehicules</p>
+        </div>
+
+        <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+        <p>Preferences</p>
+        </div>
+
+        <div id="sectionPropresPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+        <p>Propres Preferences</p>
+        </div>
+
+        <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+        <p>Saisir un voyage</p>
+        </div>
+
+        <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+        <p>Historique</p>
+        </div>
+    </div>
+
 
     </div>
 
@@ -124,7 +157,7 @@
         imgButton.src = "{{ asset('images/Passager.svg') }}";
         imgButton.alt = 'Logo passager';
         chauffeurPassagerButton.appendChild(imgButton);
-        imgButton.style.width = '50%';
+        imgButton.style.width = '100%';
 
         const sectionChauffeur = document.getElementById("sectionChauffeur");
 
@@ -136,6 +169,7 @@
                 chauffeurPassagerButton.appendChild(imgButton);
                 sectionChauffeur.classList.toggle('hidden');
                 sectionChauffeur.classList.toggle('flex');
+                sections.classList.toggle('hidden');
             }
             else{
                 chauffeurPassagerButton.textContent = 'Passager';
@@ -144,8 +178,34 @@
                 chauffeurPassagerButton.appendChild(imgButton);
                 sectionChauffeur.classList.toggle('hidden');
                 sectionChauffeur.classList.toggle('flex');
+                sections.classList.toggle('hidden');
             }
         });
+
+        //Show/Hide sections
+        function ShowSection(id){
+            const sections = document.querySelectorAll('.section');
+            const buttons = sectionChauffeur.querySelectorAll('button');
+            sections.forEach(section => {
+                if (section.id === id){
+                    section.classList.remove('hidden')
+                    section.classList.add('flex')
+                }
+                else if (!section.classList.contains('hidden')){
+                    section.classList.add('hidden')
+                    section.classList.remove('flex')
+                }
+            })
+
+            buttons.forEach(button => {
+                if (button.id === id){
+                    button.classList.add('underline', 'decoration-green1', 'decoration-6', 'xl:decoration-4');
+                }
+                else{
+                    button.classList.remove('underline', 'decoration-green1', 'decoration-6', 'xl:decoration-4');
+                }
+            });
+        };
 
         //Start/Stop button
         const startStop = document.getElementById("start/stop");
