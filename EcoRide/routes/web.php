@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VoitureController;
 
 Route::get('/', function () {
     return view('home');
@@ -35,3 +36,5 @@ Route::post('/creation-utilisateur', [UtilisateurController::class, 'createAccou
 Route::post('/deconnexion', [UtilisateurController::class, 'Deconnexion'])->name('utilisateur.deconnexion');
 
 Route::post('/modifierInformations', [UtilisateurController::class, 'modifierInformations'])->name('utilisateur.modifier');
+
+Route::post('/ajouterVehicule', [VoitureController::class, 'ajouterVehicule'])->name('vehicule.ajouter');

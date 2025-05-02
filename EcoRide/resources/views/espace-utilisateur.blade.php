@@ -76,6 +76,7 @@
 
         </div>
 
+        <!--Buttons section chauffeur-->
         <div id="sectionChauffeur" class="flex-row justify-center items-center w-200 p-5 mt-10 mb-10 gap-4 bg-green4 rounded-3xl hidden">
             <button id="sectionVehicules" onclick="ShowSection('sectionVehicules')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Véhicules
@@ -95,28 +96,70 @@
             <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1"></button>
         </div>
 
-    <div id="sections" class="hidden">
-        <div id="sectionVehicules" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-        <p>Vehicules</p>
-        </div>
+        <!--Sections chauffeur-->
+        <div id="sections" class="hidden">
 
-        <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-        <p>Preferences</p>
-        </div>
+            <div id="sectionVehicules" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
-        <div id="sectionPropresPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-        <p>Propres Preferences</p>
-        </div>
+                <div class="border-2 border-green1 w-full h-100 rounded-3xl p-2">
+                    <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
+                </div>
 
-        <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-        <p>Saisir un voyage</p>
-        </div>
+                <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
 
-        <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-        <p>Historique</p>
-        </div>
-    </div>
+                    @csrf
 
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="modele" class="font-second text-3xl">MODELE :</label>
+                        <input type="text" id="modele" name="modele" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="immatriculation" class="font-second text-3xl">IMMATRICULATION :</label>
+                        <input type="text" id="immatriculation" name="immatriculation" required pattern="^[A-Z]{2}-\d{3}-[A-Z]{2}$" oninvalid="this.setCustomValidity('Format attendu : AB-123-CD')"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center uppercase"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="datePremiereImmatriculation" class="font-second text-3xl">DATE DE LA PREMIERE IMMATRICULATION :</label>
+                        <input type="date" id="datePremiereImmatriculation" name="datePremiereImmatriculation" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="couleur" class="font-second text-3xl">COULEUR :</label>
+                        <input type="text" id="couleur" name="couleur" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="energie" class="font-second text-3xl">ENERGIE ELECTRIQUE :</label>
+                        <input type="checkbox" id="energie" name="energie" required
+                        class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">AJOUTER</button>
+
+                </form>
+            </div>
+
+            <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <p>Preferences</p>
+            </div>
+
+            <div id="sectionPropresPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <p>Propres Preferences</p>
+            </div>
+
+            <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <p>Saisir un voyage</p>
+            </div>
+
+            <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <p>Historique</p>
+            </div>
+        </div>
 
     </div>
 
