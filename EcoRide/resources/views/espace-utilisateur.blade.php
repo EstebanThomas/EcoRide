@@ -57,7 +57,7 @@
                     <p id="photo" class="text-4xl font-second tracking-wide bg-green4"></p>
                 </div>
 
-                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">MODIFIER</button>
+                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
 
             </form>
 
@@ -65,12 +65,12 @@
             <div class="flex flex-row justify-center items-center gap-10">
                 <form action="{{ route('utilisateur.deconnexion') }}" method="POST">
                     @csrf
-                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">DECONNEXION</button>
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">DECONNEXION</button>
                 </form>
 
 
                 <div>
-                    <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 rounded-3xl p-3"></button>
+                    <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 active:border-green1 rounded-3xl p-3 hover:border-green3"></button>
                 </div>
             </div>
 
@@ -93,13 +93,13 @@
             <button id="sectionHistorique" onclick="ShowSection('sectionHistorique')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Historique
             </button>
-            <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1"></button>
+            <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1 hover:bg-green2"></button>
         </div>
 
         <!--Sections chauffeur-->
         <div id="sections" class="hidden">
 
-            <div id="sectionVehicules" class="section flex-col justify-center w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
                 <div class="flex flex-col border-2 border-green1 w-full h-150 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
@@ -117,8 +117,8 @@
                     </div>
 
                     <div class="flex justify-center items-center gap-2">
-                        <label for="immatriculation" class="font-second text-3xl">IMMATRICULATION :</label>
-                        <input type="text" id="immatriculation" name="immatriculation" required pattern="^[A-Z]{2}-\d{3}-[A-Z]{2}$" oninvalid="this.setCustomValidity('Format attendu : AB-123-CD')"
+                    <label for="immatriculation" class="font-second text-3xl">IMMATRICULATION :</label>
+                        <input type="text" id="immatriculation" name="immatriculation" required oninvalid="this.setCustomValidity('Format attendu : AB-123-CD')"
                         class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center uppercase"/>
                     </div>
 
@@ -140,9 +140,28 @@
                         class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                     </div>
 
-                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">AJOUTER</button>
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">AJOUTER</button>
 
                 </form>
+
+                <div class="mt-25">
+                    @if ($errors->any())
+                        <div>
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li class="text-3xl font-second">{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="bg-green3 border border-black text-black p-4 rounded-3xl mb-10 text-3xl font-second flex justify-center ml-75 mr-75">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                </div>
+            
             </div>
 
             <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
@@ -269,7 +288,7 @@
                     <p class="text-3xl font-second">Couleur :<br>${vehicule.couleur}</p>
                     <p class="text-3xl font-second">Énergie électrique :<br>${vehicule.energie}</p>
                     <p class="text-3xl font-second">Date 1ère immatriculation :<br>${vehicule.date_premiere_immatriculation}</p>
-                    <button type:"submit" class="block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3" onclick="supprimerVehicule(${vehicule.vehicule_id})">
+                    <button type:"submit" class="hover:bg-green2 active:bg-green1 block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3" onclick="supprimerVehicule(${vehicule.vehicule_id})">
                     SUPPRIMER
                     </button>
                 `;
