@@ -78,7 +78,7 @@
 
         <!--Buttons section chauffeur-->
         <div id="sectionChauffeur" class="flex-row justify-center items-center w-200 p-5 mt-10 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <button id="sectionVehicules" onclick="ShowSection('sectionVehicules')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
+            <button id="sectionVehicules" onclick="ShowSection('sectionVehicules'); afficherVehicules();" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Véhicules
             </button>
             <button id="sectionPreferences" onclick="ShowSection('sectionPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
@@ -99,13 +99,14 @@
         <!--Sections chauffeur-->
         <div id="sections" class="hidden">
 
-            <div id="sectionVehicules" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionVehicules" class="section flex-col justify-center w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
-                <div class="border-2 border-green1 w-full h-100 rounded-3xl p-2">
+                <div class="flex flex-col border-2 border-green1 w-full h-150 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
+                    <div id="vehiculeCards" class="flex mt-5 gap-5 overflow-x-auto"></div>
                 </div>
 
-                <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
+                <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
 
                     @csrf
 
@@ -135,7 +136,7 @@
 
                     <div class="flex justify-center items-center gap-2">
                         <label for="energie" class="font-second text-3xl">ENERGIE ELECTRIQUE :</label>
-                        <input type="checkbox" id="energie" name="energie" required
+                        <input type="checkbox" id="energie" name="energie"
                         class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                     </div>
 
@@ -249,6 +250,38 @@
                 }
             });
         };
+
+        //Show car card
+        function afficherVehicules() {
+            fetch('/api/vehicules')
+            .then(res => res.json())
+            .then(vehicules => {
+            const container = document.getElementById('vehiculeCards');
+            container.innerHTML = ''; //Clean
+
+            vehicules.forEach(vehicule => {
+
+                const card = document.createElement('div');
+                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-115 flex-shrink-0";
+                    card.innerHTML = `
+                    <h2 class="flex justify-center text-4xl font-second mb-2">${vehicule.modele}</h2>
+                    <p class="text-3xl font-second">Immatriculation :<br>${vehicule.immatriculation}</p>
+                    <p class="text-3xl font-second">Couleur :<br>${vehicule.couleur}</p>
+                    <p class="text-3xl font-second">Énergie électrique :<br>${vehicule.energie}</p>
+                    <p class="text-3xl font-second">Date 1ère immatriculation :<br>${vehicule.date_premiere_immatriculation}</p>
+                    <button type:"submit" class="block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3" onclick="supprimerVehicule(${vehicule.vehicule_id})">
+                    SUPPRIMER
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        });
+        }
+
+        //Delete a car
+        function supprimerVehicule(vehicule_id) {
+
+        }
 
         //Start/Stop button
         const startStop = document.getElementById("start/stop");

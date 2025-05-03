@@ -38,3 +38,5 @@ Route::post('/deconnexion', [UtilisateurController::class, 'Deconnexion'])->name
 Route::post('/modifierInformations', [UtilisateurController::class, 'modifierInformations'])->name('utilisateur.modifier');
 
 Route::post('/ajouterVehicule', [VoitureController::class, 'ajouterVehicule'])->name('vehicule.ajouter');
+
+Route::get('/api/vehicules', [VoitureController::class, 'afficherVehicules']);
