@@ -102,6 +102,8 @@ class UtilisateurController extends Authenticatable
             'adresse' => 'string|max:50|nullable',
             'date_naissance' => 'date|before:today|before:-18 years|nullable',
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048|nullable',
+        ],[
+            'photo.max' => 'La taille de l\'image ne doit pas dépasser 2 Mo.'
         ]);
 
         //Ignore empty datas
@@ -118,11 +120,25 @@ class UtilisateurController extends Authenticatable
             unset($validated['password']);
         }
 
-        DB::table('Utilisateurs')
-            ->where('utilisateur_id', Auth::id())
-            ->update($validated);
+        //photo
+        if($request->hasFile('photo')){
+            $picture = $request->file('photo');
+            $namePicture = uniqid().'.'.$picture->getClientOriginalExtension();
 
-        return redirect()->route('espaceUtilisateur');
+            //Store
+            $path = $picture->storeAs('photos', $namePicture, 'public');
+
+            $validated['photo'] = $path;
+        }
+
+        if (!empty($validated)){        
+            DB::table('Utilisateurs')
+                ->where('utilisateur_id', Auth::id())
+                ->update($validated);
+            return redirect()->route('espaceUtilisateur');
+        } else{
+            return redirect()->route('espaceUtilisateur');
+        }
     }
 
     //Add car

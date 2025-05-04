@@ -6,61 +6,67 @@
 
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
-            <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('utilisateur.modifier') }}">
+            <form enctype="multipart/form-data" class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('utilisateur.modifier') }}">
 
                 @csrf
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="pseudo" class="font-second text-3xl">PSEUDO :</label>
+                    <label for="pseudo" class="font-second text-3xl tracking-wide">PSEUDO :</label>
                     <input type="text" id="pseudo" name="pseudo"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="nom" class="font-second text-3xl">NOM :</label>
+                    <label for="nom" class="font-second text-3xl tracking-wide">NOM :</label>
                     <input type="text" id="nom" name="nom"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="prenom" class="font-second text-3xl">PRENOM :</label>
+                    <label for="prenom" class="font-second text-3xl tracking-wide">PRENOM :</label>
                     <input type="text" id="prenom" name="prenom"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="email" class="font-second text-3xl">EMAIL :</label>
+                    <label for="email" class="font-second text-3xl tracking-wide">EMAIL :</label>
                     <input type="email" id="email" name="email"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="telephone" class="font-second text-3xl">TELEPHONE :</label>
-                    <input type="string" id="telephone" name="telephone"
+                    <label for="telephone" class="font-second text-3xl tracking-wide">TELEPHONE :</label>
+                    <input type="text" id="telephone" name="telephone"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="adresse" class="font-second text-3xl">ADRESSE :</label>
-                    <input type="string" id="adresse" name="adresse"
+                    <label for="adresse" class="font-second text-3xl tracking-wide">ADRESSE :</label>
+                    <input type="text" id="adresse" name="adresse"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <label for="date_naissance" class="font-second text-3xl">DATE DE NAISSANCE :</label>
+                    <label for="date_naissance" class="font-second text-3xl tracking-wide">DATE DE NAISSANCE :</label>
                     <input type="date" id="date_naissance" name="date_naissance"
                     class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
                 </div>
 
                 <div class="flex justify-center items-center gap-2">
-                    <p class="text-4xl font-second tracking-wide">photo :</p>
-                    <p id="photo" class="text-4xl font-second tracking-wide bg-green4"></p>
+                    <p class="text-3xl font-second tracking-wide">PHOTO :</p>
+                    <input type="file" id="photo" name="photo" accept="image/*"
+                    class="text-3xl font-second tracking-wide bg-green4 pr-5 rounded-3xl file:mr-4 file:p-2 file:rounded-3xl file:border-0 file:bg-green1 hover:file:bg-green2"/>
                 </div>
+
+                @if(Auth::user()->photo)
+                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Photo utilisateur" class="w-40 h-40 rounded-full object-cover">
+                @else
+                    <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
+                @endif
 
                 <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
 
             </form>
-
 
             <div class="flex flex-row justify-center items-center gap-10">
                 <form action="{{ route('utilisateur.deconnexion') }}" method="POST">
@@ -293,6 +299,26 @@
                 }
             });
         };
+
+        //Limit photo
+        document.getElementById('photo').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var maxSize = 2 * 1024 * 1024; // Limite de 2 Mo (en octets)
+                if (file.size > maxSize) {
+                    Swal.fire({
+                        title: 'Erreur !',
+                        text: 'Le fichier est trop volumineux, la taille maximale autorisée est de 2 Mo.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                        customClass:{
+                            popup: 'custom-swal'
+                        }
+                    });
+                    this.value = '';
+                }
+            }
+        });
 
         //Show car card
         function afficherVehicules() {
