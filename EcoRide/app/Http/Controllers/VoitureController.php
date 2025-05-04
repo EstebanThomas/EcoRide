@@ -34,7 +34,7 @@ class VoitureController extends Controller
                 'energie'=> $energie,
                 'utilisateur_id' => Auth::id(),
             ]);
-        return redirect()->route('espaceUtilisateur')->with('success', 'Véhicule ajouté !');
+        return redirect()->route('espaceUtilisateur')->with('successAdd', 'Véhicule ajouté !');
         }
         catch (\Exception $e){
             Log::error('Erreur lors de l\'ajout du véhicule : '.$e->getMessage());
@@ -48,6 +48,18 @@ class VoitureController extends Controller
     {
         $vehicules = Voiture::where('utilisateur_id', Auth::id())->get();
         return response()->json($vehicules);
+    }
+
+
+    //delete car
+    public function deleteCar($voiture_id){
+        $voiture = Voiture::where('voiture_id', $voiture_id)->firstOrFail(); //Search the first car with this id in the table or error 404
+
+        if($voiture->utilisateur_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $voiture->delete();
     }
 
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="flex flex-col justify-center items-center m-75 xl:mt-5">
+    <div class="flex flex-col justify-center items-center m-75 mb-10 xl:mt-5">
 
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
@@ -144,23 +144,47 @@
 
                 </form>
 
-                <div class="mt-25">
+                <div class="mt-5">
+
+                    <!--Message error for car-->
                     @if ($errors->any())
-                        <div>
-                            <ul class="list-disc pl-5">
-                                @foreach ($errors->all() as $error)
-                                    <li class="text-3xl font-second">{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    html: `
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li class="text-red-500 text-3xl font-second">{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                        `,
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass:{
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                            })
+                        </script>
                     @endif
 
-                    @if (session('success'))
-                        <div class="bg-green3 border border-black text-black p-4 rounded-3xl mb-10 text-3xl font-second flex justify-center ml-75 mr-75">
-                            {{ session('success') }}
-                        </div>
+                    <!--Message success ADD car-->
+                    @if (session('successAdd'))
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    title: 'Véhicule ajouté !',
+                                    text: 'Votre véhicule a été ajouté avec succès.',
+                                    icon: 'success',
+                                    showConfirmButton: true,
+                                    customClass:{
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                            })
+                        </script>
                     @endif
-                </div>
             
             </div>
 
@@ -288,7 +312,8 @@
                     <p class="text-3xl font-second">Couleur :<br>${vehicule.couleur}</p>
                     <p class="text-3xl font-second">Énergie électrique :<br>${vehicule.energie}</p>
                     <p class="text-3xl font-second">Date 1ère immatriculation :<br>${vehicule.date_premiere_immatriculation}</p>
-                    <button type:"submit" class="hover:bg-green2 active:bg-green1 block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3" onclick="supprimerVehicule(${vehicule.vehicule_id})">
+                    <button type="button" onclick="supprimerVehicule(${vehicule.voiture_id})" 
+                    class="hover:bg-green2 active:bg-green1 block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">
                     SUPPRIMER
                     </button>
                 `;
@@ -297,9 +322,68 @@
         });
         }
 
-        //Delete a car
-        function supprimerVehicule(vehicule_id) {
+        //Delete car
+        function supprimerVehicule(voiture_id){
+            Swal.fire({
+                title: 'Supprimer ce véhicule ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Supprimer',
+                cancelButtonText: 'Annuler',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voiture/${voiture_id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
 
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Véhicule supprimé!',
+                                text: 'Votre véhicule a été supprimé avec succès.',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: 'Erreur !',
+                                text: 'Erreur lors de la suppression',
+                                icon: 'error',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors de la suppression',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
         }
 
         //Start/Stop button

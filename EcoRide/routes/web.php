@@ -40,3 +40,5 @@ Route::post('/modifierInformations', [UtilisateurController::class, 'modifierInf
 Route::post('/ajouterVehicule', [VoitureController::class, 'ajouterVehicule'])->name('vehicule.ajouter');
 
 Route::get('/api/vehicules', [VoitureController::class, 'afficherVehicules']);
+
+Route::delete('/voiture/{voiture_id}', [VoitureController::class, 'deleteCar'])->name('vehicule.supprimer');
