@@ -154,16 +154,27 @@
                 <p>Historique</p>
             </div>
 
-            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
-                <div class="flex flex-col border-2 border-green1 w-full h-150 rounded-3xl p-2">
+                <div class="flex flex-col border-2 border-green1 w-full h-160 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
                     <div id="vehiculeCards" class="flex mt-5 gap-5 overflow-x-auto"></div>
                 </div>
 
-                <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
+                <form class="flex flex-col justify-center items-center gap-5 mt-10 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
 
                     @csrf
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="marque" class="font-second text-3xl">MARQUE :</label>
+                        <select type="text" id="marque" name="marque" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-black text-4xl xl:text-3xl placeholder-black p-1 items-center">
+                            <option value="" disabled selected>Selectionnez une marque</option>
+                            @foreach($marques as $marque)
+                                <option value="{{ $marque->marque_id }}">{{ $marque->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="flex justify-center items-center gap-2">
                         <label for="modele" class="font-second text-3xl">MODELE :</label>
@@ -367,13 +378,14 @@
             vehicules.forEach(vehicule => {
 
                 const card = document.createElement('div');
-                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-115 flex-shrink-0";
+                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-140 flex-shrink-0";
                     card.innerHTML = `
                     <h2 class="flex justify-center text-4xl font-second mb-2">${vehicule.modele}</h2>
-                    <p class="text-3xl font-second">Immatriculation :<br>${vehicule.immatriculation}</p>
-                    <p class="text-3xl font-second">Couleur :<br>${vehicule.couleur}</p>
-                    <p class="text-3xl font-second">Énergie électrique :<br>${vehicule.energie}</p>
-                    <p class="text-3xl font-second">Date 1ère immatriculation :<br>${vehicule.date_premiere_immatriculation}</p>
+                    <p class="text-3xl font-second">Marque :<br><p class="text-4xl font-second tracking-wide">${vehicule.marque.libelle}</p></p>
+                    <p class="text-3xl font-second">Immatriculation :<br><p class="text-4xl font-second tracking-wide">${vehicule.immatriculation}</p></p>
+                    <p class="text-3xl font-second">Couleur :<br><p class="text-4xl font-second tracking-wide">${vehicule.couleur}</p></p>
+                    <p class="text-3xl font-second">Énergie électrique :<br><p class="text-4xl font-second tracking-wide">${vehicule.energie}</p></p>
+                    <p class="text-3xl font-second">Date 1ère immatriculation :<br><p class="text-4xl font-second tracking-wide">${vehicule.date_premiere_immatriculation}</p></p>
                     <button type="button" onclick="supprimerVehicule(${vehicule.voiture_id})" 
                     class="hover:bg-green2 active:bg-green1 block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">
                     SUPPRIMER

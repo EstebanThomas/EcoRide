@@ -31,4 +31,10 @@ class Voiture extends Model
     {
         return $this->belongsTo(Utilisateurs::class, 'utilisateur_id');
     }
+
+    //Get foreign key 'marque_id'
+    public function marque()
+    {
+        return $this->belongsTo(Marque::class, 'marque_id');
+    }
 }
