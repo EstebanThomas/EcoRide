@@ -29,3 +29,37 @@
         @apply tracking-wide;
     }
 }
+
+.swal2-popup.custom-swal{
+    background-color: var(--color-white);
+    border: 6px solid var(--color-green1);
+    border-radius: 1.5rem;
+    font-family: var(--font-second);
+    font-size: 2rem;
+    letter-spacing: 0.025em;
+    color: black;
+}
+
+.swal2-title{
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+}
+
+.swal2-confirm{
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    background-color: var(--color-green3);
+    border-radius: 1.5rem;
+    border: 3px solid var(--color-black);
+    color: black;
+}
+
+.swal2-cancel{
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    border-radius: 1.5rem;
+    border: 3px solid var(--color-black);
+    color: black;
+    background-color: oklch(63.7% 0.237 25.331);
+}
+

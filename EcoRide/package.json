@@ -85,6 +85,7 @@
         "string-width": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "supports-color": "^8.1.1",
+        "sweetalert2": "^11.20.0",
         "tapable": "^2.2.1",
         "tinyglobby": "^0.2.13",
         "tree-kill": "^1.2.2",
