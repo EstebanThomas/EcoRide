@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Utilisateurs;
 use App\Models\Voiture;
+use App\Models\Preferences;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,7 +34,12 @@ class UtilisateurController extends Authenticatable
 
     public function showProfile()
     {
-        return view('espace-utilisateur');
+        //Get preferences for placeholders
+        $preferences = Preferences::where('utilisateur_id', Auth::id())->first();
+
+        return view('/espace-utilisateur', [
+            'preferences' => $preferences
+        ]);
     }
 
     //createAccount Form

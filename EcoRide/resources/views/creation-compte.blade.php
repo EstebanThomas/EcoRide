@@ -67,14 +67,6 @@
         </div>
 
         @if ($errors->any())
-            <!--<div class="flex justify-center items-center gap-2 mb-25">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li class="text-red-500 text-3xl font-second">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>-->
-
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire({

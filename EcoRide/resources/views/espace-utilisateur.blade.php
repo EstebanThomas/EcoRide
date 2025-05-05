@@ -90,9 +90,6 @@
             <button id="sectionPreferences" onclick="ShowSection('sectionPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Préférences
             </button>
-            <button id="sectionPropresPreferences" onclick="ShowSection('sectionPropresPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
-            Propres préférences
-            </button>
             <button id="sectionSaisirVoyage" onclick="ShowSection('sectionSaisirVoyage')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Saisir un voyage
             </button>
@@ -104,6 +101,58 @@
 
         <!--Sections chauffeur-->
         <div id="sections" class="hidden">
+
+            <div id="sectionPreferences" class="section flex-col justify-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+                <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('preferences.ajouter') }}">
+                    @csrf
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="fumeur" class="font-second text-3xl">FUMEURS :</label>
+                        <input type="checkbox" id="fumeur" name="fumeur"
+                        {{ old('fumeur', $preferences->fumeur ?? false) ? 'checked' : '' }}
+                        class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="animaux" class="font-second text-3xl">ANIMAUX :</label>
+                        <input type="checkbox" id="animaux" name="animaux"
+                        {{ old('animaux', $preferences->animaux ?? false) ? 'checked' : '' }}
+                        class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex flex-col justify-center items-center gap-2">
+                        <label for="propres_preferences" class="font-second text-3xl">PROPRES PREFERENCES :</label>
+                        <input type="text" id="propres_preferences" name="propres_preferences" maxLength="100"
+                        placeholder="{{ $preferences->propres_preferences ?? "nombre de valises, musique, climatisation ..."}}"
+                        value="{{ old('propres_preferences', $preferences->propres_preferences ?? '') }}"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second w-190 xl:w-250 text-4xl xl:text-3xl placeholder-gray-700 p-1 items-center"/>
+                    </div>
+
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
+                </form>
+
+                @if (session('successPreferences'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            Swal.fire({
+                                title: 'Préférences modifiées !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            });
+                        })
+                    </script>
+                @endif
+            </div>
+
+            <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+                <p>Saisir un voyage</p>
+            </div>
+
+            <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+                <p>Historique</p>
+            </div>
 
             <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
@@ -194,21 +243,6 @@
             
             </div>
 
-            <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Preferences</p>
-            </div>
-
-            <div id="sectionPropresPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Propres Preferences</p>
-            </div>
-
-            <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Saisir un voyage</p>
-            </div>
-
-            <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Historique</p>
-            </div>
         </div>
 
     </div>
@@ -277,18 +311,20 @@
 
         //Show/Hide sections
         function ShowSection(id){
-            const sections = document.querySelectorAll('.section');
-            const buttons = sectionChauffeur.querySelectorAll('button');
-            sections.forEach(section => {
+            const allSections = document.querySelectorAll('.section');
+            
+            allSections.forEach(section => {
                 if (section.id === id){
-                    section.classList.remove('hidden')
-                    section.classList.add('flex')
+                    section.classList.remove('hidden');
+                    section.classList.add('flex');
                 }
                 else if (!section.classList.contains('hidden')){
-                    section.classList.add('hidden')
-                    section.classList.remove('flex')
+                    section.classList.add('hidden');
+                    section.classList.remove('flex');              
                 }
             })
+
+            const buttons = sectionChauffeur.querySelectorAll('button');
 
             buttons.forEach(button => {
                 if (button.id === id){
