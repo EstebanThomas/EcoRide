@@ -42,7 +42,9 @@ class UtilisateurController extends Authenticatable
         $validated = $request->validate([
             'pseudo' => 'required|max:20',
             'mail' => 'required|email|unique:utilisateurs,email',
-            'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
+            'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/|confirmed'
+        ],[
+            'password.confirmed' => 'Les mots de passe ne correspondent pas'
         ]);
 
         $user = Utilisateurs::create([

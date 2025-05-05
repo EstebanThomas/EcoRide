@@ -18,12 +18,14 @@ class VoitureController extends Controller
         $validated = $request->validate([
             'modele' => 'required|max:20',
             'immatriculation' => 'required|unique:voiture,immatriculation|max:9|regex:/^[A-Za-z]{2}-\d{3}-[A-Za-z]{2}$/',
-            'datePremiereImmatriculation' => 'required|date|before_or_equal:today',
+            'datePremiereImmatriculation' => 'required|date|before_or_equal:today|after_or_equal:1950-01-01',
             'couleur' => 'required|max:20|regex:/^[A-Za-z0-9\s\-]+$/',
             'energie' => 'nullable',
         ]);
 
         $energie = $request->has('energie') ? 'Oui' : 'Non';
+
+        $validated['immatriculation'] = strtoupper($validated['immatriculation']);
 
         try {
             Voiture::create([

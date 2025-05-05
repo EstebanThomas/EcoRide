@@ -51,8 +51,8 @@
                         </div>
                     </div>
                     <div>
-                    <label for="confirm_password" class="font-second text-4xl">CONFIRMATION DU MOT DE PASSE</label>
-                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Entrez le mot de passe" required
+                    <label for="password_confirmation" class="font-second text-4xl">CONFIRMATION DU MOT DE PASSE</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Entrez le mot de passe" required
                         class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl placeholder-black p-2"/>
                     </div>
                 </div>
@@ -67,13 +67,33 @@
         </div>
 
         @if ($errors->any())
-            <div class="flex justify-center items-center gap-2 mb-25">
+            <!--<div class="flex justify-center items-center gap-2 mb-25">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li class="text-red-500 text-3xl font-second">{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </div>-->
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    Swal.fire({
+                        title: 'Erreur !',
+                        html: `
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li class="text-red-500 text-3xl font-second">{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        `,
+                        icon: 'error',
+                        showConfirmButton: true,
+                        customClass:{
+                            popup: 'custom-swal'
+                        }
+                    });
+                })
+            </script>
         @endif
     </div>
 
