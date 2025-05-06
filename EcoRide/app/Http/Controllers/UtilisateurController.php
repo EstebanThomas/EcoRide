@@ -8,6 +8,7 @@ use App\Models\Utilisateurs;
 use App\Models\Voiture;
 use App\Models\Marque;
 use App\Models\Preferences;
+use App\Models\Covoiturage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -40,9 +41,12 @@ class UtilisateurController extends Authenticatable
 
         $marques = Marque::all();
 
+        $voitures = Voiture::where('utilisateur_id', Auth::id())->get();
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
+            'voitures' => $voitures,
         ]);
     }
 

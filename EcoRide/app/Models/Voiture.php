@@ -12,7 +12,7 @@ class Voiture extends Model
 
     use HasFactory;
 
-    protected $table = 'voiture'; //Name of the table into mySQL
+    protected $table = 'voiture'; //Name of the table
 
     protected $primaryKey = 'voiture_id'; //Name Of the Primary Key
 

@@ -147,7 +147,100 @@
             </div>
 
             <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-                <p>Saisir un voyage</p>
+                <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('covoiturage.ajouter') }}">
+
+                    @csrf
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="date_depart" class="font-second text-3xl tracking-wide">Date de départ :</label>
+                        <input type="date" id="date_depart" name="date_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="heure_depart" class="font-second text-3xl tracking-wide">Heure de départ :</label>
+                        <input type="time" id="heure_depart" name="heure_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="lieu_depart" class="font-second text-3xl tracking-wide">Lieu de départ :</label>
+                        <input type="text" id="lieu_depart" name="lieu_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="date_arrivee" class="font-second text-3xl tracking-wide">Date d'arrivée :</label>
+                        <input type="date" id="date_arrivee" name="date_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="heure_arrivee" class="font-second text-3xl tracking-wide">Heure d'arrivée :</label>
+                        <input type="time" id="heure_arrivee" name="heure_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="lieu_arrivee" class="font-second text-3xl tracking-wide">Lieu d'arrivée :</label>
+                        <input type="text" id="lieu_arrivee" name="lieu_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+                    
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="nb_place" class="font-second text-3xl tracking-wide">Nombre de places :</label>
+                        <input type="number" id="nb_place" name="nb_place" required max="7" min="1" placeholder="1" value="1"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="prix_personne" class="font-second text-3xl tracking-wide">Prix par personne :</label>
+                        <input type="number" id="prix_personne" name="prix_personne" required max="100" min="0"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                        <div class="flex flex-col xl:flex-row justify-center items-center xl:gap-5">
+                            <p class="flex flex-row font-second text-4xl xl:text-3xl gap-2">
+                                Total : 
+                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> 2.00 </span>
+                                <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
+                            </p>
+                            <p class="flex font-second text-3xl xl:text-2xl">
+                                (La plateforme prend 2 crédits de frais de service.)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="select_voiture" class="font-second text-3xl">Voiture :</label>
+                        <select type="text" id="select_voiture" name="select_voiture" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-black text-4xl xl:text-3xl placeholder-black p-1 items-center">
+                            <option value="" disabled selected>Selectionnez une de vos voitures</option>
+                            @foreach($voitures as $voiture)
+                                <option class="text-black font-second text-4xl" value="{{ $voiture->voiture_id }}">{{$voiture->modele}} = {{$voiture->immatriculation}}</option> <!--The value is voiture_id the others are for display-->
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">AJOUTER UN VOYAGE</button>
+
+                </form>
+
+                <!--Message success ADD ride-->
+                @if (session('successAddRide'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            Swal.fire({
+                                title: 'Voyage ajouté !',
+                                text: 'Votre voyage a été ajouté avec succès.',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            });
+                        })
+                    </script>
+                @endif
+
             </div>
 
             <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
@@ -459,6 +552,22 @@
                 }
             })
         }
+
+        //Update price on Take a Ride
+        const prixPersonne = document.getElementById("prix_personne");
+        const prixTotal = document.getElementById("prix_total");
+        const nbPlace = document.getElementById("nb_place");
+
+        function updatePrice(){
+            const prix = parseInt(prixPersonne.value) || 0;
+            const places = parseInt(nbPlace.value) || 0;
+
+            const total = (prix * places) + 2; // Adding 2 credits for service fees
+            prixTotal.textContent = total.toFixed(2);
+        }
+
+        prixPersonne.addEventListener('input', updatePrice);
+        nbPlace.addEventListener('input', updatePrice);
 
         //Start/Stop button
         const startStop = document.getElementById("start/stop");

@@ -5,6 +5,7 @@ use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VoitureController;
 use App\Http\Controllers\PreferencesController;
+use App\Http\Controllers\CovoiturageController;
 
 Route::get('/', function () {
     return view('home');
@@ -45,3 +46,5 @@ Route::get('/api/vehicules', [VoitureController::class, 'afficherVehicules']);
 Route::delete('/voiture/{voiture_id}', [VoitureController::class, 'deleteCar'])->name('vehicule.supprimer');
 
 Route::post('/ajouterPreferences', [PreferencesController::class, 'ajouterPreferences'])->name('preferences.ajouter');
+
+Route::post('/ajouterCovoiturage', [CovoiturageController::class, 'ajouterCovoiturage'])->name('covoiturage.ajouter');
