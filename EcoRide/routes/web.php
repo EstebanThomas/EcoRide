@@ -15,9 +15,7 @@ Route::get('/home', function () {
     return view('home');
 });
 
-Route::get('/covoiturages', function () {
-    return view('covoiturages');
-});
+Route::get('/covoiturages', [CovoiturageController::class, 'showCovoiturage']);
 
 Route::get('/contact', function () {
     return view('contact');

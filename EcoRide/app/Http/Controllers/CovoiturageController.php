@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Log;
 
 class CovoiturageController extends Controller
 {
+
+    public function showCovoiturage()
+    {
+        $covoiturages = Covoiturage::where('statut', 'disponible')->get();
+        return view('covoiturages', ['covoiturages' => $covoiturages]);
+    }
+
     public function ajouterCovoiturage(Request $request)
     {
         $today = now()->startofDay();
