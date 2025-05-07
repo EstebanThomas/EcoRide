@@ -55,4 +55,26 @@ class CovoiturageController extends Controller
 
         return redirect()->route('espaceUtilisateur');
     }
+
+    public function rechercherCovoiturage(Request $request)
+    {
+        $validated = $request->validate([
+            'lieu_depart' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
+            'lieu_arrivee' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
+            'date_depart' => 'required|date|after:today',
+        ]);
+
+        try {
+            $covoiturages = Covoiturage::where('lieu_depart', 'LIKE', '%' . $validated['lieu_depart'] . '%')
+                ->where('lieu_arrivee', 'LIKE', '%' . $validated['lieu_arrivee'] . '%')
+                ->where('date_depart', $validated['date_depart'])
+                ->where('statut', 'disponible')
+                ->get();
+
+            return view('covoiturages', ['covoiturages' => $covoiturages]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la recherche de covoiturage : '.$e->getMessage());
+            return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de la recherche. Veuillez réessayer.']);
+        }
+    }
 }

@@ -48,3 +48,5 @@ Route::delete('/voiture/{voiture_id}', [VoitureController::class, 'deleteCar'])-
 Route::post('/ajouterPreferences', [PreferencesController::class, 'ajouterPreferences'])->name('preferences.ajouter');
 
 Route::post('/ajouterCovoiturage', [CovoiturageController::class, 'ajouterCovoiturage'])->name('covoiturage.ajouter');
+
+Route::post('/rechercherCovoiturage', [CovoiturageController::class, 'rechercherCovoiturage'])->name('covoiturage.rechercher');
