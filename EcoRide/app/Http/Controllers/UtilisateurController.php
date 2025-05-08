@@ -43,10 +43,17 @@ class UtilisateurController extends Authenticatable
 
         $voitures = Voiture::where('utilisateur_id', Auth::id())->get();
 
+        $utilisateur = Auth::user();
+
+        $voyages = Covoiturage::with('voiture')
+            ->where('utilisateur_id', $utilisateur->utilisateur_id)
+            ->get();
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
             'voitures' => $voitures,
+            'voyages' => $voyages,
         ]);
     }
 

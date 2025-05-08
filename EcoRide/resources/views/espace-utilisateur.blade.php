@@ -91,18 +91,17 @@
             Préférences
             </button>
             <button id="sectionSaisirVoyage" onclick="ShowSection('sectionSaisirVoyage')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
-            Saisir un voyage
+            Voyages
             </button>
             <button id="sectionHistorique" onclick="ShowSection('sectionHistorique')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Historique
             </button>
-            <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1 hover:bg-green2"></button>
         </div>
 
         <!--Sections chauffeur-->
         <div id="sections" class="hidden">
 
-            <div id="sectionPreferences" class="section flex-col justify-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionPreferences" class="section flex-col justify-center w-200 xl:w-300 p-5 mt-5 mb-1 gap-4 bg-green4 rounded-3xl hidden">
                 <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('preferences.ajouter') }}">
                     @csrf
                     <div class="flex justify-center items-center gap-2">
@@ -146,7 +145,36 @@
                 @endif
             </div>
 
-            <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionSaisirVoyage" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+
+                <div class="flex flex-col border-2 border-green1 w-full h-100 rounded-3xl p-2">
+                    <p class="flex justify-center items-center font-second text-3xl">Mes voyages</p>
+                    <div class="flex mt-5 gap-5 overflow-x-auto">
+                        @forelse($voyages as $voyage)
+                            <div class="min-w-[300px] border-2 border-green1 rounded-3xl p-4 flex-shrink-0">
+                                <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                                <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                                <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
+                                <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
+                                <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->modele }}</p>
+                                <div class="flex flex-row justify-center items-center gap-2 mt-5">
+                                    <button type="button"
+                                    class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
+                                        ANNULER
+                                    </button>
+                                    <button type="button" 
+                                    class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                        Démarrer
+                                    </button>
+                                </div>
+
+                            </div>
+                        @empty
+                            <p class="text-black font-second text-4xl">Aucun voyage trouvé.</p>
+                        @endforelse
+                    </div>
+                </div>
+
                 <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('covoiturage.ajouter') }}">
 
                     @csrf
@@ -568,19 +596,6 @@
 
         prixPersonne.addEventListener('input', updatePrice);
         nbPlace.addEventListener('input', updatePrice);
-
-        //Start/Stop button
-        const startStop = document.getElementById("start/stop");
-        startStop.textContent = 'Démarrer';
-
-        startStop.addEventListener('click', function() {
-            if (startStop.innerText === "Démarrer") {
-                startStop.textContent = 'Arrêter';
-            }
-            else{
-                startStop.textContent = 'Démarrer';
-            }
-        });
 
     </script>
 
