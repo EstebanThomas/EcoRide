@@ -34,4 +34,14 @@ class Utilisateurs extends Authenticatable
         'couleur',
         'energie',
     ];
+
+    public function covoiturages()
+    {
+        return $this->hasMany(Covoiturage::class, 'utilisateur_id');
+    }
+
+    public function voitures()
+    {
+        return $this->hasMany(Voiture::class, 'utilisateur_id');
+    }
 }

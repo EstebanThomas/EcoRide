@@ -37,4 +37,10 @@ class Voiture extends Model
     {
         return $this->belongsTo(Marque::class, 'marque_id');
     }
+
+    //Get foreign key 'marque_id'
+    public function covoiturages()
+    {
+        return $this->hasMany(Covoiturage::class, 'voiture_id');
+    }
 }

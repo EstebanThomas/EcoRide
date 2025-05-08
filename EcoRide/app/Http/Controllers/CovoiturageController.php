@@ -72,7 +72,8 @@ class CovoiturageController extends Controller
         ]);
 
         try {
-            $covoiturages = Covoiturage::where('lieu_depart', 'LIKE', '%' . $validated['lieu_depart'] . '%')
+            $covoiturages = Covoiturage::with('utilisateur', 'voiture')
+                ->where('lieu_depart', 'LIKE', '%' . $validated['lieu_depart'] . '%')
                 ->where('lieu_arrivee', 'LIKE', '%' . $validated['lieu_arrivee'] . '%')
                 ->where('date_depart', $validated['date_depart'])
                 ->where('statut', 'disponible')
