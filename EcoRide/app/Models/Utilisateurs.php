@@ -44,4 +44,9 @@ class Utilisateurs extends Authenticatable
     {
         return $this->hasMany(Voiture::class, 'utilisateur_id');
     }
+
+    public function preferences()
+    {
+        return $this->hasOne(Preferences::class, 'utilisateur_id');
+    }
 }

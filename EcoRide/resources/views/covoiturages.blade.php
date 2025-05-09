@@ -91,10 +91,11 @@
                                     <img src="{{ asset('images/Ecologique.svg') }}" alt="Logo energie électrique" class="w-10 h-10">
                                     </div>
                                 @endif
-                                <div class="flex flex-col items-center justify-center w-full h-full gap-1 font-second text-5xl text-black">
+                                <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $covoiturage->covoiturage_id]) }}'"
+                                class="flex flex-col items-center justify-center w-full h-full gap-1 font-second text-5xl text-black hover:text-green1 active:text-black">
                                     <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
                                     Détails
-                                </div>
+                                </button>
                             </div>
                             <div class="w-full h-1/2 flex flex-col justify-center items-center gap-10">
                                 <div class="w-full flex flex-row justify-center items-center gap-5">

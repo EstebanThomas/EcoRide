@@ -48,3 +48,7 @@ Route::post('/ajouterPreferences', [PreferencesController::class, 'ajouterPrefer
 Route::post('/ajouterCovoiturage', [CovoiturageController::class, 'ajouterCovoiturage'])->name('covoiturage.ajouter');
 
 Route::post('/rechercherCovoiturage', [CovoiturageController::class, 'rechercherCovoiturage'])->name('covoiturage.rechercher');
+
+Route::delete('/voyage/{voiture_id}', [CovoiturageController::class, 'supprimerVoyage'])->name('voyage.supprimer');
+
+Route::get('/details/{id}', [CovoiturageController::class, 'showRideDetails'])->name('covoiturage.details');

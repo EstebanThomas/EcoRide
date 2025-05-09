@@ -21,6 +21,21 @@ class CovoiturageController extends Controller
         return view('covoiturages', ['covoiturages' => $covoiturages]);
     }
 
+    public function showRideDetails($id){
+
+        try{
+            $covoiturage = Covoiturage::with('utilisateur', 'voiture', 'voiture.marque', 'utilisateur.preferences')
+            ->where('statut', 'disponible')
+            ->where('covoiturage_id', $id)
+            ->firstOrFail();
+
+            return view('details', ['covoiturage' => $covoiturage]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);
+        }
+        
+    }
+
     public function ajouterCovoiturage(Request $request)
     {
         $today = now()->startofDay();
@@ -85,4 +100,22 @@ class CovoiturageController extends Controller
             return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de la recherche. Veuillez réessayer.']);
         }
     }
+
+    //Delete a ride
+    public function supprimerVoyage($voiture_id)
+{
+    try {
+        $voyage = Covoiturage::findOrFail($voiture_id);
+
+        if ($voyage->utilisateur_id !== Auth::id()) {
+            return response()->json(['message' => 'Non autorisé.'], 403);
+        }
+
+        $voyage->delete();
+
+        return response()->json(['message' => 'Voyage supprimé.'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => $e], 500);
+    }
+}
 }

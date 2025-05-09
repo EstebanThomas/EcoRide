@@ -158,7 +158,7 @@
                                 <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
                                 <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->modele }}</p>
                                 <div class="flex flex-row justify-center items-center gap-2 mt-5">
-                                    <button type="button"
+                                    <button type="button" onclick="supprimerVoyage({{ $voyage->covoiturage_id }})"
                                     class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
                                         ANNULER
                                     </button>
@@ -596,6 +596,70 @@
 
         prixPersonne.addEventListener('input', updatePrice);
         nbPlace.addEventListener('input', updatePrice);
+
+
+        //Delete ride
+        function supprimerVoyage(id){
+            Swal.fire({
+                title: 'Supprimer ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Supprimer',
+                cancelButtonText: 'Annuler',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage supprimé!',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors de la suppression',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors de la suppression',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
 
     </script>
 
