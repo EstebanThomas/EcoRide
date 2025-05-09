@@ -46,7 +46,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="relative 3xl:hidden block text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm p-3 pl-10 pr-10 hover:bg-green2">
+                <button type="submit" class="relative 3xl:hidden block text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm p-3 pl-10 pr-10 hover:border-black">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 CHERCHER
                 </button>
@@ -54,10 +54,38 @@
             </div>
 
             <div class="hidden 3xl:flex justify-center items-center mt-5">
-                <button type="submit" class="relative text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm p-3 pl-10 pr-10 hover:bg-green2">
+                <button type="submit" class="relative text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-xs p-3 pl-10 pr-10 hover:bg-green2">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 CHERCHER
                 </button>
+            </div>
+
+        </form>
+
+        <!--Filters-->
+        <form method="GET" action="{{route('covoiturage.rechercher')}}" class="mt-5 flex flex-row justify-center items-center gap-5">
+            <input type="hidden" id="ecologique_filtre" name="ecologique_filtre" value="Non">
+            <button type="button" name="filtre_ecologique" value="filtre_ecologique" onclick="ecologiqueFiltre()"
+            class="border-2 border-green1 rounded-3xl w-xs font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+                <p class="text-4xl font-second text-black text-center">
+                    ecologique
+                </p>
+                <div class="flex flex-row justify-center items-center gap-2">
+                    <p class="text-4xl font-second" id="ecologique_non">NON</p>
+                    <img src="{{ asset('images/Ecologique.svg') }}" alt="Logo energie électrique" class="w-10 h-10">
+                    <p class="text-4xl font-second text-gray-500" id="ecologique_oui">OUI</p>
+                </div>
+            </button>
+            <div class="border-2 border-green1 rounded-3xl w-xs font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+                <p class="text-4xl font-second uppercase text-center">
+                    Prix max
+                </p>
+                <div class="flex flex-row justify-center items-center gap-2">
+                    <input type="integer" id="prix_max" name="prix_max"
+                    class="bg-gray-300 font-second text-4xl uppercase text-center w-10"
+                    value="100" min="0" max="100"/>
+                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédits" class="w-10 h-10">
+                </div>
             </div>
 
         </form>
@@ -125,5 +153,29 @@
             </ul>
         @endif
     </div>
+
+    <script>
+        //filers display
+        function ecologiqueFiltre() {
+            var non = document.getElementById("ecologique_non");
+            var oui = document.getElementById("ecologique_oui");
+            const hiddenInputEcologique = document.getElementById("ecologique_filtre");
+
+            if (non.classList.contains("text-black")) {
+                non.classList.remove("text-black");
+                non.classList.add("text-gray-500");
+                oui.classList.remove("text-gray-500");
+                oui.classList.add("text-black");
+                hiddenInputEcologique.value = "Oui";
+            } else {
+                non.classList.remove("text-gray-500");
+                non.classList.add("text-black");
+                oui.classList.remove("text-black");
+                oui.classList.add("text-gray-500");
+                hiddenInputEcologique.value = "Non";
+            }
+        }
+
+    </script>
 
 @endsection

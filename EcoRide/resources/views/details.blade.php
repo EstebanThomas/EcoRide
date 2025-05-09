@@ -25,7 +25,7 @@
             </div>
             <div class="flex justify-center items-center w-1/3">
                 <button type="button"
-                class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-black hover:border-green1 active:border-black p-5 pt-20 pb-20">
+                class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:underline hover:decoration-green1 active:border-black p-5 pt-20 pb-20">
                     <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
                     PARTICIPER
                 </button>
