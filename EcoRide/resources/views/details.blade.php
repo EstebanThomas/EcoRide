@@ -25,7 +25,7 @@
             </div>
             <div class="flex justify-center items-center w-1/3">
                 <button type="button"
-                class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:underline hover:decoration-green1 active:border-black p-5 pt-20 pb-20">
+                class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
                     <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
                     PARTICIPER
                 </button>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="flex flex-row items-center justify-center w-full h-full gap-2 font-second text-5xl text-black">
                     {{ $covoiturage->prix_personne }}
-                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
                 </div>
                 @if($covoiturage->voiture->energie === 'Oui')
                     <div class="flex items-center justify-center w-full h-full gap-1">

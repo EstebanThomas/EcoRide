@@ -54,6 +54,7 @@ class UtilisateurController extends Authenticatable
             'marques' => $marques,
             'voitures' => $voitures,
             'voyages' => $voyages,
+            'utilisateur' => $utilisateur,
         ]);
     }
 
@@ -71,7 +72,8 @@ class UtilisateurController extends Authenticatable
         $user = Utilisateurs::create([
             'pseudo'=> $validated['pseudo'],
             'email' => $validated['mail'],
-            'password' => Hash::make($validated['password'])
+            'password' => Hash::make($validated['password']),
+            'credits' => 20
         ]);
 
         Auth::login($user);

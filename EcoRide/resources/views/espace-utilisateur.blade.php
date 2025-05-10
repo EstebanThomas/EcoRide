@@ -80,6 +80,11 @@
                 </div>
             </div>
 
+            <div>
+                <p class="text-4xl font-second text-black flex flex-row justify-center items-center">Crédits : {{$utilisateur->credits}} 
+                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10"></p>
+            </div>
+
         </div>
 
         <!--Buttons section chauffeur-->

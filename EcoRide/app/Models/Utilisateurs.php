@@ -33,6 +33,7 @@ class Utilisateurs extends Authenticatable
         'datePremiereImmatriculation',
         'couleur',
         'energie',
+        'credits',
     ];
 
     public function covoiturages()
