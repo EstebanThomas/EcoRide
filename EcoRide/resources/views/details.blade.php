@@ -85,13 +85,13 @@
                     <div class="flex flex-row  items-center justify-center gap-2">
                         <img src="{{ asset('images/Depart.svg') }}" alt="Logo de la date de départ" class="w-10 h-10">
                             <p class="font-second text-5xl text-black">
-                                {{ \Carbon\Carbon::parse($covoiturage->heure_depart)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($covoiturage->heure_depart)->format('H:i') }} de {{ $covoiturage->lieu_depart }}
                             </p>
                     </div>
                     <div class="flex flex-row items-center justify-center gap-2">
                         <img src="{{ asset('images/Arrivee.svg') }}" alt="Logo de la date d'arrivée" class="w-10 h-10">
                         <p class="font-second text-5xl text-black">
-                            {{ \Carbon\Carbon::parse($covoiturage->heure_arrivee)->format('H:i') }}
+                            {{ \Carbon\Carbon::parse($covoiturage->heure_arrivee)->format('H:i') }} à {{ $covoiturage->lieu_arrivee }}
                         </p>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class CovoiturageController extends Controller
 {
@@ -36,9 +37,10 @@ class CovoiturageController extends Controller
         
     }
 
+    //Add a ride
     public function ajouterCovoiturage(Request $request)
     {
-        $today = now()->startofDay();
+        $today = now()->startOfDay();
         $maxDate = now()->addMonth(2)->endOfDay();
 
         $validated = $request->validate([
@@ -78,59 +80,68 @@ class CovoiturageController extends Controller
         return redirect()->route('espaceUtilisateur');
     }
 
+    //Search for a ride and filters
     public function rechercherCovoiturage(Request $request)
     {
         $validated = $request->validate([
             'lieu_depart' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
             'lieu_arrivee' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
-            'date_depart' => 'required|date|after:today',
+            'date_depart' => 'required|date',
+            'nb_place' => 'required|integer|min:1|max:7',
+            'ecologique_filtre' => 'nullable|in:Oui,Non',
+            'prix_max' => 'nullable|numeric|min:0|max:100',
+            'duree_max' => 'nullable|date_format:H:i',
+            'note_minimale' => 'nullable|integer|min:1|max:5',
         ]);
 
         try {
-            $covoiturages = Covoiturage::with('utilisateur', 'voiture')
+            $query = Covoiturage::with('utilisateur', 'voiture')
                 ->where('lieu_depart', 'LIKE', '%' . $validated['lieu_depart'] . '%')
                 ->where('lieu_arrivee', 'LIKE', '%' . $validated['lieu_arrivee'] . '%')
-                ->where('date_depart', $validated['date_depart'])
+                ->whereDate('date_depart', '>=', $validated['date_depart'])
+                ->where('nb_place', '>=', $validated['nb_place'])
                 ->where('statut', 'disponible')
-                ->get();
+                ->orderby('date_depart');
 
-            return view('covoiturages', ['covoiturages' => $covoiturages]);
+            if ($request->filled('ecologique_filtre') && $validated['ecologique_filtre'] === 'Oui') {
+                $query->whereHas('voiture', function ($q) {
+                    $q->where('energie', 'Oui');
+                });
+            }
+
+            if ($request->filled('prix_max')) {
+                $query->where('prix_personne', '<=', $validated['prix_max']);
+            }
+
+            if ($request->filled('duree_max')) {
+                $query->whereRaw("TIMEDIFF(heure_arrivee, heure_depart) <= ?", [$validated['duree_max']]);
+            }
+
+            if ($request->filled('note_minimale')) {
+                $query->whereHas('utilisateur.avis', function ($q) use ($validated) {
+                    $q->select(DB::raw('AVG(note) as moyenne'))->groupBy('utilisateur_id')
+                        ->havingRaw('AVG(note) >= ?', [$validated['note_minimale']]);
+                });
+            }
+
+            $covoiturages = $query->get();
+
+            return view('covoiturages', [
+                'covoiturages' => $covoiturages,
+                'lieu_depart' => $validated['lieu_depart'],
+                'lieu_arrivee' => $validated['lieu_arrivee'],
+                'date_depart' => $validated['date_depart'],
+                'nb_place' => $validated['nb_place'],
+                'recherche' => true,
+                'ecologique_filtre' => $validated['ecologique_filtre'] ?? 'Non',
+                'prix_max' => $validated['prix_max'] ?? 100,
+                'duree_max' => $validated['duree_max'] ?? '23:59',
+                'note_minimale' => $validated['note_minimale'] ?? 1,
+            ]);
         } catch (\Exception $e) {
             Log::error('Erreur lors de la recherche de covoiturage : '.$e->getMessage());
             return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de la recherche. Veuillez réessayer.']);
         }
-    }
-
-    //Add filters to the search
-    public function appliquerFiltres(Request $request)
-    {
-        $query = Covoiturage::with('utilisateur.avis', 'voiture.marque', 'preferences')
-            ->where('statut', 'disponible');
-
-        if ($request->filled('ecologique_filtre') && $request->ecologique_filtre === 'Oui') {
-            $query->whereHas('voiture', function ($q) {
-                $q->where('energie', 'Oui');
-            });
-        }
-
-        if ($request->filled('prix_max')) {
-            $query->where('prix_personne', '<=', $request->prix_max);
-        }
-
-        if ($request->filled('duree_max')) {
-            $query->whereRaw("TIMEDIFF(heure_arrivee, heure_depart) <= ?", [$request->duree_max]);
-        }
-
-        if ($request->filled('note_minimale')) {
-            $query->whereHas('utilisateur.avis', function ($q) use ($request) {
-                $q->select(DB::raw('AVG(note) as moyenne'))->groupBy('utilisateur_id')
-                    ->havingRaw('AVG(note) >= ?', [$request->note_minimale]);
-            });
-        }
-
-        $covoiturages = $query->get();
-
-        return view('covoiturages', compact('covoiturages'));
     }
 
     //Delete a ride
