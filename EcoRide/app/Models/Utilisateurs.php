@@ -49,4 +49,9 @@ class Utilisateurs extends Authenticatable
     {
         return $this->hasOne(Preferences::class, 'utilisateur_id');
     }
+
+    public function avis()
+    {
+        return $this->hasMany(Avis::class, 'utilisateur_id');
+    }
 }

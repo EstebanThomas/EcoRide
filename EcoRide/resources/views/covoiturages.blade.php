@@ -46,7 +46,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="relative 3xl:hidden block text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm p-3 pl-10 pr-10 hover:border-black">
+                <button type="submit" class="relative 3xl:hidden block text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm p-3 pl-10 pr-10 hover:border-black active:border-green1">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 CHERCHER
                 </button>
@@ -54,7 +54,7 @@
             </div>
 
             <div class="hidden 3xl:flex justify-center items-center mt-5">
-                <button type="submit" class="relative text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-xs p-3 pl-10 pr-10 hover:bg-green2">
+                <button type="submit" class="relative text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-xs p-3 pl-10 pr-10 hover:border-black active:border-green1">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 CHERCHER
                 </button>
@@ -63,10 +63,12 @@
         </form>
 
         <!--Filters-->
-        <form method="GET" action="{{route('covoiturage.rechercher')}}" class="mt-5 flex flex-row justify-center items-center gap-5">
+        <form method="GET" action="{{route('covoiturage.rechercherFiltres')}}" class="mt-5">
+        <div class="flex flex-col gap-5 justify-center items-center">
+        <div class="flex flex-row gap-5 justify-center items-center">
             <input type="hidden" id="ecologique_filtre" name="ecologique_filtre" value="Non">
             <button type="button" name="filtre_ecologique" value="filtre_ecologique" onclick="ecologiqueFiltre()"
-            class="border-2 border-green1 rounded-3xl w-xs font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+            class="border-2 border-green1 rounded-3xl w-55 font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
                 <p class="text-4xl font-second text-black text-center">
                     ecologique
                 </p>
@@ -76,7 +78,7 @@
                     <p class="text-4xl font-second text-gray-500" id="ecologique_oui">OUI</p>
                 </div>
             </button>
-            <div class="border-2 border-green1 rounded-3xl w-xs font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+            <div class="border-2 border-green1 rounded-3xl w-55 font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
                 <p class="text-4xl font-second uppercase text-center">
                     Prix max
                 </p>
@@ -87,11 +89,45 @@
                     <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédits" class="w-10 h-10">
                 </div>
             </div>
+        </div>
+        <div class="flex flex-row gap-5 justify-center items-center">
+            <div class="border-2 border-green1 rounded-3xl w-55 font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+                <p class="text-4xl font-second uppercase text-center">
+                    Durée max
+                </p>
+                <div class="flex flex-row justify-center items-center gap-2">
+                    <input type="time" id="duree_max" name="duree_max"
+                    class="bg-gray-300 font-second text-4xl uppercase text-center w-30"
+                    min="00:00" max="23:59" value="23:59"/>
+                    <img src="{{ asset('images/Duree.svg') }}" alt="Logo crédits" class="w-10 h-10">
+                </div>
+            </div>
+            <div class="border-2 border-green1 rounded-3xl w-55 font-second text-4xl uppercase text-center flex justify-center items-center flex-col gap-2 p-3">
+                <p class="text-4xl font-second uppercase text-center">
+                    Note minimale
+                </p>
+                <div class="flex flex-row justify-center items-center gap-2">
+                    <input type="integer" id="note_minimale" name="note_minimale"
+                    class="bg-gray-300 font-second text-4xl uppercase text-center w-10"
+                    min="1" max="5" value="1"/>
+                    <p class="text-4xl font-second uppercase text-center">
+                        / 5
+                    </p>
+                    <img src="{{ asset('images/Note.svg') }}" alt="Logo crédits" class="w-10 h-10">
+                </div>
+            </div>
+        </div>
 
+            <div class="flex justify-center items-center mt-2">
+                <button type="submit" class="relative text-4xl font-second tracking-wide border-2 border-green1 bg-green4 rounded-3xl w-sm h-18 p-2 uppercase hover:border-black active:border-green1">
+                <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2">
+                    Appliquer les filtres
+                </button>
+            </div>
         </form>
 
         @if ($covoiturages->isEmpty())
-            <p>PAS DE TRAJETS</p>
+            <p class="text-5xl font-second text-black m-10 text-center">PAS DE TRAJETS</p>
         @else
             <ul>   
                 @foreach ($covoiturages as $covoiturage)

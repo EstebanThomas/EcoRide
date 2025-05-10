@@ -101,6 +101,38 @@ class CovoiturageController extends Controller
         }
     }
 
+    //Add filters to the search
+    public function appliquerFiltres(Request $request)
+    {
+        $query = Covoiturage::with('utilisateur.avis', 'voiture.marque', 'preferences')
+            ->where('statut', 'disponible');
+
+        if ($request->filled('ecologique_filtre') && $request->ecologique_filtre === 'Oui') {
+            $query->whereHas('voiture', function ($q) {
+                $q->where('energie', 'Oui');
+            });
+        }
+
+        if ($request->filled('prix_max')) {
+            $query->where('prix_personne', '<=', $request->prix_max);
+        }
+
+        if ($request->filled('duree_max')) {
+            $query->whereRaw("TIMEDIFF(heure_arrivee, heure_depart) <= ?", [$request->duree_max]);
+        }
+
+        if ($request->filled('note_minimale')) {
+            $query->whereHas('utilisateur.avis', function ($q) use ($request) {
+                $q->select(DB::raw('AVG(note) as moyenne'))->groupBy('utilisateur_id')
+                    ->havingRaw('AVG(note) >= ?', [$request->note_minimale]);
+            });
+        }
+
+        $covoiturages = $query->get();
+
+        return view('covoiturages', compact('covoiturages'));
+    }
+
     //Delete a ride
     public function supprimerVoyage($voiture_id)
 {
