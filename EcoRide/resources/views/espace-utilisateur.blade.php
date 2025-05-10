@@ -151,24 +151,26 @@
                     <p class="flex justify-center items-center font-second text-3xl">Mes voyages</p>
                     <div class="flex mt-5 gap-5 overflow-x-auto">
                         @forelse($voyages as $voyage)
-                            <div class="min-w-[300px] border-2 border-green1 rounded-3xl p-4 flex-shrink-0">
-                                <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
-                                <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
-                                <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
-                                <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
-                                <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->modele }}</p>
-                                <div class="flex flex-row justify-center items-center gap-2 mt-5">
-                                    <button type="button" onclick="supprimerVoyage({{ $voyage->covoiturage_id }})"
-                                    class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
-                                        ANNULER
-                                    </button>
-                                    <button type="button" 
-                                    class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
-                                        Démarrer
-                                    </button>
-                                </div>
+                            @if($voyage->statut === 'disponible')
+                                <div class="min-w-[300px] border-2 border-green1 rounded-3xl p-4 flex-shrink-0">
+                                    <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                                    <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                                    <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
+                                    <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
+                                    <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->modele }}</p>
+                                    <div class="flex flex-row justify-center items-center gap-2 mt-5">
+                                        <button type="button" onclick="annulerVoyage({{ $voyage->covoiturage_id }})"
+                                        class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
+                                            ANNULER
+                                        </button>
+                                        <button type="button" 
+                                        class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                            Démarrer
+                                        </button>
+                                    </div>
 
-                            </div>
+                                </div>
+                            @endif
                         @empty
                             <p class="text-black font-second text-4xl">Aucun voyage trouvé.</p>
                         @endforelse
@@ -271,8 +273,21 @@
 
             </div>
 
-            <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-                <p>Historique</p>
+            <div id="sectionHistorique" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+                <p class="text-4xl font-second text-center mb-5">Historique</p>
+                <div class="flex flex-row w-full gap-5 overflow-x-auto">
+                    @forelse($voyages as $voyage)
+                        <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
+                            <h3 class="text-3xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                            <p class="text-2xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                            <p class="text-2xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
+                            <p class="text-2xl font-second">Voiture : {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
+                        </div>
+                    @empty
+                        <p class="text-5xl font-second text-center">Aucun voyage trouvé.</p>
+                    @endforelse
+                </div>
+
             </div>
 
             <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
@@ -599,20 +614,20 @@
 
 
         //Delete ride
-        function supprimerVoyage(id){
+        function annulerVoyage(id){
             Swal.fire({
-                title: 'Supprimer ce voyage ?',
+                title: 'Annuler ce voyage ?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Supprimer',
-                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Annuler le voyage',
+                cancelButtonText: 'Retour',
                 customClass: {
                     popup: 'custom-swal'
                 }
             }).then((result) => {
                 if(result.isConfirmed){
                     fetch(`/voyage/${id}`, {
-                        method: 'DELETE',
+                        method: 'PATCH',
                         headers: {
                             'Content-type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -623,7 +638,7 @@
                     .then(res => {
                         if(res.ok){
                             Swal.fire({
-                                title: 'Voyage supprimé!',
+                                title: 'Voyage annulé !',
                                 icon: 'success',
                                 showConfirmButton: true,
                                 customClass:{

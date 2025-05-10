@@ -49,8 +49,8 @@ Route::post('/ajouterCovoiturage', [CovoiturageController::class, 'ajouterCovoit
 
 Route::post('/rechercherCovoiturage', [CovoiturageController::class, 'rechercherCovoiturage'])->name('covoiturage.rechercher');
 
-Route::delete('/voyage/{voiture_id}', [CovoiturageController::class, 'supprimerVoyage'])->name('voyage.supprimer');
+Route::patch('/voyage/{voiture_id}', [CovoiturageController::class, 'annulerVoyage'])->name('voyage.annuler');
 
 Route::get('/details/{id}', [CovoiturageController::class, 'showRideDetails'])->name('covoiturage.details');
 
-Route::get('/filtresCovoiturages', [CovoiturageController::class, 'appliquerFiltres'])->name('covoiturage.rechercherFiltres');
+Route::post('/filtresCovoiturages', [CovoiturageController::class, 'appliquerFiltres'])->name('covoiturage.rechercherFiltres');

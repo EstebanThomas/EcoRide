@@ -134,20 +134,23 @@ class CovoiturageController extends Controller
     }
 
     //Delete a ride
-    public function supprimerVoyage($voiture_id)
-{
-    try {
-        $voyage = Covoiturage::findOrFail($voiture_id);
+    public function annulerVoyage($voiture_id)
+    {
+        try {
+            $voyage = Covoiturage::findOrFail($voiture_id);
 
-        if ($voyage->utilisateur_id !== Auth::id()) {
-            return response()->json(['message' => 'Non autorisé.'], 403);
+            if ($voyage->utilisateur_id !== Auth::id()) {
+                return response()->json(['message' => 'Non autorisé.'], 403);
+            }
+            if ($voyage->statut !== 'disponible') {
+                return response()->json(['message' => 'Le voyage ne peut pas être annulé.'], 400);
+            }
+            $voyage->statut = 'annulé';
+            $voyage->save();
+
+            return response()->json(['message' => 'Voyage annulé.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de l\'annulation du voyage.'], 500);
         }
-
-        $voyage->delete();
-
-        return response()->json(['message' => 'Voyage supprimé.'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => $e], 500);
     }
-}
 }
