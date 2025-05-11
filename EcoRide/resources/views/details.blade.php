@@ -23,13 +23,35 @@
                     @endif
                 </div>
             </div>
-            <div class="flex justify-center items-center w-1/3">
-                <button type="button"
-                class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
-                    <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
-                    PARTICIPER
-                </button>
+            @if ($alreadyParticipating)
+                <form action="{{ route('covoiturage.quitter', ['id' => $covoiturage->covoiturage_id]) }}" method="POST" class="flex justify-center items-center w-1/3">
+                    @csrf
+                    <button type="submit"
+                    class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
+                        <img src="{{ asset('images/Croix.svg') }}" alt="Logo participer" class="w-15 h-15">
+                        QUITTER
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('covoiturage.participer', ['id' => $covoiturage->covoiturage_id]) }}" method="POST" class="flex justify-center items-center w-1/3">
+                    @csrf
+                    <button type="submit"
+                    class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
+                        <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
+                        PARTICIPER
+                    </button>
+                </form>
+            @endif
+        @if($user)
+            <div class="flex flex-row items-center justify-center gap-2 w-80">
+                <p class="text-5xl font-second text-black">Vous avez : {{$user->credits}}</p>
+                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
             </div>
+        @else
+            <div class="flex flex-row items-center justify-center w-100">
+                <p class="text-5xl font-second text-black">Vous devez vous <a class="underline decoration-green1 hover:text-green1 hover:decoration-black" href="/connexion">connecter</a> pour participer</p>
+            </div>
+        @endif
         </div>
         <div class="flex flex-col justify-center items-center border-4 border-green1 p-5 rounded-3xl mt-5 w-4/6">
             <p class="text-center font-second text-black text-4xl uppercase">préférences</p>
@@ -103,5 +125,34 @@
         </div>
 
     </div>
+
+    @if(session('successParticipation'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successParticipation')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @elseif(session('errorParticipation'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'Erreur !',
+                    icon: 'error',
+                    text: @json(session('errorParticipation')),
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 
 @endsection

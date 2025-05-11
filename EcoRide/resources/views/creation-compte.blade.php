@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="flex flex-col justify-center items-center border-2 border-green1 rounded-b-3xl p-20 pt-10 pb-10 xl:pt-5 xl:pb-5">
-                        <button type="submit" class="border-2 border-black text-4xl font-second bg-green1 hover:bg-green2 rounded-3xl w-2xs h-18 xl:w-3xs xl:h-12">
+                        <button type="submit" class="border-2 border-black text-4xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl w-2xs h-18 xl:w-3xs xl:h-12">
                             INSCRIPTION
                         </button>
                 </div>

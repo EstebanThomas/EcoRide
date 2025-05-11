@@ -23,7 +23,7 @@ Route::get('/contact', function () {
 
 Route::get('/home', [UtilisateurController::class, 'showHome'])->name('home');
 
-Route::get('/connexion', [UtilisateurController::class, 'showConnexion']);
+Route::get('/connexion', [UtilisateurController::class, 'showConnexion'])->name('page.connexion');
 
 Route::get('/creation-compte', [UtilisateurController::class, 'showCreationAccount']);
 
@@ -52,3 +52,7 @@ Route::patch('/voyage/{voiture_id}', [CovoiturageController::class, 'annulerVoya
 Route::get('/details/{id}', [CovoiturageController::class, 'showRideDetails'])->name('covoiturage.details');
 
 Route::get('/rechercherCovoiturages', [CovoiturageController::class, 'rechercherCovoiturage'])->name('covoiturage.rechercher');
+
+Route::post('/covoiturage/{id}/participer', [CovoiturageController::class, 'participerCovoiturage'])->name('covoiturage.participer');
+
+Route::post('/covoiturage/{id}/quitter', [CovoiturageController::class, 'quitterCovoiturage'])->name('covoiturage.quitter');

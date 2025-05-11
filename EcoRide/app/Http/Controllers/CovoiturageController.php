@@ -11,7 +11,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Carbon;  
+use App\Models\Utilisateurs;
 
 class CovoiturageController extends Controller
 {
@@ -19,22 +20,33 @@ class CovoiturageController extends Controller
     public function showCovoiturage()
     {
         $covoiturages = Covoiturage::where('statut', 'disponible')->get();
-        return view('covoiturages', ['covoiturages' => $covoiturages]);
+        $utilisateur= Auth::user();
+
+        return view('covoiturages', [
+            'covoiturages' => $covoiturages,
+            'utilisateur' => $utilisateur
+        ]);
     }
 
     public function showRideDetails($id){
-
         try{
             $covoiturage = Covoiturage::with('utilisateur', 'voiture', 'voiture.marque', 'utilisateur.preferences')
             ->where('statut', 'disponible')
             ->where('covoiturage_id', $id)
             ->firstOrFail();
 
-            return view('details', ['covoiturage' => $covoiturage]);
+            $user = Auth::user();
+            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+            $alreadyParticipating = $user && in_array($user->utilisateur_id, $participants);
+
+            return view('details', [
+                'covoiturage' => $covoiturage,
+                'alreadyParticipating' => $alreadyParticipating,
+                'user' => $user
+            ]);
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);
         }
-        
     }
 
     //Add a ride
@@ -125,6 +137,7 @@ class CovoiturageController extends Controller
             }
 
             $covoiturages = $query->get();
+            $utilisateur = Auth::user();
 
             return view('covoiturages', [
                 'covoiturages' => $covoiturages,
@@ -137,6 +150,7 @@ class CovoiturageController extends Controller
                 'prix_max' => $validated['prix_max'] ?? 100,
                 'duree_max' => $validated['duree_max'] ?? '23:59',
                 'note_minimale' => $validated['note_minimale'] ?? 1,
+                'utilisateur' => $utilisateur
             ]);
         } catch (\Exception $e) {
             Log::error('Erreur lors de la recherche de covoiturage : '.$e->getMessage());
@@ -162,6 +176,77 @@ class CovoiturageController extends Controller
             return response()->json(['message' => 'Voyage annulé.'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de l\'annulation du voyage.'], 500);
+        }
+    }
+
+    //Participate in a ride
+    public function participerCovoiturage($id)
+    {
+        try {
+            $user = Auth::user();
+            $covoiturage = Covoiturage::find($id);
+            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+            
+            if (!$user){
+                return redirect()->route('page.connexion');
+            }
+
+            if($covoiturage->nb_place <= 0){
+                return back()->with('errorParticipation', 'Il n\'y a plus de places disponibles.');
+            }
+
+            // Check if the user isn't already in the ride
+            if (in_array($user->utilisateur_id, $participants)){
+                return back()->with('errorParticipation', 'vous participez déjà à ce covoiturage.');
+            }
+
+            if ($user->credits < $covoiturage->prix_personne){
+                return back()->with('errorParticipation', 'Vous n\'avez pas assez de crédits pour rejoindre ce covoiturage, vous avez ' . $user->credits . ' crédits.');
+            }
+
+            $participants[] = $user->utilisateur_id;
+
+            $covoiturage->participants = json_encode($participants);
+            $covoiturage->nb_place -= 1;
+            $covoiturage->save();
+
+            DB::table('utilisateurs')
+                ->where('utilisateur_id', $user->utilisateur_id)
+                ->decrement('credits', $covoiturage->prix_personne);
+
+            return back()->with('successParticipation', 'Vous avez rejoint ce covoiturage !');
+        } catch (\Exception $e){
+            Log::error('Erreur lors de la participation au covoiturage : '.$e->getMessage());
+            return back()->with('errorParticipation', 'Une erreur est survenue lors de la participation. Veuillez réessayer.');
+        }
+        
+    }
+
+    //Leave a ride
+    public function quitterCovoiturage($id)
+    {
+        try {
+            $user = Auth::user();
+            $covoiturage = Covoiturage::find($id);
+            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+
+            if (!in_array($user->utilisateur_id, $participants)){
+                return back()->with('errorParticipation', 'Vous ne participez pas à ce covoiturage.');
+            }
+
+            $participants = array_diff($participants, [$user->utilisateur_id]);
+            $covoiturage->participants = json_encode(array_values($participants));
+            $covoiturage->nb_place += 1;
+            $covoiturage->save();
+
+            DB::table('utilisateurs')
+                ->where('utilisateur_id', $user->utilisateur_id)
+                ->increment('credits', $covoiturage->prix_personne);
+
+            return back()->with('successParticipation', 'Vous avez quitté ce covoiturage.');
+        } catch (\Exception $e){
+            Log::error('Erreur lors de l\'annulation de votre participation au covoiturage : '.$e->getMessage());
+            return back()->with('errorParticipation', 'Une erreur est survenue lors de l\'annulation de votre participation. Veuillez réessayer.');
         }
     }
 }

@@ -50,6 +50,13 @@
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 CHERCHER
                 </button>
+
+                @if($utilisateur)
+                    <div class="flex flex-row items-center justify-center gap-2 w-80">
+                        <p class="text-4xl font-second text-black">Vous avez : {{$utilisateur->credits}}</p>
+                        <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                    </div>
+                @endif
                 
             </div>
 
@@ -59,6 +66,8 @@
                 CHERCHER
                 </button>
             </div>
+
+
 
             <!-- FILTERS -->
             <div class="flex flex-col gap-5 justify-center items-center mt-5 mb-5">

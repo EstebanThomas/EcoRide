@@ -46,7 +46,7 @@
 
             <div class="flex justify-center mt-4">
                 <button
-                class="relative bg-green4 border-2 border-green1 rounded-3xl w-sm h-18 font-second text-4xl uppercase text-center" type="submit">
+                class="relative bg-green4 border-2 border-green1 rounded-3xl w-sm h-18 font-second text-4xl uppercase text-center hover:border-black active:border-green1" type="submit">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 Chercher
                 </button>

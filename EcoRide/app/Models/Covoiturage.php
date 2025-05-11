@@ -26,9 +26,14 @@ class Covoiturage extends Model
         'statut',
         'nb_place',
         'prix_personne',
+        'participants',
         'utilisateur_id',
         'voiture_id',
         'preferences_id',
+    ];
+
+    protected $casts = [
+        'participants' => 'array',
     ];
 
         //Get foreign key 'utilisateur_id'

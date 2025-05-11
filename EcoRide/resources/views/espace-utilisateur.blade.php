@@ -64,14 +64,14 @@
                     <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
                 @endif
 
-                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
+                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">MODIFIER</button>
 
             </form>
 
             <div class="flex flex-row justify-center items-center gap-10">
                 <form action="{{ route('utilisateur.deconnexion') }}" method="POST">
                     @csrf
-                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">DECONNEXION</button>
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">DECONNEXION</button>
                 </form>
 
 
