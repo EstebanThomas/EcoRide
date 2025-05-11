@@ -33,9 +33,9 @@
                     </button>
                 </form>
             @else
-                <form action="{{ route('covoiturage.participer', ['id' => $covoiturage->covoiturage_id]) }}" method="POST" class="flex justify-center items-center w-1/3">
+                <form action="{{ route('covoiturage.participer', ['id' => $covoiturage->covoiturage_id]) }}" method="POST" id="formParticiper" class="flex justify-center items-center w-1/3">
                     @csrf
-                    <button type="submit"
+                    <button type="button" onclick="confirmerParticipation()"
                     class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
                         <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
                         PARTICIPER
@@ -154,5 +154,29 @@
             })
         </script>
     @endif
+
+    <script>
+
+        //Confirm alert
+        function confirmerParticipation() {
+            Swal.fire({
+                title: 'Êtes-vous sûr ?',
+                text: "Vous allez dépenser {{ $covoiturage->prix_personne }} crédits",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Participer',
+                cancelButtonText: 'Annuler',
+                reverseButtons: true,
+                customClass:{
+                        popup: 'custom-swal'
+                    }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formParticiper').submit();
+                }
+            });
+        }
+
+    </script>
 
 @endsection
