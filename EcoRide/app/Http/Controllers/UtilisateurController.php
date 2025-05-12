@@ -60,6 +60,12 @@ class UtilisateurController extends Authenticatable
 
         $voyagesHistory = $voyages->merge($participationVoyages);
 
+        $voyagesHistory->map(function ($voyage){
+            $participantID = json_decode($voyage->participants ?? '[]', true);
+            $voyage->participantUsers = Utilisateurs::whereIn('utilisateur_id', $participantID)->get();
+            return $voyage;
+        });
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,

@@ -56,3 +56,7 @@ Route::get('/rechercherCovoiturages', [CovoiturageController::class, 'rechercher
 Route::post('/covoiturage/{id}/participer', [CovoiturageController::class, 'participerCovoiturage'])->name('covoiturage.participer');
 
 Route::post('/covoiturage/{id}/quitter', [CovoiturageController::class, 'quitterCovoiturage'])->name('covoiturage.quitter');
+
+Route::post('/voyage/{id}/demarrer', [CovoiturageController::class, 'demarrerCovoiturage'])->name('covoiturage.demarrer');
+
+Route::post('/voyage/{id}/arreter', [CovoiturageController::class, 'arreterCovoiturage'])->name('covoiturage.arreter');

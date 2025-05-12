@@ -152,26 +152,41 @@
 
             <div id="sectionSaisirVoyage" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
-                <div class="flex flex-col border-2 border-green1 w-full h-100 rounded-3xl p-2">
+                <div class="flex flex-col border-2 border-green1 w-full h-120 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes voyages</p>
                     <div class="flex mt-5 gap-5 overflow-x-auto">
                         @forelse($voyages as $voyage)
-                            @if($voyage->statut === 'disponible')
+                            @if(in_array($voyage->statut, ['disponible', 'plein', 'en cours']))
                                 <div class="min-w-[300px] border-2 border-green1 rounded-3xl p-4 flex-shrink-0">
                                     <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
                                     <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
                                     <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
                                     <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
                                     <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele }}</p>
-                                    <div class="flex flex-row justify-center items-center gap-2 mt-5">
+                                    <p class="text-3xl font-second">Participants :
+                                        @forelse($voyage->participantUsers as $participant)
+                                            {{ $participant->pseudo }}@if(!$loop->last), @endif
+                                        @empty
+                                            Aucun
+                                        @endforelse
+                                    </p>
+                                    <p class="text-3xl font-second">Statut : {{ $voyage->statut ?? 'Aucun' }}</p>
+                                    <div class="flex flex-row justify-center items-center gap-2 mt-5 mb-1">
                                         <button type="button" onclick="annulerVoyage({{ $voyage->covoiturage_id }})"
                                         class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
                                             ANNULER
                                         </button>
-                                        <button type="button" 
-                                        class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
-                                            Démarrer
-                                        </button>
+                                        @if(in_array($voyage->statut, ['disponible', 'plein']))
+                                            <button type="button" onclick="demarrerVoyage({{ $voyage->covoiturage_id }})"
+                                            class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                                Démarrer
+                                            </button>
+                                        @elseif($voyage->statut === 'en cours')
+                                            <button type="button" onclick="arreterVoyage({{ $voyage->covoiturage_id }})"
+                                            class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                                Arrêter
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             @endif
@@ -675,6 +690,132 @@
                         Swal.fire({
                             title: 'Erreur !',
                             text: 'Erreur lors de la suppression',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
+
+        //Start a ride
+        function demarrerVoyage(id){
+            Swal.fire({
+                title: 'Démarrer ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Démarrer le voyage',
+                cancelButtonText: 'Retour',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}/demarrer`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage démarré, bonne route !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors du démarrage',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors du démarrage',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
+
+        //Stop a ride
+        function arreterVoyage(id){
+            Swal.fire({
+                title: 'Arrêter ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Arrêter le voyage',
+                cancelButtonText: 'Retour',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}/arreter`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage terminé !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors de l\'arrêt du voyage.',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors de l\'arrêt du voyage.',
                             icon: 'error',
                             showConfirmButton: true,
                             customClass:{

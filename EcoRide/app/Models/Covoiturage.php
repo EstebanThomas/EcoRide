@@ -53,4 +53,10 @@ class Covoiturage extends Model
         {
             return $this->belongsTo(Preferences::class, 'preferences_id');
         }
+
+        public function participantsList()
+        {
+            return $this->belongsToMany(Utilisateurs::class, 'utilisateurs', 'utilisateur_id')
+                ->whereIn('utilisateur_id', json_decode($this->participants ?? '[]', true));
+        }
 }

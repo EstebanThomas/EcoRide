@@ -157,7 +157,7 @@ class CovoiturageController extends Controller
         }
     }
 
-    //Delete a ride
+    //Cancel a ride
     public function annulerVoyage($voiture_id)
     {
         try {
@@ -166,7 +166,7 @@ class CovoiturageController extends Controller
             if ($voyage->utilisateur_id !== Auth::id()) {
                 return response()->json(['message' => 'Non autorisé.'], 403);
             }
-            if ($voyage->statut !== 'disponible') {
+            if (in_array($voyage->statut, ['annulé', 'terminé'])) {
                 return response()->json(['message' => 'Le voyage ne peut pas être annulé.'], 400);
             }
             $voyage->statut = 'annulé';
@@ -250,6 +250,11 @@ class CovoiturageController extends Controller
             if($covoiturage->statut = "plein"){
                 $covoiturage->statut = "disponible";
                 $covoiturage->save();
+
+                DB::table('utilisateurs')
+                    ->where('utilisateur_id', $user->utilisateur_id)
+                    ->increment('credits', $covoiturage->prix_personne);
+
                 return back()->with('successParticipation', 'Vous avez quitté ce covoiturage, il est maintenant disponible.');
             }
 
@@ -258,9 +263,46 @@ class CovoiturageController extends Controller
                 ->increment('credits', $covoiturage->prix_personne);
 
             return back()->with('successParticipation', 'Vous avez quitté ce covoiturage.');
-        } catch (\Exception $e){
-            Log::error('Erreur lors de l\'annulation de votre participation au covoiturage : '.$e->getMessage());
+        } catch (\Exception){
             return back()->with('errorParticipation', 'Une erreur est survenue lors de l\'annulation de votre participation. Veuillez réessayer.');
+        }
+    }
+
+    //Start a ride
+    public function demarrerCovoiturage($id)
+    {
+        try{
+            $covoiturage = Covoiturage::find($id);
+
+            $covoiturage->statut = "en cours";
+            $covoiturage->save();
+
+            return back()->with('successStart', 'Le voyage a débuté !');
+        } catch (\Exception){
+            return back()->with('errorStart', 'Une erreur est survenue lors du démarrage du voyage.');
+        }
+    }
+
+    //Stop a ride
+    public function arreterCovoiturage($id)
+    {
+        try{
+            $covoiturage = Covoiturage::find($id);
+
+            $covoiturage->statut = "terminé";
+            $covoiturage->save();
+
+            $participants = json_decode($covoiturage->participants ?? '[]', true);
+            $nombreParticipants = is_array($participants) ? count($participants) : 0;
+            $prixTotal = $covoiturage->prix_personne * $nombreParticipants;
+
+            $driver = $covoiturage->utilisateur;
+            $driver->credits += $prixTotal;
+            $driver->save();
+
+            return back()->with('successStop', 'Le voyage est terminé !');
+        } catch(\Exception){
+            return back()->with('errorStop', 'Une erreur est survenue lors de l\'arrêt du voyage.');
         }
     }
 }
