@@ -31,7 +31,6 @@ class CovoiturageController extends Controller
     public function showRideDetails($id){
         try{
             $covoiturage = Covoiturage::with('utilisateur', 'voiture', 'voiture.marque', 'utilisateur.preferences')
-            ->where('statut', 'disponible')
             ->where('covoiturage_id', $id)
             ->firstOrFail();
 
@@ -195,9 +194,14 @@ class CovoiturageController extends Controller
                 return back()->with('errorParticipation', 'Il n\'y a plus de places disponibles.');
             }
 
-            // Check if the user isn't already in the ride
-            if (in_array($user->utilisateur_id, $participants)){
-                return back()->with('errorParticipation', 'vous participez déjà à ce covoiturage.');
+            $errorDriver = DB::table('covoiturage')
+                ->where('date_depart', '>', now()) //Search in future rides
+                ->where('covoiturage_id', "=", $covoiturage->covoiturage_id) //On this ride
+                ->where('utilisateur_id', $user->utilisateur_id) //is the driver
+                ->exists();
+
+            if ($errorDriver) {
+                return back()->with('errorParticipation', 'Un conducteur ne peut pas participer à son propre trajet.');
             }
 
             if ($user->credits < $covoiturage->prix_personne){
@@ -214,7 +218,11 @@ class CovoiturageController extends Controller
                 ->where('utilisateur_id', $user->utilisateur_id)
                 ->decrement('credits', $covoiturage->prix_personne);
 
-            return back()->with('successParticipation', 'Vous avez rejoint ce covoiturage !');
+            if($covoiturage->nb_place <= 0){
+                $covoiturage->statut = "plein";
+                $covoiturage->save();
+            }
+            return redirect()->route('espaceUtilisateur')->with('successParticipation', 'Vous avez rejoint ce covoiturage !');
         } catch (\Exception $e){
             Log::error('Erreur lors de la participation au covoiturage : '.$e->getMessage());
             return back()->with('errorParticipation', 'Une erreur est survenue lors de la participation. Veuillez réessayer.');
@@ -238,6 +246,12 @@ class CovoiturageController extends Controller
             $covoiturage->participants = json_encode(array_values($participants));
             $covoiturage->nb_place += 1;
             $covoiturage->save();
+
+            if($covoiturage->statut = "plein"){
+                $covoiturage->statut = "disponible";
+                $covoiturage->save();
+                return back()->with('successParticipation', 'Vous avez quitté ce covoiturage, il est maintenant disponible.');
+            }
 
             DB::table('utilisateurs')
                 ->where('utilisateur_id', $user->utilisateur_id)

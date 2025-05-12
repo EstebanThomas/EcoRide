@@ -49,11 +49,23 @@ class UtilisateurController extends Authenticatable
             ->where('utilisateur_id', $utilisateur->utilisateur_id)
             ->get();
 
+        $allCovoiturages = Covoiturage::with(['voiture', 'utilisateur'])
+            ->where('date_depart', '>', now())
+            ->get();
+
+        $participationVoyages = $allCovoiturages->filter(function ($voyage) use ($utilisateur){
+            $participants = json_decode($voyage->participants, true);
+            return is_array($participants) && in_array($utilisateur->utilisateur_id, $participants);
+        });
+
+        $voyagesHistory = $voyages->merge($participationVoyages);
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
             'voitures' => $voitures,
             'voyages' => $voyages,
+            'voyagesHistory' => $voyagesHistory,
             'utilisateur' => $utilisateur,
         ]);
     }

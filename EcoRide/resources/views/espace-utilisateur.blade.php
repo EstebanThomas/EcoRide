@@ -162,7 +162,7 @@
                                     <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
                                     <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
                                     <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
-                                    <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->modele }}</p>
+                                    <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele }}</p>
                                     <div class="flex flex-row justify-center items-center gap-2 mt-5">
                                         <button type="button" onclick="annulerVoyage({{ $voyage->covoiturage_id }})"
                                         class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
@@ -173,7 +173,6 @@
                                             Démarrer
                                         </button>
                                     </div>
-
                                 </div>
                             @endif
                         @empty
@@ -281,12 +280,18 @@
             <div id="sectionHistorique" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
                 <p class="text-4xl font-second text-center mb-5">Historique</p>
                 <div class="flex flex-row w-full gap-5 overflow-x-auto">
-                    @forelse($voyages as $voyage)
+                    @forelse($voyagesHistory as $voyage)
                         <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
-                            <h3 class="text-3xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
-                            <p class="text-2xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
-                            <p class="text-2xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
-                            <p class="text-2xl font-second">Voiture : {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
+                            <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                            <p class="text-3xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                            <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
+                            <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
+                            <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
+                            <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
+                                class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
+                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                <p class="text-3xl font-second">Détails</p>
+                            </button>
                         </div>
                     @empty
                         <p class="text-5xl font-second text-center">Aucun voyage trouvé.</p>
@@ -680,7 +685,6 @@
                 }
             })
         }
-
     </script>
 
 @endsection
