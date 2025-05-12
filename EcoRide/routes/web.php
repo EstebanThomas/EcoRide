@@ -29,6 +29,14 @@ Route::get('/politiqueConfidentialite', function () {
     return view('politique-confidentialite');
 });
 
+Route::get('/politiqueCookies', function () {
+    return view('politique-cookies');
+});
+
+Route::get('/gererCookies', function () {
+    return view('gerer-cookies');
+});
+
 Route::get('/home', [UtilisateurController::class, 'showHome'])->name('home');
 
 Route::get('/connexion', [UtilisateurController::class, 'showConnexion'])->name('page.connexion');
