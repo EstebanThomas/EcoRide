@@ -21,6 +21,14 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
+Route::get('/mentionsLegales', function () {
+    return view('mentions-legales');
+});
+
+Route::get('/politiqueConfidentialite', function () {
+    return view('politique-confidentialite');
+});
+
 Route::get('/home', [UtilisateurController::class, 'showHome'])->name('home');
 
 Route::get('/connexion', [UtilisateurController::class, 'showConnexion'])->name('page.connexion');

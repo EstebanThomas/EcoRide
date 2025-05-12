@@ -297,7 +297,7 @@
                 <div class="flex flex-row w-full gap-5 overflow-x-auto">
                     @forelse($voyagesHistory as $voyage)
                         <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
-                            <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                            <h3 class="text-4xl font-second text-green1 text-shadow-lg">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
                             <p class="text-3xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
                             <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
                             <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
