@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VoitureController;
 use App\Http\Controllers\PreferencesController;
 use App\Http\Controllers\CovoiturageController;
+use App\Http\Controllers\CookieController;
 
 Route::get('/', function () {
     return view('home');
@@ -31,11 +32,13 @@ Route::get('/politiqueConfidentialite', function () {
 
 Route::get('/politiqueCookies', function () {
     return view('politique-cookies');
-});
+})->name('politique.cookies');
 
 Route::get('/gererCookies', function () {
     return view('gerer-cookies');
-});
+})->name('gerer.cookies');
+
+Route::post('/cookies/prefs', [CookieController::class, 'store'])->name('cookies.store');
 
 Route::get('/home', [UtilisateurController::class, 'showHome'])->name('home');
 

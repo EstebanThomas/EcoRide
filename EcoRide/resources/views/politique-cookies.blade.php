@@ -42,7 +42,7 @@
             </p>
         </div>
 
-        <div class="flex flex-col justify-center items-center gap-2">                                                       <!--GERER LES COOKIE NEW PAGE + BANDERAU REQUIEREMENTS-->
+        <div class="flex flex-col justify-center items-center gap-2">
             <h1 class="font-second text-5xl text-green1 uppercase text-shadow-lg">
                 Consentement
             </h1>

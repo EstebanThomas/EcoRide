@@ -43,5 +43,17 @@
                 });
             });
         });
+
+        function setCookiePrefs(prefs) {
+            localStorage.setItem('cookiePrefs', JSON.stringify(prefs));
+            fetch("{{ route('cookies.store') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prefs })
+            });
+        }
     </script>
 @endsection
