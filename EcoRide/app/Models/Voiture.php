@@ -12,7 +12,7 @@ class Voiture extends Model
 
     use HasFactory;
 
-    protected $table = 'voiture'; //Name of the table into mySQL
+    protected $table = 'voiture'; //Name of the table
 
     protected $primaryKey = 'voiture_id'; //Name Of the Primary Key
 
@@ -30,5 +30,17 @@ class Voiture extends Model
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateurs::class, 'utilisateur_id');
+    }
+
+    //Get foreign key 'marque_id'
+    public function marque()
+    {
+        return $this->belongsTo(Marque::class, 'marque_id');
+    }
+
+    //Get foreign key 'marque_id'
+    public function covoiturages()
+    {
+        return $this->hasMany(Covoiturage::class, 'voiture_id');
     }
 }

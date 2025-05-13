@@ -64,20 +64,25 @@
                     <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
                 @endif
 
-                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
+                <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">MODIFIER</button>
 
             </form>
 
             <div class="flex flex-row justify-center items-center gap-10">
                 <form action="{{ route('utilisateur.deconnexion') }}" method="POST">
                     @csrf
-                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">DECONNEXION</button>
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">DECONNEXION</button>
                 </form>
 
 
                 <div>
                     <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 active:border-green1 rounded-3xl p-3 hover:border-green3"></button>
                 </div>
+            </div>
+
+            <div>
+                <p class="text-4xl font-second text-black flex flex-row justify-center items-center">Crédits : {{$utilisateur->credits}} 
+                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10"></p>
             </div>
 
         </div>
@@ -90,31 +95,247 @@
             <button id="sectionPreferences" onclick="ShowSection('sectionPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Préférences
             </button>
-            <button id="sectionPropresPreferences" onclick="ShowSection('sectionPropresPreferences')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
-            Propres préférences
-            </button>
             <button id="sectionSaisirVoyage" onclick="ShowSection('sectionSaisirVoyage')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
-            Saisir un voyage
+            Voyages
             </button>
             <button id="sectionHistorique" onclick="ShowSection('sectionHistorique')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Historique
             </button>
-            <button id="start/stop" class="text-4xl tracking-wide text-center font-second border-2 border-green1 hover:bg-green2"></button>
         </div>
 
         <!--Sections chauffeur-->
         <div id="sections" class="hidden">
 
-            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-250 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionPreferences" class="section flex-col justify-center w-200 xl:w-300 p-5 mt-5 mb-1 gap-4 bg-green4 rounded-3xl hidden">
+                <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('preferences.ajouter') }}">
+                    @csrf
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="fumeur" class="font-second text-3xl">FUMEURS :</label>
+                        <input type="checkbox" id="fumeur" name="fumeur"
+                        {{ old('fumeur', $preferences->fumeur ?? false) ? 'checked' : '' }}
+                        class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
 
-                <div class="flex flex-col border-2 border-green1 w-full h-150 rounded-3xl p-2">
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="animaux" class="font-second text-3xl">ANIMAUX :</label>
+                        <input type="checkbox" id="animaux" name="animaux"
+                        {{ old('animaux', $preferences->animaux ?? false) ? 'checked' : '' }}
+                        class="text-green1 accent-green1 w-8 h-8 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex flex-col justify-center items-center gap-2">
+                        <label for="propres_preferences" class="font-second text-3xl">PROPRES PREFERENCES :</label>
+                        <input type="text" id="propres_preferences" name="propres_preferences" maxLength="100"
+                        placeholder="{{ $preferences->propres_preferences ?? "nombre de valises, musique, climatisation ..."}}"
+                        value="{{ old('propres_preferences', $preferences->propres_preferences ?? '') }}"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second w-190 xl:w-250 text-4xl xl:text-3xl placeholder-gray-700 p-1 items-center"/>
+                    </div>
+
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">MODIFIER</button>
+                </form>
+
+                @if (session('successPreferences'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            Swal.fire({
+                                title: 'Préférences modifiées !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            });
+                        })
+                    </script>
+                @endif
+            </div>
+
+            <div id="sectionSaisirVoyage" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+
+                <div class="flex flex-col border-2 border-green1 w-full h-120 rounded-3xl p-2">
+                    <p class="flex justify-center items-center font-second text-3xl">Mes voyages</p>
+                    <div class="flex mt-5 gap-5 overflow-x-auto">
+                        @forelse($voyages as $voyage)
+                            @if(in_array($voyage->statut, ['disponible', 'plein', 'en cours']))
+                                <div class="min-w-[300px] border-2 border-green1 rounded-3xl p-4 flex-shrink-0">
+                                    <h3 class="text-4xl font-second text-green1">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                                    <p class="text-3xl font-second mt-2">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                                    <p class="text-3xl font-second">Places : {{ $voyage->nb_place }}</p>
+                                    <p class="text-3xl font-second">Prix par personne : {{ $voyage->prix_personne }}</p>
+                                    <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele }}</p>
+                                    <p class="text-3xl font-second">Participants :
+                                        @forelse($voyage->participantUsers as $participant)
+                                            {{ $participant->pseudo }}@if(!$loop->last), @endif
+                                        @empty
+                                            Aucun
+                                        @endforelse
+                                    </p>
+                                    <p class="text-3xl font-second">Statut : {{ $voyage->statut ?? 'Aucun' }}</p>
+                                    <div class="flex flex-row justify-center items-center gap-2 mt-5 mb-1">
+                                        <button type="button" onclick="annulerVoyage({{ $voyage->covoiturage_id }})"
+                                        class="uppercase text-4xl font-second tracking-wide border-2 border-black bg-white rounded-3xl p-3 hover:bg-red-500">
+                                            ANNULER
+                                        </button>
+                                        @if(in_array($voyage->statut, ['disponible', 'plein']))
+                                            <button type="button" onclick="demarrerVoyage({{ $voyage->covoiturage_id }})"
+                                            class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                                Démarrer
+                                            </button>
+                                        @elseif($voyage->statut === 'en cours')
+                                            <button type="button" onclick="arreterVoyage({{ $voyage->covoiturage_id }})"
+                                            class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
+                                                Arrêter
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        @empty
+                            <p class="text-black font-second text-4xl">Aucun voyage trouvé.</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('covoiturage.ajouter') }}">
+
+                    @csrf
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="date_depart" class="font-second text-3xl tracking-wide">Date de départ :</label>
+                        <input type="date" id="date_depart" name="date_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="heure_depart" class="font-second text-3xl tracking-wide">Heure de départ :</label>
+                        <input type="time" id="heure_depart" name="heure_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="lieu_depart" class="font-second text-3xl tracking-wide">Lieu de départ :</label>
+                        <input type="text" id="lieu_depart" name="lieu_depart" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="date_arrivee" class="font-second text-3xl tracking-wide">Date d'arrivée :</label>
+                        <input type="date" id="date_arrivee" name="date_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="heure_arrivee" class="font-second text-3xl tracking-wide">Heure d'arrivée :</label>
+                        <input type="time" id="heure_arrivee" name="heure_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="lieu_arrivee" class="font-second text-3xl tracking-wide">Lieu d'arrivée :</label>
+                        <input type="text" id="lieu_arrivee" name="lieu_arrivee" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+                    
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="nb_place" class="font-second text-3xl tracking-wide">Nombre de places :</label>
+                        <input type="number" id="nb_place" name="nb_place" required max="7" min="1" placeholder="1" value="1"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="prix_personne" class="font-second text-3xl tracking-wide">Prix par personne :</label>
+                        <input type="number" id="prix_personne" name="prix_personne" required max="100" min="0"
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-3xl placeholder-black p-1 items-center"/>
+                        <div class="flex flex-col xl:flex-row justify-center items-center xl:gap-5">
+                            <p class="flex flex-row font-second text-4xl xl:text-3xl gap-2">
+                                Total : 
+                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> 2.00 </span>
+                                <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
+                            </p>
+                            <p class="flex font-second text-3xl xl:text-2xl">
+                                (La plateforme prend 2 crédits de frais de service.)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="select_voiture" class="font-second text-3xl">Voiture :</label>
+                        <select type="text" id="select_voiture" name="select_voiture" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-black text-4xl xl:text-3xl placeholder-black p-1 items-center">
+                            <option value="" disabled selected>Selectionnez une de vos voitures</option>
+                            @foreach($voitures as $voiture)
+                                <option class="text-black font-second text-4xl" value="{{ $voiture->voiture_id }}">{{$voiture->modele}} = {{$voiture->immatriculation}}</option> <!--The value is voiture_id the others are for display-->
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2">AJOUTER UN VOYAGE</button>
+
+                </form>
+
+                <!--Message success ADD ride-->
+                @if (session('successAddRide'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            Swal.fire({
+                                title: 'Voyage ajouté !',
+                                text: 'Votre voyage a été ajouté avec succès.',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            });
+                        })
+                    </script>
+                @endif
+
+            </div>
+
+            <div id="sectionHistorique" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+                <p class="text-4xl font-second text-center mb-5">Historique</p>
+                <div class="flex flex-row w-full gap-5 overflow-x-auto">
+                    @forelse($voyagesHistory as $voyage)
+                        <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
+                            <h3 class="text-4xl font-second text-green1 text-shadow-lg">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                            <p class="text-3xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                            <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
+                            <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
+                            <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
+                            <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
+                                class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
+                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                <p class="text-3xl font-second">Détails</p>
+                            </button>
+                        </div>
+                    @empty
+                        <p class="text-5xl font-second text-center">Aucun voyage trouvé.</p>
+                    @endforelse
+                </div>
+
+            </div>
+
+            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+
+                <div class="flex flex-col border-2 border-green1 w-full h-160 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
                     <div id="vehiculeCards" class="flex mt-5 gap-5 overflow-x-auto"></div>
                 </div>
 
-                <form class="flex flex-col justify-center items-center gap-5 mt-5 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
+                <form class="flex flex-col justify-center items-center gap-5 mt-10 ml-5 mr-5" method="POST" action="{{ route('vehicule.ajouter') }}">
 
                     @csrf
+
+                    <div class="flex justify-center items-center gap-2">
+                        <label for="marque" class="font-second text-3xl">MARQUE :</label>
+                        <select type="text" id="marque" name="marque" required
+                        class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-black text-4xl xl:text-3xl placeholder-black p-1 items-center">
+                            <option value="" disabled selected>Selectionnez une marque</option>
+                            @foreach($marques as $marque)
+                                <option value="{{ $marque->marque_id }}">{{ $marque->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="flex justify-center items-center gap-2">
                         <label for="modele" class="font-second text-3xl">MODELE :</label>
@@ -194,21 +415,6 @@
             
             </div>
 
-            <div id="sectionPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Preferences</p>
-            </div>
-
-            <div id="sectionPropresPreferences" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Propres Preferences</p>
-            </div>
-
-            <div id="sectionSaisirVoyage" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Saisir un voyage</p>
-            </div>
-
-            <div id="sectionHistorique" class="section flex-row justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-            <p>Historique</p>
-            </div>
         </div>
 
     </div>
@@ -277,18 +483,20 @@
 
         //Show/Hide sections
         function ShowSection(id){
-            const sections = document.querySelectorAll('.section');
-            const buttons = sectionChauffeur.querySelectorAll('button');
-            sections.forEach(section => {
+            const allSections = document.querySelectorAll('.section');
+            
+            allSections.forEach(section => {
                 if (section.id === id){
-                    section.classList.remove('hidden')
-                    section.classList.add('flex')
+                    section.classList.remove('hidden');
+                    section.classList.add('flex');
                 }
                 else if (!section.classList.contains('hidden')){
-                    section.classList.add('hidden')
-                    section.classList.remove('flex')
+                    section.classList.add('hidden');
+                    section.classList.remove('flex');              
                 }
             })
+
+            const buttons = sectionChauffeur.querySelectorAll('button');
 
             buttons.forEach(button => {
                 if (button.id === id){
@@ -331,13 +539,14 @@
             vehicules.forEach(vehicule => {
 
                 const card = document.createElement('div');
-                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-115 flex-shrink-0";
+                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-140 flex-shrink-0";
                     card.innerHTML = `
                     <h2 class="flex justify-center text-4xl font-second mb-2">${vehicule.modele}</h2>
-                    <p class="text-3xl font-second">Immatriculation :<br>${vehicule.immatriculation}</p>
-                    <p class="text-3xl font-second">Couleur :<br>${vehicule.couleur}</p>
-                    <p class="text-3xl font-second">Énergie électrique :<br>${vehicule.energie}</p>
-                    <p class="text-3xl font-second">Date 1ère immatriculation :<br>${vehicule.date_premiere_immatriculation}</p>
+                    <p class="text-3xl font-second">Marque :<br><p class="text-4xl font-second tracking-wide">${vehicule.marque.libelle}</p></p>
+                    <p class="text-3xl font-second">Immatriculation :<br><p class="text-4xl font-second tracking-wide">${vehicule.immatriculation}</p></p>
+                    <p class="text-3xl font-second">Couleur :<br><p class="text-4xl font-second tracking-wide">${vehicule.couleur}</p></p>
+                    <p class="text-3xl font-second">Énergie électrique :<br><p class="text-4xl font-second tracking-wide">${vehicule.energie}</p></p>
+                    <p class="text-3xl font-second">Date 1ère immatriculation :<br><p class="text-4xl font-second tracking-wide">${vehicule.date_premiere_immatriculation}</p></p>
                     <button type="button" onclick="supprimerVehicule(${vehicule.voiture_id})" 
                     class="hover:bg-green2 active:bg-green1 block mx-auto mt-5 text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3">
                     SUPPRIMER
@@ -412,19 +621,211 @@
             })
         }
 
-        //Start/Stop button
-        const startStop = document.getElementById("start/stop");
-        startStop.textContent = 'Démarrer';
+        //Update price on Take a Ride
+        const prixPersonne = document.getElementById("prix_personne");
+        const prixTotal = document.getElementById("prix_total");
+        const nbPlace = document.getElementById("nb_place");
 
-        startStop.addEventListener('click', function() {
-            if (startStop.innerText === "Démarrer") {
-                startStop.textContent = 'Arrêter';
-            }
-            else{
-                startStop.textContent = 'Démarrer';
-            }
-        });
+        function updatePrice(){
+            const prix = parseInt(prixPersonne.value) || 0;
+            const places = parseInt(nbPlace.value) || 0;
 
+            const total = (prix * places) + 2; // Adding 2 credits for service fees
+            prixTotal.textContent = total.toFixed(2);
+        }
+
+        prixPersonne.addEventListener('input', updatePrice);
+        nbPlace.addEventListener('input', updatePrice);
+
+
+        //Delete ride
+        function annulerVoyage(id){
+            Swal.fire({
+                title: 'Annuler ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Annuler le voyage',
+                cancelButtonText: 'Retour',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage annulé !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors de la suppression',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors de la suppression',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
+
+        //Start a ride
+        function demarrerVoyage(id){
+            Swal.fire({
+                title: 'Démarrer ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Démarrer le voyage',
+                cancelButtonText: 'Retour',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}/demarrer`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage démarré, bonne route !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors du démarrage',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors du démarrage',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
+
+        //Stop a ride
+        function arreterVoyage(id){
+            Swal.fire({
+                title: 'Arrêter ce voyage ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Arrêter le voyage',
+                cancelButtonText: 'Retour',
+                customClass: {
+                    popup: 'custom-swal'
+                }
+            }).then((result) => {
+                if(result.isConfirmed){
+                    fetch(`/voyage/${id}/arreter`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept' : 'application/json'
+                        }
+                    })
+
+                    .then(res => {
+                        if(res.ok){
+                            Swal.fire({
+                                title: 'Voyage terminé !',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                customClass:{
+                                    popup: 'custom-swal'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+                                Swal.fire({
+                                    title: 'Erreur !',
+                                    text: 'Erreur lors de l\'arrêt du voyage.',
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'custom-swal'
+                                    }
+                                });
+                        }
+                    })
+
+                    .catch(error => 
+                        Swal.fire({
+                            title: 'Erreur !',
+                            text: 'Erreur lors de l\'arrêt du voyage.',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            customClass:{
+                                popup: 'custom-swal'
+                            }
+                        })
+                    );
+                }
+            })
+        }
     </script>
 
 @endsection

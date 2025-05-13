@@ -1,6 +1,9 @@
 <footer>
-    <div class="bg-green3 w-full h-20 xl:h-10 flex justify-center gap-60">
-        <button class="font-second text-4xl xl:text-2xl">EcoRide@mail.fr</button>
-        <button class="font-second text-4xl xl:text-2xl">Mention légales</button>
+    <div class="bg-green1 w-full h-60 xl:h-10 flex xl:flex-row flex-col justify-center items-center xl:gap-25 gap-2">
+        <a class="font-second text-4xl xl:text-2xl hover:underline hover:decoration-green4 active:text-green4 active:decoration-black" href="/contact">ecoride.et@gmail.com</a>
+        <a class="font-second text-4xl xl:text-2xl hover:underline hover:decoration-green4 active:text-green4 active:decoration-black" href="/mentionsLegales">Mentions légales</a>
+        <a class="font-second text-4xl xl:text-2xl hover:underline hover:decoration-green4 active:text-green4 active:decoration-black" href="/politiqueConfidentialite">Politique de confidentialité</a>
+        <a class="font-second text-4xl xl:text-2xl hover:underline hover:decoration-green4 active:text-green4 active:decoration-black" href="/politiqueCookies">Politique des cookies</a>
+        <a class="font-second text-4xl xl:text-2xl hover:underline hover:decoration-green4 active:text-green4 active:decoration-black" href="/gererCookies">Gérer mes cookies</a>
     </div>
 </footer>

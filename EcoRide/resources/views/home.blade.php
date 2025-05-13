@@ -3,70 +3,50 @@
 
 @section('content')
 
+    @php
+        $today = now()->startOfDay()->format('Y-m-d');
+    @endphp
+
     <!--Form search route-->
     <div class="mt-75 xl:mt-0">
 
-        <form action="/Recherche-covoiturage" method="GET" class="flex flex-col mt-8">
+        <form method="GET" action="{{ route('covoiturage.rechercher') }}" class="flex flex-col mt-8">
 
             <div class="flex flex-row w-full justify-center gap-4">
                 <div class="relative">
-                    <!--<label for="depart">Départ</label>-->
-                    <input
-                        type="text"
-                        id="depart"
-                        name="depart"
-                        placeholder="Départ"
-                        required
-                        class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl uppercase text-center placeholder-black"
-                    />
+                    <!--<label for="lieu_depart">Départ</label>-->
+                    <input type="text" id="lieu_depart" name="lieu_depart" placeholder="Départ" required
+                    class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl uppercase text-center placeholder-gray-500"/>
                     <img src="{{ asset('images/Depart.svg') }}" alt="Logo Depart" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 </div>
                 
                 <div class="relative">
-                    <!--<label for="destination">Destination</label>-->
-                    <input
-                        type="text"
-                        id="destination"
-                        name="destination"
-                        placeholder="Destination"
-                        required
-                        class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl uppercase text-center placeholder-black"
-                    />
+                    <!--<label for="lieu_arrivee">Destination</label>-->
+                    <input type="text" id="lieu_arrivee" name="lieu_arrivee" placeholder="Destination" required
+                    class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 font-second text-4xl uppercase text-center placeholder-gray-500"/>
                     <img src="{{ asset('images/Arrivee.svg') }}" alt="Logo Destination" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 </div>
             </div>
 
             <div class="flex flex-row w-full justify-center gap-4">
                 <div class="relative mt-4">
-                    <!--<label for="date">Date</label>-->
-                    <input
-                        type="text"
-                        id="date"
-                        name="date"
-                        placeholder="Date"
-                        required
-                        class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl uppercase text-center placeholder-black"
-                    />
+                    <!--<label for="date_depart">Date</label>-->
+                    <input type="date" id="date_depart" name="date_depart" value="{{ $today }}" required
+                    class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 font-second text-4xl uppercase text-center placeholder-black flex justify-center items-center"/>
                     <img src="{{ asset('images/Date.svg') }}" alt="Logo Date" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 </div>
 
                 <div class="relative mt-4">
-                    <!--<label for="passager">Passager</label>-->
-                    <input
-                        type="text"
-                        id="passager"
-                        name="passager"
-                        placeholder="Passager"
-                        required
-                        class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl uppercase text-center placeholder-black"
-                    />
+                    <!--<label for="nb_place">Passager</label>-->
+                    <input type="number" id="nb_place" name="nb_place" value="1" required min="1" max="7"
+                    class="bg-green4 border-2 border-green1 rounded-3xl pl-8 pr-2 w-sm h-18 font-second text-4xl uppercase text-center placeholder-black"/>
                     <img src="{{ asset('images/NombreDePassager.svg') }}" alt="Logo nombre de passager" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 </div>
             </div>
 
             <div class="flex justify-center mt-4">
                 <button
-                class="relative bg-green4 border-2 border-green1 rounded-3xl w-sm h-18 font-second text-4xl uppercase text-center" type="submit">
+                class="relative bg-green4 border-2 border-green1 rounded-3xl w-sm h-18 font-second text-4xl uppercase text-center hover:border-black active:border-green1" type="submit">
                 <img src="{{ asset('images/Recherche.svg') }}" alt="Logo recherche" class="w-15 h-15 absolute top-1/2 -translate-y-1/2 pl-2">
                 Chercher
                 </button>

@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Marque;
 
 class VoitureController extends Controller
 {
@@ -21,6 +22,7 @@ class VoitureController extends Controller
             'datePremiereImmatriculation' => 'required|date|before_or_equal:today|after_or_equal:1950-01-01',
             'couleur' => 'required|max:20|regex:/^[A-Za-z0-9\s\-]+$/',
             'energie' => 'nullable',
+            'marque' => 'required|exists:marque,marque_id',
         ]);
 
         $energie = $request->has('energie') ? 'Oui' : 'Non';
@@ -35,8 +37,9 @@ class VoitureController extends Controller
                 'couleur' => $validated['couleur'],
                 'energie'=> $energie,
                 'utilisateur_id' => Auth::id(),
+                'marque_id' => $validated['marque'],
             ]);
-        return redirect()->route('espaceUtilisateur')->with('successAdd', 'Véhicule ajouté !');
+            return redirect()->route('espaceUtilisateur')->with('successAdd', 'Véhicule ajouté !');
         }
         catch (\Exception $e){
             Log::error('Erreur lors de l\'ajout du véhicule : '.$e->getMessage());
@@ -48,7 +51,9 @@ class VoitureController extends Controller
     //Get user's cars
     public function afficherVehicules()
     {
-        $vehicules = Voiture::where('utilisateur_id', Auth::id())->get();
+        $vehicules = Voiture::with('marque')
+            ->where('utilisateur_id', Auth::id())
+            ->get();
         return response()->json($vehicules);
     }
 

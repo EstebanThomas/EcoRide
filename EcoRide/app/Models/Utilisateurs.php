@@ -12,7 +12,7 @@ class Utilisateurs extends Authenticatable
 
     use HasFactory;
 
-    protected $table = 'utilisateurs';//Name of the table into mySQL
+    protected $table = 'utilisateurs';//Name of the table
 
     protected $tableVoiture = 'voiture';
 
@@ -33,5 +33,26 @@ class Utilisateurs extends Authenticatable
         'datePremiereImmatriculation',
         'couleur',
         'energie',
+        'credits',
     ];
+
+    public function covoiturages()
+    {
+        return $this->hasMany(Covoiturage::class, 'utilisateur_id');
+    }
+
+    public function voitures()
+    {
+        return $this->hasMany(Voiture::class, 'utilisateur_id');
+    }
+
+    public function preferences()
+    {
+        return $this->hasOne(Preferences::class, 'utilisateur_id');
+    }
+
+    public function avis()
+    {
+        return $this->hasMany(Avis::class, 'utilisateur_id');
+    }
 }

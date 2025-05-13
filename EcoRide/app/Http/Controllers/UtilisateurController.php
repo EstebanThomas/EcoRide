@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Utilisateurs;
 use App\Models\Voiture;
+use App\Models\Marque;
+use App\Models\Preferences;
+use App\Models\Covoiturage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,7 +36,44 @@ class UtilisateurController extends Authenticatable
 
     public function showProfile()
     {
-        return view('espace-utilisateur');
+        //Get preferences for placeholders
+        $preferences = Preferences::where('utilisateur_id', Auth::id())->first();
+
+        $marques = Marque::all();
+
+        $voitures = Voiture::where('utilisateur_id', Auth::id())->get();
+
+        $utilisateur = Auth::user();
+
+        $voyages = Covoiturage::with('voiture')
+            ->where('utilisateur_id', $utilisateur->utilisateur_id)
+            ->get();
+
+        $allCovoiturages = Covoiturage::with(['voiture', 'utilisateur'])
+            ->where('date_depart', '>', now())
+            ->get();
+
+        $participationVoyages = $allCovoiturages->filter(function ($voyage) use ($utilisateur){
+            $participants = json_decode($voyage->participants, true);
+            return is_array($participants) && in_array($utilisateur->utilisateur_id, $participants);
+        });
+
+        $voyagesHistory = $voyages->merge($participationVoyages);
+
+        $voyagesHistory->map(function ($voyage){
+            $participantID = json_decode($voyage->participants ?? '[]', true);
+            $voyage->participantUsers = Utilisateurs::whereIn('utilisateur_id', $participantID)->get();
+            return $voyage;
+        });
+
+        return view('/espace-utilisateur', [
+            'preferences' => $preferences,
+            'marques' => $marques,
+            'voitures' => $voitures,
+            'voyages' => $voyages,
+            'voyagesHistory' => $voyagesHistory,
+            'utilisateur' => $utilisateur,
+        ]);
     }
 
     //createAccount Form
@@ -50,7 +90,8 @@ class UtilisateurController extends Authenticatable
         $user = Utilisateurs::create([
             'pseudo'=> $validated['pseudo'],
             'email' => $validated['mail'],
-            'password' => Hash::make($validated['password'])
+            'password' => Hash::make($validated['password']),
+            'credits' => 20
         ]);
 
         Auth::login($user);
@@ -102,7 +143,7 @@ class UtilisateurController extends Authenticatable
             'prenom' => 'string|max:50|nullable',
             'telephone' => 'string|regex:/^\d{10}$/|nullable',
             'adresse' => 'string|max:50|nullable',
-            'date_naissance' => 'date|before:today|before:-18 years|nullable',
+            'date_naissance' => 'date|before:today|before:-18 years|nullable|after_or_equal:1920-01-01',
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048|nullable',
         ],[
             'photo.max' => 'La taille de l\'image ne doit pas dépasser 2 Mo.'
