@@ -17,6 +17,30 @@
             onclick="window.location.href='/espace-utilisateur'">
             Accéder au profil<br>{{ Auth::user()->pseudo }}
             </button>
+
+            @php
+                $role = Auth::user()->role_id;
+            @endphp
+
+            @if($role === 1)            <!--BUTTON ADMINISTRATION-->
+                <form action="{{ route('espaceAdministrateur') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                    class="absolute leading-6 top-3/4 left-8/9 -translate-x-1/2 uppercase border-2 border-black text-2xl font-second bg-white hover:bg-gray-200 active:bg-white rounded-3xl p-1">
+                    ADMINISTRATION
+                    </button>
+                </form>
+            @elseif($role === 2)        <!--BUTTON EMPLOYEES-->
+                <form action="{{ route('espaceEmploye') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                    class="absolute leading-6 top-3/4 left-8/9 -translate-x-1/2 uppercase border-2 border-black text-2xl font-second bg-white hover:bg-gray-200 active:bg-white rounded-3xl p-1">
+                    Employés
+                    </button>
+                </form>
+            @endif
+
+        
         @endAuth
 
         <div class="bg-green4 w-full h-[35px]"></div>
@@ -43,6 +67,28 @@
             onclick="window.location.href='/espace-utilisateur'">
             Accéder au profil<br>{{ Auth::user()->pseudo }}
             </button>
+
+            @php
+                $role = Auth::user()->role_id;
+            @endphp
+
+            @if($role === 1)            <!--BUTTON ADMINISTRATION-->
+                <form action="{{ route('espaceAdministrateur') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                    class="absolute leading-8 top-[140px] left-1/6 -translate-x-1/2 whitespace-nowrap uppercase border-2 border-black text-4xl font-second bg-white hover:bg-gray-200 active:bg-white rounded-3xl p-1">
+                    ADMINISTRATION
+                    </button>
+                </form>
+            @elseif($role === 2)        <!--BUTTON EMPLOYEES-->
+                <form action="{{ route('espaceEmploye') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                    class="absolute leading-8 top-[140px] left-1/6 -translate-x-1/2 whitespace-nowrap uppercase border-2 border-black text-4xl font-second bg-white hover:bg-gray-200 active:bg-white rounded-3xl p-1">
+                    Employés
+                    </button>
+                </form>
+            @endif
         @endAuth
 
         <div class="bg-green4 w-full h-[20px]"></div>

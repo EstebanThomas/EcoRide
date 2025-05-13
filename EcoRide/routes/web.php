@@ -80,3 +80,9 @@ Route::post('/voyage/{id}/arreter', [CovoiturageController::class, 'arreterCovoi
 Route::get('/contact', [ContactController::class, 'showContact'])->name('contact.form');
 
 Route::post('/contact', [ContactController::class, 'sendEmail'])->name('contact.send');
+
+Route::post('/espace-administrateur', [UtilisateurController::class, 'showAdmin'])->name('espaceAdministrateur');
+
+Route::post('/espace-employe', [UtilisateurController::class, 'showEmploye'])->name('espaceEmploye');
+
+Route::post('/creation-employe', [UtilisateurController::class, 'createAccountEmploye'])->name('employe.creation');

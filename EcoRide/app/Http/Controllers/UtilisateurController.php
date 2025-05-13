@@ -91,7 +91,7 @@ class UtilisateurController extends Authenticatable
             'pseudo'=> $validated['pseudo'],
             'email' => $validated['mail'],
             'password' => Hash::make($validated['password']),
-            'credits' => 20
+            'credits' => 20,
         ]);
 
         Auth::login($user);
@@ -114,6 +114,16 @@ class UtilisateurController extends Authenticatable
 
         if (Auth::attempt($user)){
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            if($user->role_id === 1){
+                $request->session()->flash('redirect_admin', true);
+                return redirect()->route('home');
+            } elseif ($user->role_id === 2){
+                $request->session()->flash('redirect_employe', true);
+                return redirect()->route('home');
+            }
             return redirect()->route('espaceUtilisateur');
         }
         
@@ -203,5 +213,40 @@ class UtilisateurController extends Authenticatable
         ]);
 
         return redirect()->route('espaceUtilisateur');
+    }
+
+    //Admin view
+    public function showAdmin(){
+        return view('espace-administrateur');
+    }
+
+    //Employee view
+    public function showEmploye(){
+        return view('espace-employe');
+    }
+
+    //Creation account employe
+    public function createAccountEmploye(Request $request){
+        try{
+                $validated = $request->validate([
+                'pseudo' => 'required|max:20',
+                'mail' => 'required|email|unique:utilisateurs,email',
+                'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
+            ]);
+            $user = Utilisateurs::create([
+                'pseudo'=> $validated['pseudo'],
+                'email' => $validated['mail'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => 2,
+            ]);
+
+            return view('espace-administrateur', [
+                'successCreateAccount' => 'Compte employé créé !'
+            ]);
+        } catch (\Exception $e){
+            return view('espace-administrateur', [
+                'errorCreateAccount' => 'Erreur lors de la création du compte : ' . $e->getMessage()
+            ]);
+        }
     }
 }

@@ -84,4 +84,23 @@
         </div>
     </div>
 
+    <!-- Redirect ADMIN -->
+    @if(session('redirect_admin'))
+        <form id="redirectAdminForm" action="{{ route('espaceAdministrateur') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+        <script>
+            document.getElementById('redirectAdminForm').submit();
+        </script>
+    @endif
+
+    <!-- Redirect EMPLOYEE -->
+    @if(session('redirect_employe'))
+        <form id="redirectEmployeForm" action="{{ route('espaceEmploye') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+        <script>
+            document.getElementById('redirectEmployeForm').submit();
+        </script>
+    @endif
 @endsection
