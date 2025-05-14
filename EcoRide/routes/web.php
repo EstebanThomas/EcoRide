@@ -86,3 +86,7 @@ Route::post('/espace-administrateur', [UtilisateurController::class, 'showAdmin'
 Route::post('/espace-employe', [UtilisateurController::class, 'showEmploye'])->name('espaceEmploye');
 
 Route::post('/creation-employe', [UtilisateurController::class, 'createAccountEmploye'])->name('employe.creation');
+
+Route::post('/admin/utilisateur/{id}/suspendre', [UtilisateurController::class, 'suspendreCompte'])->name('admin.suspendre');
+
+Route::post('/admin/utilisateur/{id}/reactiver', [UtilisateurController::class, 'activerCompte'])->name('admin.reactiver');

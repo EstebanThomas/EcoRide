@@ -41,4 +41,19 @@
         </div>
     </div> 
 
+    @if(session('AccountSuspend'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('AccountSuspend')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
 @endsection

@@ -117,6 +117,11 @@ class UtilisateurController extends Authenticatable
 
             $user = Auth::user();
 
+            if ($user->suspendu) {
+                Auth::logout();
+                return back()->with('AccountSuspend', 'Votre compte est suspendu.');
+            }
+
             if($user->role_id === 1){
                 $request->session()->flash('redirect_admin', true);
                 return redirect()->route('home');
@@ -217,12 +222,24 @@ class UtilisateurController extends Authenticatable
 
     //Admin view
     public function showAdmin(){
-        return view('espace-administrateur');
+        $utilisateurs = Utilisateurs::all();
+        return view('espace-administrateur',[
+            'utilisateurs' => $utilisateurs
+        ]);
     }
 
     //Employee view
     public function showEmploye(){
         return view('espace-employe');
+    }
+
+    public function showAdminWithMessage($message, $text){
+        $utilisateurs = Utilisateurs::all();
+        return view('espace-administrateur',array_merge([
+            'utilisateurs' => $utilisateurs
+        ], [
+            $message => $text,
+        ]));
     }
 
     //Creation account employe
@@ -240,13 +257,55 @@ class UtilisateurController extends Authenticatable
                 'role_id' => 2,
             ]);
 
-            return view('espace-administrateur', [
-                'successCreateAccount' => 'Compte employé créé !'
-            ]);
+            // return view('espace-administrateur', [
+            //     'successCreateAccount' => 'Compte employé créé !'
+            // ]);
+            return $this->showAdminWithMessage('successCreateAccount', 'Compte employé créé !');
         } catch (\Exception $e){
-            return view('espace-administrateur', [
-                'errorCreateAccount' => 'Erreur lors de la création du compte : ' . $e->getMessage()
-            ]);
+            // return view('espace-administrateur', [
+            //     'errorCreateAccount' => 'Erreur lors de la création du compte : ' . $e->getMessage()
+            // ]);
+            return $this->showAdminWithMessage('errorCreateAccount', 'Erreur lors de la création du compte !');
+        }
+    }
+
+    //suspend an account
+    public function suspendreCompte($id)
+    {
+        try{
+            $user = Utilisateurs::findOrFail($id);
+            $user->suspendu = true;
+            $user->save();
+            return $this->showAdminWithMessage('successDesactivate', 'Le compte est suspendu.');
+            // return view('espace-administrateur', [
+            //     'successDesactivate' => 'Le compte est suspendu.'
+            // ]);
+        } catch(\Exception $e){
+            // return view('espace-administrateur', [
+            //     'errorSuspend' => 'Une erreur est survenue : ' . $e->getMessage()
+            // ]);
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+        }
+        
+
+    }
+
+    //activate an account
+    public function activerCompte($id)
+    {
+        try{
+            $user = Utilisateurs::findOrFail($id);
+            $user->suspendu = false;
+            $user->save();
+            // return view('espace-administrateur', [
+            //     'successActivate' => 'Le compte est réactivé.'
+            // ]);
+            return $this->showAdminWithMessage('successActivate', 'Le compte est réactivé.');
+        } catch(\Exception $e){
+        //     return view('espace-administrateur', [
+        //         'errorSuspend' => 'Une erreur est survenue : ' . $e->getMessage()
+        //     ]);
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
         }
     }
 }

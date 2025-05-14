@@ -34,6 +34,7 @@ class Utilisateurs extends Authenticatable
         'couleur',
         'energie',
         'credits',
+        'suspendu',
         'role_id',
     ];
 

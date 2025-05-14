@@ -45,6 +45,37 @@
 
             </form>
         </div>
+
+        <!--Suspend an account-->
+        <div class="mt-10 border-2 border-green1 rounded-3xl">
+            <h2 class="font-second text-5xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
+                Suspendre un compte
+            </h2>
+
+            @foreach ($utilisateurs as $user)
+                <div class="flex flex-col justify-center items-center gap-2 border rounded-3xl border-black m-4 ml-10 mr-10">
+                    <p class="text-3xl font-second text-black">{{ $user->pseudo }}</p>
+                    <p class="text-3xl font-second text-black">{{ $user->email }}</p>
+                    <p>
+                        @if ($user->suspendu)
+                            <form action="{{ route('admin.reactiver', $user->utilisateur_id) }}" method="POST">
+                                @csrf
+                                <button class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                                    Réactiver
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('admin.suspendre', $user->utilisateur_id) }}" method="POST">
+                                @csrf
+                                <button class="uppercase border-2 border-black text-3xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
+                                    Suspendre
+                                </button>
+                            </form>
+                        @endif
+                    </p>
+                </div>
+            @endforeach
+        </div>
     </div>
 
     @if (!empty($errorCreateAccount))
@@ -79,4 +110,48 @@
         </script>
     @endif
 
+    @if(!empty($successDesactivate))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json($successDesactivate),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(!empty($successActivate))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json($successActivate),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(!empty($errorSuspend))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json($errorSuspend),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 @endsection

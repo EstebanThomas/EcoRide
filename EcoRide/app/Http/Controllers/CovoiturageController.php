@@ -300,6 +300,10 @@ class CovoiturageController extends Controller
             $driver->credits += $prixTotal;
             $driver->save();
 
+            DB::table('utilisateurs')
+                ->where('role_id', 1)
+                ->increment('credits', 2);
+
             return back()->with('successStop', 'Le voyage est terminé !');
         } catch(\Exception){
             return back()->with('errorStop', 'Une erreur est survenue lors de l\'arrêt du voyage.');
