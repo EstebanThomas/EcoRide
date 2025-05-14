@@ -222,9 +222,15 @@ class UtilisateurController extends Authenticatable
 
     //Admin view
     public function showAdmin(){
-        $utilisateurs = Utilisateurs::all();
+        $data = DB::table('covoiturage')
+            ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+            ->groupBy('jour')
+            ->orderBy('jour', 'asc')
+            ->get();
+        $utilisateurs = Utilisateurs::where('role_id', 2)->get();
         return view('espace-administrateur',[
-            'utilisateurs' => $utilisateurs
+            'utilisateurs' => $utilisateurs,
+            'data' => $data
         ]);
     }
 
@@ -234,11 +240,18 @@ class UtilisateurController extends Authenticatable
     }
 
     public function showAdminWithMessage($message, $text){
-        $utilisateurs = Utilisateurs::all();
+        $data = DB::table('covoiturage')
+            ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+            ->groupBy('jour')
+            ->orderBy('jour', 'asc')
+            ->get();
+        $utilisateurs = Utilisateurs::where('role_id', 2)->get();
         return view('espace-administrateur',array_merge([
-            'utilisateurs' => $utilisateurs
+            'utilisateurs' => $utilisateurs,
+            'data' => $data
         ], [
-            $message => $text,
+            $message => $text
+
         ]));
     }
 
@@ -257,14 +270,9 @@ class UtilisateurController extends Authenticatable
                 'role_id' => 2,
             ]);
 
-            // return view('espace-administrateur', [
-            //     'successCreateAccount' => 'Compte employé créé !'
-            // ]);
             return $this->showAdminWithMessage('successCreateAccount', 'Compte employé créé !');
-        } catch (\Exception $e){
-            // return view('espace-administrateur', [
-            //     'errorCreateAccount' => 'Erreur lors de la création du compte : ' . $e->getMessage()
-            // ]);
+        } catch (\Exception){
+
             return $this->showAdminWithMessage('errorCreateAccount', 'Erreur lors de la création du compte !');
         }
     }
@@ -273,17 +281,20 @@ class UtilisateurController extends Authenticatable
     public function suspendreCompte($id)
     {
         try{
+
             $user = Utilisateurs::findOrFail($id);
+            
+            if($user->role_id ===1 ){
+                return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+            }
+
             $user->suspendu = true;
             $user->save();
+
+
             return $this->showAdminWithMessage('successDesactivate', 'Le compte est suspendu.');
-            // return view('espace-administrateur', [
-            //     'successDesactivate' => 'Le compte est suspendu.'
-            // ]);
-        } catch(\Exception $e){
-            // return view('espace-administrateur', [
-            //     'errorSuspend' => 'Une erreur est survenue : ' . $e->getMessage()
-            // ]);
+        } catch(\Exception){
+
             return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
         }
         
@@ -297,14 +308,39 @@ class UtilisateurController extends Authenticatable
             $user = Utilisateurs::findOrFail($id);
             $user->suspendu = false;
             $user->save();
-            // return view('espace-administrateur', [
-            //     'successActivate' => 'Le compte est réactivé.'
-            // ]);
+
             return $this->showAdminWithMessage('successActivate', 'Le compte est réactivé.');
         } catch(\Exception $e){
-        //     return view('espace-administrateur', [
-        //         'errorSuspend' => 'Une erreur est survenue : ' . $e->getMessage()
-        //     ]);
+
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+        }
+    }
+
+    //Search user
+    public function afficherUtilisateurParEmail(Request $request)
+    {
+        try{
+            $request->validate(['email' => 'required|email']);
+
+            $utilisateurSearch = Utilisateurs::where('email', $request->email)->first();
+
+            if ($utilisateurSearch) {
+                $utilisateurs = Utilisateurs::where('role_id', 2)->get();
+                $data = DB::table('covoiturage')
+                    ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('jour')
+                    ->orderBy('jour', 'asc')
+                    ->get();
+                return view('espace-administrateur', [
+                    'utilisateurs' => $utilisateurs,
+                    'utilisateurSearch' => $utilisateurSearch,
+                    'successSearch' => 'Recherche effectuée !',
+                    'data' => $data
+                ]);
+            } else {
+                return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+            }
+        } catch (\Exception){
             return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
         }
     }

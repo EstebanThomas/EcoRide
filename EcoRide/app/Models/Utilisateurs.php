@@ -60,6 +60,6 @@ class Utilisateurs extends Authenticatable
 
         public function roles()
     {
-        return $this->hasOne(Roles::class, 'utilisateur_id');
+        return $this->belongsTo(Roles::class, 'role_id');
     }
 }

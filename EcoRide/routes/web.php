@@ -90,3 +90,5 @@ Route::post('/creation-employe', [UtilisateurController::class, 'createAccountEm
 Route::post('/admin/utilisateur/{id}/suspendre', [UtilisateurController::class, 'suspendreCompte'])->name('admin.suspendre');
 
 Route::post('/admin/utilisateur/{id}/reactiver', [UtilisateurController::class, 'activerCompte'])->name('admin.reactiver');
+
+Route::post('/admin/utilisateur/rechercher', [UtilisateurController::class, 'afficherUtilisateurParEmail'])->name('admin.rechercher');

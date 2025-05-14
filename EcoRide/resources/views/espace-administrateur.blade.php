@@ -51,7 +51,9 @@
             <h2 class="font-second text-5xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
                 Suspendre un compte
             </h2>
-
+            <h2 class="font-second text-4xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
+                Comptes employés
+            </h2>
             @foreach ($utilisateurs as $user)
                 <div class="flex flex-col justify-center items-center gap-2 border rounded-3xl border-black m-4 ml-10 mr-10">
                     <p class="text-3xl font-second text-black">{{ $user->pseudo }}</p>
@@ -75,9 +77,90 @@
                     </p>
                 </div>
             @endforeach
+
+            <!--Search an account-->
+            <form method="POST" action="{{ route('admin.rechercher') }}" class="m-4 border-2 border-green1 rounded-3xl flex flex-col justify-center items-center gap-2 p-2">
+                @csrf
+                <input type="email" name="email" required placeholder="Entrer un email" class="text-3xl font-second bg-gray-200 rounded-3xl p-1 text-center">
+                <button type="submit" class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                    Rechercher
+                </button>
+            </form>
+
+            @if(isset($utilisateurSearch))
+                <div class="m-5 border-2 border-green1 rounded-3xl p-2 flex flex-col justify-center items-center gap-2">
+                    <p class="text-3xl font-second">Pseudo : {{ $utilisateurSearch->pseudo }}</p>
+                    <p class="text-3xl font-second">Email : {{ $utilisateurSearch->email }}</p>
+                    <p class="text-3xl font-second">Rôle : {{ $utilisateurSearch->roles->libelle }}</p>
+                    @if ($utilisateurSearch->suspendu)
+                        <form action="{{ route('admin.reactiver', $utilisateurSearch->utilisateur_id) }}" method="POST">
+                            @csrf
+                            <button class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                                Réactiver
+                            </button>
+                        </form>
+                    @else
+                        <form action="{{ route('admin.suspendre', $utilisateurSearch->utilisateur_id) }}" method="POST">
+                            @csrf
+                            <button class="uppercase border-2 border-black text-3xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
+                                Suspendre
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            @endif
+        </div>
+
+        <!--Gaphics-->
+        <div>
+            <p class="uppercase text-4xl font-second m-10 flex flex-row justify-center items-center gap-2">
+                Total de crédits gagné par la plateforme : {{Auth::user()->credits}}
+                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+            </p>
+
+            <div class="m-5">
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <canvas id="covoiturageChart" width="600" height="400"></canvas>
+                <script>
+                    const ctx = document.getElementById('covoiturageChart').getContext('2d');
+
+                    const chart = new Chart(ctx, {
+                        type: 'line', // ou 'bar'
+                        data: {
+                            labels: {!! json_encode($data->pluck('jour')) !!},
+                            datasets: [{
+                                label: 'Nombre de covoiturages par jour',
+                                data: {!! json_encode($data->pluck('total')) !!},
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                                tension: 0.4,
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Jour'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Nombre de covoiturages'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </div>
         </div>
     </div>
 
+    <!--POPUPS INFORMATIONS-->
     @if (!empty($errorCreateAccount))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -146,6 +229,21 @@
                 Swal.fire({
                     title: @json($errorSuspend),
                     icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(!empty($successSearch))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json($successSearch),
+                    icon: 'success',
                     showConfirmButton: true,
                     customClass:{
                         popup: 'custom-swal'

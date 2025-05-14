@@ -12,7 +12,7 @@ class Roles extends Model
 
     use HasFactory;
 
-    protected $table = 'role'; //Name of the table
+    protected $table = 'roles'; //Name of the table
 
     protected $primaryKey = 'role_id'; //Name Of the Primary Key
 
@@ -23,6 +23,6 @@ class Roles extends Model
 
     public function utilisateurs()
     {
-        return $this->hasMany(Utilisateurs::class, 'utilisateur_id');
+        return $this->hasMany(Utilisateurs::class, 'role_id');
     }
 }
