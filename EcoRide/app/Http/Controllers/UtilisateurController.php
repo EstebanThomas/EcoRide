@@ -251,7 +251,13 @@ class UtilisateurController extends Authenticatable
         $avisValidation = Avis::where('statut', 'validation')->with(['utilisateur', 'covoiturage', 'covoiturage.utilisateur'])->get();
         $covoituragesProblemes = Covoiturage::whereHas('avis', function($query){
             $query->where('good_trip', false);
-        })->get();
+            })
+            ->with(['avis' => function ($query) {
+                $query->where('good_trip', false)->with('utilisateur');
+            }])
+            ->get();
+
+
 
         return view('espace-employe',[
             'avisValidation' => $avisValidation,
@@ -370,7 +376,7 @@ class UtilisateurController extends Authenticatable
         try {
             $validated = $request->validate([
                 'covoiturage_id' => 'required|exists:covoiturage,covoiturage_id',
-                'commentaire' => 'required|string|max:200',
+                'commentaire' => 'required|string|max:255',
                 'note' => 'required|integer|min:1|max:5',
                 'good_trip' => 'nullable',
             ]);

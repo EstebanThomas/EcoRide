@@ -289,7 +289,7 @@
                         <div class="flex flex-col xl:flex-row justify-center items-center xl:gap-5">
                             <p class="flex flex-row font-second text-4xl xl:text-3xl gap-2">
                                 Total : 
-                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> 2.00 </span>
+                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> - 2.00 </span>
                                 <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
                             </p>
                             <p class="flex font-second text-3xl xl:text-2xl">
@@ -700,7 +700,7 @@
             const prix = parseInt(prixPersonne.value) || 0;
             const places = parseInt(nbPlace.value) || 0;
 
-            const total = (prix * places) + 2; // Adding 2 credits for service fees
+            const total = (prix * places - 2);
             prixTotal.textContent = total.toFixed(2);
         }
 

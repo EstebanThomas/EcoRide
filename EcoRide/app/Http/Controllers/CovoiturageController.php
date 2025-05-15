@@ -217,6 +217,10 @@ class CovoiturageController extends Controller
                 return back()->with('errorParticipation', 'Un conducteur ne peut pas participer à son propre trajet.');
             }
 
+            if ($user->utilisateur_id === $covoiturage->utilisateur_id) {
+                return back()->with('errorParticipation', 'Un conducteur ne peut pas participer à son propre trajet.');
+            }
+
             if ($user->credits < $covoiturage->prix_personne){
                 return back()->with('errorParticipation', 'Vous n\'avez pas assez de crédits pour rejoindre ce covoiturage, vous avez ' . $user->credits . ' crédits.');
             }
@@ -310,7 +314,8 @@ class CovoiturageController extends Controller
             $prixTotal = $covoiturage->prix_personne * $nombreParticipants;
 
             $driver = $covoiturage->utilisateur;
-            $driver->credits += $prixTotal;
+            $driver->credits += $prixTotal; 
+            $driver->credits -= 2; //For EcoRide
             $driver->save();
 
             DB::table('utilisateurs')
