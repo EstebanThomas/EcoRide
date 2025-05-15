@@ -248,7 +248,15 @@ class UtilisateurController extends Authenticatable
 
     //Employee view
     public function showEmploye(){
-        return view('espace-employe');
+        $avisValidation = Avis::where('statut', 'validation')->with(['utilisateur', 'covoiturage', 'covoiturage.utilisateur'])->get();
+        $covoituragesProblemes = Covoiturage::whereHas('avis', function($query){
+            $query->where('good_trip', false);
+        })->get();
+
+        return view('espace-employe',[
+            'avisValidation' => $avisValidation,
+            'covoituragesProblemes' => $covoituragesProblemes,
+        ]);
     }
 
     public function showAdminWithMessage($message, $text){
@@ -357,8 +365,75 @@ class UtilisateurController extends Authenticatable
         }
     }
 
-    public function avisCreate()
+    public function avisCreate(Request $request)
     {
-        
+        try {
+            $validated = $request->validate([
+                'covoiturage_id' => 'required|exists:covoiturage,covoiturage_id',
+                'commentaire' => 'required|string|max:200',
+                'note' => 'required|integer|min:1|max:5',
+                'good_trip' => 'nullable',
+            ]);
+
+            $utilisateur_id = Auth::id();
+
+            $avis = Avis::where('utilisateur_id', $utilisateur_id)
+                ->where('covoiturage_id', $validated['covoiturage_id'])
+                ->where('statut', 'en attente')
+                ->first();
+
+            if($avis){
+                $avis->covoiturage_id = $validated['covoiturage_id'];
+                $avis->commentaire = $validated['commentaire'];
+                $avis->note = $validated['note'];
+                $avis->statut = 'validation';
+                $avis->good_trip = $request->has('good_trip'); //checked = true
+                $avis->save();
+            } else {
+                return back()->with('errorAvis', 'Aucun avis en attente trouvé.');
+            }
+            
+
+            return back()->with('successAvis', 'Votre avis a bien été enregistré, il sera validé par un employé avant sa publication.');
+        } catch (\Exception $e) {
+            return back()->with('errorAvis', 'Une erreur est survenue lors de l\'enregistrement de votre avis : ' . $e->getMessage());
+        }
+    }
+
+    public function avisValider($id)
+    {
+        try {
+            $avis = Avis::findOrFail($id);
+
+            $avis->statut = 'valide';
+            $avis->save();
+
+            $covoiturageID = $avis->covoiturage_id;
+
+            // return back()->with('successAvis', 'L\'avis a été validé avec succès.');
+            return redirect()->route('home')->with('successAvis', 'L\'avis a été validé avec succès.');
+        } catch (\Exception $e) {
+            $covoiturageID = $avis->covoiturage_id;
+            // return back()->with('errorAvis', 'Erreur lors de la validation de l\'avis : ' . $e->getMessage());
+            return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+    public function avisRefuser($id)
+    {
+        try {
+            $avis = Avis::findOrFail($id);
+            $avis->statut = 'refuse';
+            $avis->save();
+
+            $covoiturageID = $avis->covoiturage_id;
+
+            // return back()->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
+            return redirect()->route('details', ['id' => $covoiturageID])->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
+        } catch (\Exception $e) {
+            $covoiturageID = $avis->covoiturage_id;
+            // return back()->with('errorAvisRefus', 'Une erreur est survenue lors du refus de l\'avis : ' . $e->getMessage());
+            return redirect()->route('details', ['id' => $covoiturageID])->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+        }
     }
 }

@@ -60,4 +60,9 @@ class Covoiturage extends Model
                 ->whereIn('utilisateur_id', json_decode($this->participants ?? '[]', true));
         }
 
+                //Get foreign key 'voiture_id'
+        public function avis()
+        {
+            return $this->hasMany(Avis::class, 'covoiturage_id');
+        }
 }

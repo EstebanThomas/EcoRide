@@ -231,7 +231,7 @@
                                 </div>
                             @endif
                         @empty
-                            <p class="text-black font-second text-4xl">Aucun voyage trouvé.</p>
+                            <p class="text-center text-gray-600 font-second text-4xl">Aucun voyage trouvé.</p>
                         @endforelse
                     </div>
                 </div>
@@ -349,7 +349,7 @@
                             </button>
                         </div>
                     @empty
-                        <p class="text-5xl font-second text-center">Aucun voyage trouvé.</p>
+                        <p class="text-5xl font-second text-center text-gray-600">Aucun voyage trouvé.</p>
                     @endforelse
                 </div>
 
@@ -458,6 +458,36 @@
         </div>
 
     </div>
+
+    @if(session('successAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvis')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('errorAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('errorAvis')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 
     <script>
 

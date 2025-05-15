@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Covoiturage;
+use App\Models\Avis;
 use Illuminate\Http\Request;
 use App\Models\Preferences;
 use App\Models\Voiture;
@@ -35,15 +36,27 @@ class CovoiturageController extends Controller
             ->firstOrFail();
 
             $user = Auth::user();
+
             $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+
             $alreadyParticipating = $user && in_array($user->utilisateur_id, $participants);
+
+            $driver = $covoiturage->utilisateur;
+
+            $avis = Avis::where('statut', 'valide')
+                ->whereHas('covoiturage', function($query) use ($driver){
+                    $query->where('utilisateur_id', $driver->utilisateur_id);
+                })
+                ->with(['utilisateur', 'covoiturage'])
+                ->get();
 
             return view('details', [
                 'covoiturage' => $covoiturage,
                 'alreadyParticipating' => $alreadyParticipating,
-                'user' => $user
+                'user' => $user,
+                'avis' => $avis,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);
         }
     }

@@ -94,3 +94,7 @@ Route::post('/admin/utilisateur/{id}/reactiver', [UtilisateurController::class, 
 Route::post('/admin/utilisateur/rechercher', [UtilisateurController::class, 'afficherUtilisateurParEmail'])->name('admin.rechercher');
 
 Route::post('/avis', [UtilisateurController::class, 'avisCreate'])->name('avis.create');
+
+Route::post('/employe/avis/valider/{id}', [UtilisateurController::class, 'AvisValider'])->name('avis.valider');
+
+Route::post('/employe/avis/refuser/{id}', [UtilisateurController::class, 'AvisRefuser'])->name('avis.refuser');

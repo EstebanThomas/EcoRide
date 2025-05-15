@@ -103,4 +103,49 @@
             document.getElementById('redirectEmployeForm').submit();
         </script>
     @endif
+
+    @if(session('successAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvis')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('successAvisRefus'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvisRefus')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('errorAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('errorAvis')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 @endsection
