@@ -9,6 +9,7 @@ use App\Models\Voiture;
 use App\Models\Marque;
 use App\Models\Preferences;
 use App\Models\Covoiturage;
+use App\Models\Avis;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -66,6 +67,10 @@ class UtilisateurController extends Authenticatable
             return $voyage;
         });
 
+        $avisEnAttente = Avis::where('utilisateur_id', Auth::id())
+            ->where('statut', 'en attente')
+            ->get();
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
@@ -73,6 +78,7 @@ class UtilisateurController extends Authenticatable
             'voyages' => $voyages,
             'voyagesHistory' => $voyagesHistory,
             'utilisateur' => $utilisateur,
+            'avisEnAttente' => $avisEnAttente,
         ]);
     }
 
@@ -95,6 +101,12 @@ class UtilisateurController extends Authenticatable
         ]);
 
         Auth::login($user);
+
+        $avis = Avis::create([
+            'note'=> 5,
+            'utilisateur_id' => Auth::user()->utilisateur_id,
+            'statut' => 'temporaire',
+        ]);
 
         return redirect()->route('espaceUtilisateur');
     }
@@ -343,5 +355,10 @@ class UtilisateurController extends Authenticatable
         } catch (\Exception){
             return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
         }
+    }
+
+    public function avisCreate()
+    {
+        
     }
 }

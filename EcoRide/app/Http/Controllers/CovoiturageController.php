@@ -55,7 +55,7 @@ class CovoiturageController extends Controller
         $maxDate = now()->addMonth(2)->endOfDay();
 
         $validated = $request->validate([
-            'date_depart' => 'required|date|after:'.$today.'|before_or_equal:'.$maxDate,
+            'date_depart' => 'required|date|after_or_equal:'.$today.'|before_or_equal:'.$maxDate,
             'heure_depart' => 'required|date_format:H:i',
             'lieu_depart' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
             'date_arrivee' => 'required|date|after_or_equal:date_depart',
@@ -303,6 +303,14 @@ class CovoiturageController extends Controller
             DB::table('utilisateurs')
                 ->where('role_id', 1)
                 ->increment('credits', 2);
+
+            foreach ($participants as $participantId) {
+            DB::table('avis')->insert([
+                'utilisateur_id' => $participantId,
+                'covoiturage_id' => $covoiturage->covoiturage_id,
+                'statut' => 'en attente'
+            ]);
+        }
 
             return back()->with('successStop', 'Le voyage est terminé !');
         } catch(\Exception){

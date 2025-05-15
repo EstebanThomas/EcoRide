@@ -4,6 +4,46 @@
 
     <div class="flex flex-col justify-center items-center m-75 mb-10 xl:mt-5">
 
+        <!--REVIEW-->
+        @if ($avisEnAttente->isNotEmpty())
+            <div class="flex flex-col justify-center items-center gap-1 border-2 border-green1 rounded-3xl p-5 w-200 mb-5">
+                <p class="font-second text-5xl tracking-wide uppercase text-black">Avis en attente</p>
+                @foreach($avisEnAttente as $avis)
+                    <div class="border-2 border-green1 m-2 p-2 flex flex-col justify-center items-center rounded-3xl gap-1">
+                        @php
+                            $covoiturage = $avis->covoiturage;
+                            $conducteur = $covoiturage->utilisateur;
+                        @endphp
+                        <p class="text-4xl font-second">Conducteur : {{ $conducteur->pseudo }}</p>
+                        <p class="text-4xl font-second">De {{ $covoiturage->lieu_depart }} à {{ $covoiturage->lieu_arrivee }}</p>
+                        <p class="text-4xl font-second">Le {{ \Carbon\Carbon::parse($covoiturage->date_depart)->format('d/m/Y') }}</p>
+                        <form action="{{ route('avis.create') }}" method="POST" class="mt-2 flex flex-col justify-center items-center gap-1">
+                            @csrf
+                            <input type="hidden" name="covoiturage_id" value="{{ $avis->covoiturage_id }}">
+                            <textarea name="commentaire" required placeholder="Votre avis..." class="text-4xl font-second border-2 border-3xl border-green1 p-1 w-180 h-50"></textarea>
+                            <div class="flex justify-center items-center gap-2">
+                                <label for="note" class="font-second text-4xl tracking-wide">Note :</label>
+                                <input type="number" id="note" name="note" min="1" max="5" value="5" required
+                                class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl p-1 items-center"/>
+                                <img src="{{ asset('images/Note.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                                <p class="font-second text-4xl"> (Minimum 1 et maximum 5)</p>
+                            </div>
+                            <div class="flex justify-center items-center gap-2">
+                                <label for="good_trip" class="font-second text-4xl">Cocher cette case si le voyage s'est bien passé :</label>
+                                <input type="checkbox" id="good_trip" name="good_trip" checked value="true"
+                                class="text-green1 accent-green1 w-8 h-8 font-second text-4xl p-1 items-center"/>
+                            </div>
+                            <button type="submit"
+                            class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">
+                                Envoyer
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        
+
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
             <form enctype="multipart/form-data" class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('utilisateur.modifier') }}">

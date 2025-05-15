@@ -125,7 +125,7 @@
                     const ctx = document.getElementById('covoiturageChart').getContext('2d');
 
                     const chart = new Chart(ctx, {
-                        type: 'line', // ou 'bar'
+                        type: 'bar',
                         data: {
                             labels: {!! json_encode($data->pluck('jour')) !!},
                             datasets: [{

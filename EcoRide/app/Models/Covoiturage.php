@@ -59,4 +59,5 @@ class Covoiturage extends Model
             return $this->belongsToMany(Utilisateurs::class, 'utilisateurs', 'utilisateur_id')
                 ->whereIn('utilisateur_id', json_decode($this->participants ?? '[]', true));
         }
+
 }
