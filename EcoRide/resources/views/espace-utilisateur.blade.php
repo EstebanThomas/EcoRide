@@ -4,6 +4,46 @@
 
     <div class="flex flex-col justify-center items-center m-75 mb-10 xl:mt-5">
 
+        <!--REVIEW-->
+        @if ($avisEnAttente->isNotEmpty())
+            <div class="flex flex-col justify-center items-center gap-1 border-2 border-green1 rounded-3xl p-5 w-200 mb-5">
+                <p class="font-second text-5xl tracking-wide uppercase text-black">Avis en attente</p>
+                @foreach($avisEnAttente as $avis)
+                    <div class="border-2 border-green1 m-2 p-2 flex flex-col justify-center items-center rounded-3xl gap-1">
+                        @php
+                            $covoiturage = $avis->covoiturage;
+                            $conducteur = $covoiturage->utilisateur;
+                        @endphp
+                        <p class="text-4xl font-second">Conducteur : {{ $conducteur->pseudo }}</p>
+                        <p class="text-4xl font-second">De {{ $covoiturage->lieu_depart }} à {{ $covoiturage->lieu_arrivee }}</p>
+                        <p class="text-4xl font-second">Le {{ \Carbon\Carbon::parse($covoiturage->date_depart)->format('d/m/Y') }}</p>
+                        <form action="{{ route('avis.create') }}" method="POST" class="mt-2 flex flex-col justify-center items-center gap-1">
+                            @csrf
+                            <input type="hidden" name="covoiturage_id" value="{{ $avis->covoiturage_id }}">
+                            <textarea name="commentaire" required placeholder="Votre avis..." class="text-4xl font-second border-2 border-3xl border-green1 p-1 w-180 h-50"></textarea>
+                            <div class="flex justify-center items-center gap-2">
+                                <label for="note" class="font-second text-4xl tracking-wide">Note :</label>
+                                <input type="number" id="note" name="note" min="1" max="5" value="5" required
+                                class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl p-1 items-center"/>
+                                <img src="{{ asset('images/Note.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                                <p class="font-second text-4xl"> (Minimum 1 et maximum 5)</p>
+                            </div>
+                            <div class="flex justify-center items-center gap-2">
+                                <label for="good_trip" class="font-second text-4xl">Cocher cette case si le voyage s'est bien passé :</label>
+                                <input type="checkbox" id="good_trip" name="good_trip" checked value="true"
+                                class="text-green1 accent-green1 w-8 h-8 font-second text-4xl p-1 items-center"/>
+                            </div>
+                            <button type="submit"
+                            class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">
+                                Envoyer
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        
+
         <div class="flex flex-col justify-center items-center gap-10 border-2 border-green1 rounded-3xl p-5 w-200">
 
             <form enctype="multipart/form-data" class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('utilisateur.modifier') }}">
@@ -191,7 +231,7 @@
                                 </div>
                             @endif
                         @empty
-                            <p class="text-black font-second text-4xl">Aucun voyage trouvé.</p>
+                            <p class="text-center text-gray-600 font-second text-4xl">Aucun voyage trouvé.</p>
                         @endforelse
                     </div>
                 </div>
@@ -249,7 +289,7 @@
                         <div class="flex flex-col xl:flex-row justify-center items-center xl:gap-5">
                             <p class="flex flex-row font-second text-4xl xl:text-3xl gap-2">
                                 Total : 
-                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> 2.00 </span>
+                                <span class="font-second text-4xl xl:text-3xl" id="prix_total"> - 2.00 </span>
                                 <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
                             </p>
                             <p class="flex font-second text-3xl xl:text-2xl">
@@ -302,14 +342,16 @@
                             <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
                             <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
                             <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
-                            <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
-                                class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
-                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
-                                <p class="text-3xl font-second">Détails</p>
-                            </button>
+                            @if($voyage->statut === 'disponible')
+                                <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
+                                    class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
+                                    <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                    <p class="text-3xl font-second">Détails</p>
+                                </button>
+                            @endif
                         </div>
                     @empty
-                        <p class="text-5xl font-second text-center">Aucun voyage trouvé.</p>
+                        <p class="text-5xl font-second text-center text-gray-600">Aucun voyage trouvé.</p>
                     @endforelse
                 </div>
 
@@ -418,6 +460,36 @@
         </div>
 
     </div>
+
+    @if(session('successAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvis')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('errorAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('errorAvis')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 
     <script>
 
@@ -630,7 +702,7 @@
             const prix = parseInt(prixPersonne.value) || 0;
             const places = parseInt(nbPlace.value) || 0;
 
-            const total = (prix * places) + 2; // Adding 2 credits for service fees
+            const total = (prix * places - 2);
             prixTotal.textContent = total.toFixed(2);
         }
 
@@ -638,7 +710,7 @@
         nbPlace.addEventListener('input', updatePrice);
 
 
-        //Delete ride
+        //Cancel ride
         function annulerVoyage(id){
             Swal.fire({
                 title: 'Annuler ce voyage ?',

@@ -9,6 +9,7 @@ use App\Models\Voiture;
 use App\Models\Marque;
 use App\Models\Preferences;
 use App\Models\Covoiturage;
+use App\Models\Avis;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -66,6 +67,10 @@ class UtilisateurController extends Authenticatable
             return $voyage;
         });
 
+        $avisEnAttente = Avis::where('utilisateur_id', Auth::id())
+            ->where('statut', 'en attente')
+            ->get();
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
@@ -73,6 +78,7 @@ class UtilisateurController extends Authenticatable
             'voyages' => $voyages,
             'voyagesHistory' => $voyagesHistory,
             'utilisateur' => $utilisateur,
+            'avisEnAttente' => $avisEnAttente,
         ]);
     }
 
@@ -91,10 +97,16 @@ class UtilisateurController extends Authenticatable
             'pseudo'=> $validated['pseudo'],
             'email' => $validated['mail'],
             'password' => Hash::make($validated['password']),
-            'credits' => 20
+            'credits' => 20,
         ]);
 
         Auth::login($user);
+
+        $avis = Avis::create([
+            'note'=> 5,
+            'utilisateur_id' => Auth::user()->utilisateur_id,
+            'statut' => 'temporaire',
+        ]);
 
         return redirect()->route('espaceUtilisateur');
     }
@@ -114,6 +126,21 @@ class UtilisateurController extends Authenticatable
 
         if (Auth::attempt($user)){
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            if ($user->suspendu) {
+                Auth::logout();
+                return back()->with('AccountSuspend', 'Votre compte est suspendu.');
+            }
+
+            if($user->role_id === 1){
+                $request->session()->flash('redirect_admin', true);
+                return redirect()->route('home');
+            } elseif ($user->role_id === 2){
+                $request->session()->flash('redirect_employe', true);
+                return redirect()->route('home');
+            }
             return redirect()->route('espaceUtilisateur');
         }
         
@@ -203,5 +230,225 @@ class UtilisateurController extends Authenticatable
         ]);
 
         return redirect()->route('espaceUtilisateur');
+    }
+
+    //Admin view
+    public function showAdmin(){
+        
+        $dataCovoiturages = DB::table('covoiturage')
+            ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+            ->groupBy('jour')
+            ->orderBy('jour', 'asc')
+            ->get();
+
+        $dataCommission = DB::table('commission')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get();
+
+        $utilisateurs = Utilisateurs::where('role_id', 2)->get();
+
+        return view('espace-administrateur',[
+            'utilisateurs' => $utilisateurs,
+            'dataCovoiturages' => $dataCovoiturages,
+            'dataCommission' => $dataCommission,
+        ]);
+    }
+
+    //Employee view
+    public function showEmploye(){
+        $avisValidation = Avis::where('statut', 'validation')->with(['utilisateur', 'covoiturage', 'covoiturage.utilisateur'])->get();
+        $covoituragesProblemes = Covoiturage::whereHas('avis', function($query){
+            $query->where('good_trip', false);
+            })
+            ->with(['avis' => function ($query) {
+                $query->where('good_trip', false)->with('utilisateur');
+            }])
+            ->get();
+
+
+
+        return view('espace-employe',[
+            'avisValidation' => $avisValidation,
+            'covoituragesProblemes' => $covoituragesProblemes,
+        ]);
+    }
+
+    public function showAdminWithMessage($message, $text){
+        $data = DB::table('covoiturage')
+            ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+            ->groupBy('jour')
+            ->orderBy('jour', 'asc')
+            ->get();
+        $utilisateurs = Utilisateurs::where('role_id', 2)->get();
+        return view('espace-administrateur',array_merge([
+            'utilisateurs' => $utilisateurs,
+            'data' => $data
+        ], [
+            $message => $text
+
+        ]));
+    }
+
+    //Creation account employe
+    public function createAccountEmploye(Request $request){
+        try{
+                $validated = $request->validate([
+                'pseudo' => 'required|max:20',
+                'mail' => 'required|email|unique:utilisateurs,email',
+                'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
+            ]);
+            $user = Utilisateurs::create([
+                'pseudo'=> $validated['pseudo'],
+                'email' => $validated['mail'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => 2,
+            ]);
+
+            return $this->showAdminWithMessage('successCreateAccount', 'Compte employé créé !');
+        } catch (\Exception){
+
+            return $this->showAdminWithMessage('errorCreateAccount', 'Erreur lors de la création du compte !');
+        }
+    }
+
+    //suspend an account
+    public function suspendreCompte($id)
+    {
+        try{
+
+            $user = Utilisateurs::findOrFail($id);
+            
+            if($user->role_id ===1 ){
+                return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+            }
+
+            $user->suspendu = true;
+            $user->save();
+
+
+            return $this->showAdminWithMessage('successDesactivate', 'Le compte est suspendu.');
+        } catch(\Exception){
+
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+        }
+        
+
+    }
+
+    //activate an account
+    public function activerCompte($id)
+    {
+        try{
+            $user = Utilisateurs::findOrFail($id);
+            $user->suspendu = false;
+            $user->save();
+
+            return $this->showAdminWithMessage('successActivate', 'Le compte est réactivé.');
+        } catch(\Exception $e){
+
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+        }
+    }
+
+    //Search user
+    public function afficherUtilisateurParEmail(Request $request)
+    {
+        try{
+            $request->validate(['email' => 'required|email']);
+
+            $utilisateurSearch = Utilisateurs::where('email', $request->email)->first();
+
+            if ($utilisateurSearch) {
+                $utilisateurs = Utilisateurs::where('role_id', 2)->get();
+                $data = DB::table('covoiturage')
+                    ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('jour')
+                    ->orderBy('jour', 'asc')
+                    ->get();
+                return view('espace-administrateur', [
+                    'utilisateurs' => $utilisateurs,
+                    'utilisateurSearch' => $utilisateurSearch,
+                    'successSearch' => 'Recherche effectuée !',
+                    'data' => $data
+                ]);
+            } else {
+                return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+            }
+        } catch (\Exception){
+            return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
+        }
+    }
+
+    public function avisCreate(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'covoiturage_id' => 'required|exists:covoiturage,covoiturage_id',
+                'commentaire' => 'required|string|max:255',
+                'note' => 'required|integer|min:1|max:5',
+                'good_trip' => 'nullable',
+            ]);
+
+            $utilisateur_id = Auth::id();
+
+            $avis = Avis::where('utilisateur_id', $utilisateur_id)
+                ->where('covoiturage_id', $validated['covoiturage_id'])
+                ->where('statut', 'en attente')
+                ->first();
+
+            if($avis){
+                $avis->covoiturage_id = $validated['covoiturage_id'];
+                $avis->commentaire = $validated['commentaire'];
+                $avis->note = $validated['note'];
+                $avis->statut = 'validation';
+                $avis->good_trip = $request->has('good_trip'); //checked = true
+                $avis->save();
+            } else {
+                return back()->with('errorAvis', 'Aucun avis en attente trouvé.');
+            }
+            
+
+            return back()->with('successAvis', 'Votre avis a bien été enregistré, il sera validé par un employé avant sa publication.');
+        } catch (\Exception $e) {
+            return back()->with('errorAvis', 'Une erreur est survenue lors de l\'enregistrement de votre avis : ' . $e->getMessage());
+        }
+    }
+
+    public function avisValider($avis_id, $covoiturage_id)
+    {
+        try {
+            $avis = Avis::findOrFail($avis_id);
+            $covoiturage = Covoiturage::findOrFail($covoiturage_id);
+
+            $avis->statut = 'valide';
+            $avis->save();
+
+            $avisTemp = Avis::where('utilisateur_id', $covoiturage->utilisateur_id)
+                            ->where('statut', 'temporaire')
+                            ->first();
+
+            if ($avisTemp) {
+                $avisTemp->delete();
+            }
+
+            return redirect()->route('home')->with('successAvis', 'L\'avis a été validé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+    public function avisRefuser($id)
+    {
+        try {
+            $avis = Avis::findOrFail($id);
+            $avis->statut = 'refuse';
+            $avis->save();
+
+            return redirect()->route('home')->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+        }
     }
 }

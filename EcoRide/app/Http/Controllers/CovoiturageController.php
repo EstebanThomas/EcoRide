@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Covoiturage;
+use App\Models\Avis;
 use Illuminate\Http\Request;
 use App\Models\Preferences;
 use App\Models\Voiture;
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;  
 use App\Models\Utilisateurs;
+use App\Models\Commission;
+use App\Mail\VoyageAnnule;
+use Illuminate\Support\Facades\Mail;
 
 class CovoiturageController extends Controller
 {
@@ -35,15 +39,34 @@ class CovoiturageController extends Controller
             ->firstOrFail();
 
             $user = Auth::user();
+
             $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+
             $alreadyParticipating = $user && in_array($user->utilisateur_id, $participants);
+
+            $driver = $covoiturage->utilisateur;
+
+            $moyenneNote = Avis::where('statut', 'valide')
+                                ->whereHas('covoiturage', function ($query) use ($driver){
+                                    $query->where('utilisateur_id', $driver->utilisateur_id);
+                                })
+                                ->avg('note');
+
+            $avis = Avis::where('statut', 'valide')
+                ->whereHas('covoiturage', function($query) use ($driver){
+                    $query->where('utilisateur_id', $driver->utilisateur_id);
+                })
+                ->with(['utilisateur', 'covoiturage'])
+                ->get();
 
             return view('details', [
                 'covoiturage' => $covoiturage,
                 'alreadyParticipating' => $alreadyParticipating,
-                'user' => $user
+                'user' => $user,
+                'avis' => $avis,
+                'moyenneNote' => $moyenneNote,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);
         }
     }
@@ -55,7 +78,7 @@ class CovoiturageController extends Controller
         $maxDate = now()->addMonth(2)->endOfDay();
 
         $validated = $request->validate([
-            'date_depart' => 'required|date|after:'.$today.'|before_or_equal:'.$maxDate,
+            'date_depart' => 'required|date|after_or_equal:'.$today.'|before_or_equal:'.$maxDate,
             'heure_depart' => 'required|date_format:H:i',
             'lieu_depart' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
             'date_arrivee' => 'required|date|after_or_equal:date_depart',
@@ -158,10 +181,10 @@ class CovoiturageController extends Controller
     }
 
     //Cancel a ride
-    public function annulerVoyage($voiture_id)
+    public function annulerVoyage($covoiturage_id)
     {
         try {
-            $voyage = Covoiturage::findOrFail($voiture_id);
+            $voyage = Covoiturage::findOrFail($covoiturage_id);
 
             if ($voyage->utilisateur_id !== Auth::id()) {
                 return response()->json(['message' => 'Non autorisé.'], 403);
@@ -172,8 +195,25 @@ class CovoiturageController extends Controller
             $voyage->statut = 'annulé';
             $voyage->save();
 
+            $participants = $voyage->participants ? json_decode($voyage->participants, true) : [];
+
+            foreach ($participants as $participantId) {
+                $utilisateur = Utilisateurs::find($participantId);
+                if ($utilisateur) {
+                    $utilisateur->credits += $voyage->prix_personne;
+                    $utilisateur->save();
+                    
+                    try{
+                        Mail::to($utilisateur->email)->send(new VoyageAnnule($utilisateur, $voyage));
+                    } catch (\Exception $e) {
+                        Log::error("Erreur envoi mail à {$utilisateur->email} : " . $e->getMessage());
+                    }
+                    
+                }
+            }
+
             return response()->json(['message' => 'Voyage annulé.'], 200);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return response()->json(['message' => 'Erreur lors de l\'annulation du voyage.'], 500);
         }
     }
@@ -201,6 +241,10 @@ class CovoiturageController extends Controller
                 ->exists();
 
             if ($errorDriver) {
+                return back()->with('errorParticipation', 'Un conducteur ne peut pas participer à son propre trajet.');
+            }
+
+            if ($user->utilisateur_id === $covoiturage->utilisateur_id) {
                 return back()->with('errorParticipation', 'Un conducteur ne peut pas participer à son propre trajet.');
             }
 
@@ -297,8 +341,27 @@ class CovoiturageController extends Controller
             $prixTotal = $covoiturage->prix_personne * $nombreParticipants;
 
             $driver = $covoiturage->utilisateur;
-            $driver->credits += $prixTotal;
+            $driver->credits += $prixTotal; 
+            $driver->credits -= 2; //For EcoRide
             $driver->save();
+
+            DB::table('utilisateurs')
+                ->where('role_id', 1)
+                ->increment('credits', 2);
+
+            DB::table('Commission')->insert([
+                'utilisateur_id' => $driver->utilisateur_id,
+                'montant' => 2,
+                'created_at' => now(),
+            ]);
+
+            foreach ($participants as $participantId) {
+            DB::table('avis')->insert([
+                'utilisateur_id' => $participantId,
+                'covoiturage_id' => $covoiturage->covoiturage_id,
+                'statut' => 'en attente'
+            ]);
+        }
 
             return back()->with('successStop', 'Le voyage est terminé !');
         } catch(\Exception){

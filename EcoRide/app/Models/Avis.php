@@ -20,12 +20,21 @@ class Avis extends Model
         'commentaire',
         'note',
         'statut',
+        'good_trip',
+        'covoiturage_id',
         'utilisateur_id',
+
     ];
 
     //Get foreign key 'utilisateur_id'
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateurs::class, 'utilisateur_id');
+    }
+
+    //Get foreign key 'covoiturage_id'
+    public function covoiturage()
+    {
+        return $this->belongsTo(Covoiturage::class, 'covoiturage_id');
     }
 }

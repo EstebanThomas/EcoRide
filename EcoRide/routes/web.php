@@ -80,3 +80,21 @@ Route::post('/voyage/{id}/arreter', [CovoiturageController::class, 'arreterCovoi
 Route::get('/contact', [ContactController::class, 'showContact'])->name('contact.form');
 
 Route::post('/contact', [ContactController::class, 'sendEmail'])->name('contact.send');
+
+Route::post('/espace-administrateur', [UtilisateurController::class, 'showAdmin'])->name('espaceAdministrateur');
+
+Route::post('/espace-employe', [UtilisateurController::class, 'showEmploye'])->name('espaceEmploye');
+
+Route::post('/creation-employe', [UtilisateurController::class, 'createAccountEmploye'])->name('employe.creation');
+
+Route::post('/admin/utilisateur/{id}/suspendre', [UtilisateurController::class, 'suspendreCompte'])->name('admin.suspendre');
+
+Route::post('/admin/utilisateur/{id}/reactiver', [UtilisateurController::class, 'activerCompte'])->name('admin.reactiver');
+
+Route::post('/admin/utilisateur/rechercher', [UtilisateurController::class, 'afficherUtilisateurParEmail'])->name('admin.rechercher');
+
+Route::post('/avis', [UtilisateurController::class, 'avisCreate'])->name('avis.create');
+
+Route::post('/employe/avis/{avis}/valider/{covoiturage}', [UtilisateurController::class, 'AvisValider'])->name('avis.valider');
+
+Route::post('/employe/avis/{id}/refuser', [UtilisateurController::class, 'AvisRefuser'])->name('avis.refuser');

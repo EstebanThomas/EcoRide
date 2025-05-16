@@ -84,4 +84,68 @@
         </div>
     </div>
 
+    <!-- Redirect ADMIN -->
+    @if(session('redirect_admin'))
+        <form id="redirectAdminForm" action="{{ route('espaceAdministrateur') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+        <script>
+            document.getElementById('redirectAdminForm').submit();
+        </script>
+    @endif
+
+    <!-- Redirect EMPLOYEE -->
+    @if(session('redirect_employe'))
+        <form id="redirectEmployeForm" action="{{ route('espaceEmploye') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+        <script>
+            document.getElementById('redirectEmployeForm').submit();
+        </script>
+    @endif
+
+    @if(session('successAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvis')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('successAvisRefus'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successAvisRefus')),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('errorAvis'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('errorAvis')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 @endsection

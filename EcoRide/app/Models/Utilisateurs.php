@@ -34,6 +34,8 @@ class Utilisateurs extends Authenticatable
         'couleur',
         'energie',
         'credits',
+        'suspendu',
+        'role_id',
     ];
 
     public function covoiturages()
@@ -54,5 +56,10 @@ class Utilisateurs extends Authenticatable
     public function avis()
     {
         return $this->hasMany(Avis::class, 'utilisateur_id');
+    }
+
+        public function roles()
+    {
+        return $this->belongsTo(Roles::class, 'role_id');
     }
 }

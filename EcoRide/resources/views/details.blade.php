@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="w-full h-full mt-75 xl:mt-5 flex justify-center items-center flex-col">
-        <div class="flex flex-row">
+        <div class="flex flex-row ml-2 mr-2">
             <div class="flex flex-row justify-center items-center gap-5 w-2/3 border-4 border-green1 rounded-3xl p-1">
                 <div>
                     @if($covoiturage->utilisateur->photo)
@@ -12,12 +12,16 @@
                         <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-3xl object-cover m-10">
                     @endif
                 </div>
-                <div class="m-5 ml-15">
-                    <p class="text-4xl font-second text-center text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
+                <div class="flex flex-col justify-center items-center gap-10">
+                    <p class="text-4xl font-second text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
+                    <p class="text-4xl font-second text-black flex flex-row items-center justify-center gap-2">
+                        {{ number_format($moyenneNote, 1) }}
+                        <img src="{{ asset('images/Note.svg') }}" alt="Logo note" class="w-10 h-10">
+                    </p>
                 </div>
                 <div class="flex flex-col justify-center items-center gap-2 border border-green1 rounded-3xl bg-green4 p-5 mr-5">
-                    <p class="text-4xl font-second text-black uppercase">{{ $covoiturage->voiture->marque->libelle }}</p>
-                    <p class="text-4xl font-second text-black uppercase">{{ $covoiturage->voiture->modele }}</p>
+                    <p class="text-4xl font-second text-black uppercase text-center">{{ $covoiturage->voiture->marque->libelle }}</p>
+                    <p class="text-4xl font-second text-black uppercase text-center">{{ $covoiturage->voiture->modele }}</p>
                     @if($covoiturage->voiture->energie === 'Oui')
                         <p class="text-4xl font-second text-black uppercase">électrique</p>
                     @endif
@@ -120,8 +124,36 @@
             </div>
         </div>
 
-        <!--Comments-->
-        <div class="mt-5 w-4/6 flex flex-col justify-center items-center mb-5">
+        <!--Reviews-->
+        <div class="mt-5 w-3/4 flex flex-col justify-center items-center mb-5">
+            <h1 class="text-6xl font-second text-black uppercase m-2">
+                AVIS
+            </h1>
+            <div class="border-4 rounded-3xl w-3/4 border-green1 p-2 overflow-y-auto h-200 flex flex-col items-center gap-4">
+                @forelse($avis as $a)
+                    <div class="border-3 border-green2 rounded-3xl p-4 my-2 w-full xl:w-200 text-5xl font-second">
+                        <p class="flex flex-row justify-center items-center gap-5 p-1">
+                            @if($covoiturage->utilisateur->photo)
+                                <img src="{{ asset('storage/' .$a->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
+                            @else
+                                <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-full object-cover m-2 border">
+                            @endif
+                            {{ $a->utilisateur->pseudo }}
+                        </p>
+                        <p class="flex flex-row justify-center items-center gap-2 p-1">
+                            {{ $a->note }} / 5
+                            <img src="{{ asset('images/Note.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                        </p>
+                        <p class="flex justify-center items-center">
+                            {{ $a->good_trip ? 'Le voyage s\'est bien passé' : 'Le voyage ne s\'est pas bien passé' }}
+                        </p>
+                        <p><strong>Commentaire :</strong><br> {{ $a->commentaire }}</p>
+                    </div>
+                @empty
+                    <p class="text-4xl font-second text-gray-600">Aucun avis n’a encore été publié sur ce conducteur.</p>
+                @endforelse
+            </div>
+
         </div>
 
     </div>

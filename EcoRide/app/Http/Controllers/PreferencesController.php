@@ -43,8 +43,7 @@ class PreferencesController extends Controller
                 ]
             );
             return redirect()->route('espaceUtilisateur')->with('successPreferences', 'Préférences ajoutées !');
-        } catch (\Exception $e) {
-            Log::error('Erreur lors de l\'ajout des préférences : '.$e->getMessage());
+        } catch (\Exception) {
             return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de l\'ajout. Veuillez réessayer.']);
         }
     }
