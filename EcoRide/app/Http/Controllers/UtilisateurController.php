@@ -406,21 +406,25 @@ class UtilisateurController extends Authenticatable
         }
     }
 
-    public function avisValider($id)
+    public function avisValider($avis_id, $covoiturage_id)
     {
         try {
-            $avis = Avis::findOrFail($id);
+            $avis = Avis::findOrFail($avis_id);
+            $covoiturage = Covoiturage::findOrFail($covoiturage_id);
 
             $avis->statut = 'valide';
             $avis->save();
 
-            $covoiturageID = $avis->covoiturage_id;
+            $avisTemp = Avis::where('utilisateur_id', $covoiturage->utilisateur_id)
+                            ->where('statut', 'temporaire')
+                            ->first();
 
-            // return back()->with('successAvis', 'L\'avis a été validé avec succès.');
+            if ($avisTemp) {
+                $avisTemp->delete();
+            }
+
             return redirect()->route('home')->with('successAvis', 'L\'avis a été validé avec succès.');
         } catch (\Exception $e) {
-            $covoiturageID = $avis->covoiturage_id;
-            // return back()->with('errorAvis', 'Erreur lors de la validation de l\'avis : ' . $e->getMessage());
             return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
         }
     }
@@ -432,14 +436,9 @@ class UtilisateurController extends Authenticatable
             $avis->statut = 'refuse';
             $avis->save();
 
-            $covoiturageID = $avis->covoiturage_id;
-
-            // return back()->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
-            return redirect()->route('details', ['id' => $covoiturageID])->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
+            return redirect()->route('home')->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
         } catch (\Exception $e) {
-            $covoiturageID = $avis->covoiturage_id;
-            // return back()->with('errorAvisRefus', 'Une erreur est survenue lors du refus de l\'avis : ' . $e->getMessage());
-            return redirect()->route('details', ['id' => $covoiturageID])->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+            return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
         }
     }
 }

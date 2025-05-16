@@ -25,7 +25,7 @@
 
                     <!-- Actions (valider / refuser) -->
                     <div class="flex flex-row justify-center items-center gap-2">
-                        <form action="{{ route('avis.valider', $avis->avis_id) }}" method="POST" class="inline-block mr-2">
+                        <form action="{{ route('avis.valider', ['avis' => $avis->avis_id, 'covoiturage' => $avis->covoiturage->covoiturage_id]) }}" method="POST" class="inline-block mr-2">
                             @csrf
                             <button class="bg-green1 hover:bg-green2 active:bg-green1 border-2 p-2 rounded-3xl">Valider</button>
                         </form>
