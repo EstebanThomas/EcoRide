@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;  
 use App\Models\Utilisateurs;
+use App\Models\Commission;
 use App\Mail\VoyageAnnule;
 use Illuminate\Support\Facades\Mail;
 
@@ -347,6 +348,12 @@ class CovoiturageController extends Controller
             DB::table('utilisateurs')
                 ->where('role_id', 1)
                 ->increment('credits', 2);
+
+            DB::table('Commission')->insert([
+                'utilisateur_id' => $driver->utilisateur_id,
+                'montant' => 2,
+                'created_at' => now(),
+            ]);
 
             foreach ($participants as $participantId) {
             DB::table('avis')->insert([

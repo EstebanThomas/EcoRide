@@ -234,15 +234,25 @@ class UtilisateurController extends Authenticatable
 
     //Admin view
     public function showAdmin(){
-        $data = DB::table('covoiturage')
+        
+        $dataCovoiturages = DB::table('covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
+
+        $dataCommission = DB::table('commission')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get();
+
         $utilisateurs = Utilisateurs::where('role_id', 2)->get();
+
         return view('espace-administrateur',[
             'utilisateurs' => $utilisateurs,
-            'data' => $data
+            'dataCovoiturages' => $dataCovoiturages,
+            'dataCommission' => $dataCommission,
         ]);
     }
 

@@ -112,14 +112,16 @@
         </div>
 
         <!--Gaphics-->
+        
         <div>
             <p class="uppercase text-4xl font-second m-10 flex flex-row justify-center items-center gap-2">
                 Total de crédits gagné par la plateforme : {{Auth::user()->credits}}
                 <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
             </p>
 
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
             <div class="m-5">
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <canvas id="covoiturageChart" width="600" height="400"></canvas>
                 <script>
                     const ctx = document.getElementById('covoiturageChart').getContext('2d');
@@ -127,10 +129,10 @@
                     const chart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: {!! json_encode($data->pluck('jour')) !!},
+                            labels: {!! json_encode($dataCovoiturages->pluck('jour')) !!},
                             datasets: [{
                                 label: 'Nombre de covoiturages par jour',
-                                data: {!! json_encode($data->pluck('total')) !!},
+                                data: {!! json_encode($dataCovoiturages->pluck('total')) !!},
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                 fill: true,
@@ -157,6 +159,28 @@
                     });
                 </script>
             </div>
+        </div>
+
+        <div class="m-5">
+            <canvas id="creditsChart" width="600" height="400"></canvas>
+
+            <script>
+                const ctx2 = document.getElementById('creditsChart').getContext('2d');
+                const chart2 = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: {!! json_encode($dataCommission->pluck('date')) !!},
+                        datasets: [{
+                            label: 'Crédits gagnés',
+                            data: {!! json_encode($dataCommission->pluck('total_credits')) !!},
+                            backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 2,
+                            fill: true
+                        }]
+                    }
+                });
+            </script>
         </div>
     </div>
 
