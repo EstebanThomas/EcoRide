@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;  
 use App\Models\Utilisateurs;
+use App\Mail\VoyageAnnule;
+use Illuminate\Support\Facades\Mail;
 
 class CovoiturageController extends Controller
 {
@@ -178,10 +180,10 @@ class CovoiturageController extends Controller
     }
 
     //Cancel a ride
-    public function annulerVoyage($voiture_id)
+    public function annulerVoyage($covoiturage_id)
     {
         try {
-            $voyage = Covoiturage::findOrFail($voiture_id);
+            $voyage = Covoiturage::findOrFail($covoiturage_id);
 
             if ($voyage->utilisateur_id !== Auth::id()) {
                 return response()->json(['message' => 'Non autorisé.'], 403);
@@ -192,8 +194,25 @@ class CovoiturageController extends Controller
             $voyage->statut = 'annulé';
             $voyage->save();
 
+            $participants = $voyage->participants ? json_decode($voyage->participants, true) : [];
+
+            foreach ($participants as $participantId) {
+                $utilisateur = Utilisateurs::find($participantId);
+                if ($utilisateur) {
+                    $utilisateur->credits += $voyage->prix_personne;
+                    $utilisateur->save();
+                    
+                    try{
+                        Mail::to($utilisateur->email)->send(new VoyageAnnule($utilisateur, $voyage));
+                    } catch (\Exception $e) {
+                        Log::error("Erreur envoi mail à {$utilisateur->email} : " . $e->getMessage());
+                    }
+                    
+                }
+            }
+
             return response()->json(['message' => 'Voyage annulé.'], 200);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return response()->json(['message' => 'Erreur lors de l\'annulation du voyage.'], 500);
         }
     }

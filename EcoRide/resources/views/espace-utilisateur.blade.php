@@ -342,11 +342,13 @@
                             <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
                             <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
                             <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
-                            <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
-                                class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
-                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
-                                <p class="text-3xl font-second">Détails</p>
-                            </button>
+                            @if($voyage->statut === 'disponible')
+                                <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
+                                    class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
+                                    <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                    <p class="text-3xl font-second">Détails</p>
+                                </button>
+                            @endif
                         </div>
                     @empty
                         <p class="text-5xl font-second text-center text-gray-600">Aucun voyage trouvé.</p>
@@ -708,7 +710,7 @@
         nbPlace.addEventListener('input', updatePrice);
 
 
-        //Delete ride
+        //Cancel ride
         function annulerVoyage(id){
             Swal.fire({
                 title: 'Annuler ce voyage ?',
