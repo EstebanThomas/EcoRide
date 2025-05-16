@@ -43,6 +43,12 @@ class CovoiturageController extends Controller
 
             $driver = $covoiturage->utilisateur;
 
+            $moyenneNote = Avis::where('statut', 'valide')
+                                ->whereHas('covoiturage', function ($query) use ($driver){
+                                    $query->where('utilisateur_id', $driver->utilisateur_id);
+                                })
+                                ->avg('note');
+
             $avis = Avis::where('statut', 'valide')
                 ->whereHas('covoiturage', function($query) use ($driver){
                     $query->where('utilisateur_id', $driver->utilisateur_id);
@@ -55,6 +61,7 @@ class CovoiturageController extends Controller
                 'alreadyParticipating' => $alreadyParticipating,
                 'user' => $user,
                 'avis' => $avis,
+                'moyenneNote' => $moyenneNote,
             ]);
         } catch (\Exception) {
             return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);

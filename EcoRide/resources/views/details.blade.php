@@ -12,12 +12,16 @@
                         <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-3xl object-cover m-10">
                     @endif
                 </div>
-                <div class="m-5 ml-15">
-                    <p class="text-4xl font-second text-center text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
+                <div class="flex flex-col justify-center items-center gap-10">
+                    <p class="text-4xl font-second text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
+                    <p class="text-4xl font-second text-black flex flex-row items-center justify-center gap-2">
+                        {{ number_format($moyenneNote, 1) }}
+                        <img src="{{ asset('images/Note.svg') }}" alt="Logo note" class="w-10 h-10">
+                    </p>
                 </div>
                 <div class="flex flex-col justify-center items-center gap-2 border border-green1 rounded-3xl bg-green4 p-5 mr-5">
-                    <p class="text-4xl font-second text-black uppercase">{{ $covoiturage->voiture->marque->libelle }}</p>
-                    <p class="text-4xl font-second text-black uppercase">{{ $covoiturage->voiture->modele }}</p>
+                    <p class="text-4xl font-second text-black uppercase text-center">{{ $covoiturage->voiture->marque->libelle }}</p>
+                    <p class="text-4xl font-second text-black uppercase text-center">{{ $covoiturage->voiture->modele }}</p>
                     @if($covoiturage->voiture->energie === 'Oui')
                         <p class="text-4xl font-second text-black uppercase">électrique</p>
                     @endif
