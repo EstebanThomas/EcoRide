@@ -23,12 +23,13 @@ class CovoiturageController extends Controller
 
     public function showCovoiturage()
     {
-        $covoiturages = Covoiturage::where('statut', 'disponible')->get();
+        $covoiturages = Covoiturage::where('statut', 'disponible')->with('utilisateur', 'avis')->get();
+
         $utilisateur= Auth::user();
 
         return view('covoiturages', [
             'covoiturages' => $covoiturages,
-            'utilisateur' => $utilisateur
+            'utilisateur' => $utilisateur,
         ]);
     }
 
@@ -46,12 +47,6 @@ class CovoiturageController extends Controller
 
             $driver = $covoiturage->utilisateur;
 
-            $moyenneNote = Avis::where('statut', 'valide')
-                                ->whereHas('covoiturage', function ($query) use ($driver){
-                                    $query->where('utilisateur_id', $driver->utilisateur_id);
-                                })
-                                ->avg('note');
-
             $avis = Avis::where('statut', 'valide')
                 ->whereHas('covoiturage', function($query) use ($driver){
                     $query->where('utilisateur_id', $driver->utilisateur_id);
@@ -64,7 +59,6 @@ class CovoiturageController extends Controller
                 'alreadyParticipating' => $alreadyParticipating,
                 'user' => $user,
                 'avis' => $avis,
-                'moyenneNote' => $moyenneNote,
             ]);
         } catch (\Exception) {
             return redirect()->back()->withErrors(['message' => 'Une erreur est survenue lors de la récupération des détails. Veuillez réessayer.']);
@@ -125,7 +119,7 @@ class CovoiturageController extends Controller
             'ecologique_filtre' => 'nullable|in:Oui,Non',
             'prix_max' => 'nullable|numeric|min:0|max:100',
             'duree_max' => 'nullable|date_format:H:i',
-            'note_minimale' => 'nullable|integer|min:1|max:5',
+            'note_minimale' => 'nullable|integer|min:0|max:5',
         ]);
 
         try {
@@ -152,9 +146,8 @@ class CovoiturageController extends Controller
             }
 
             if ($request->filled('note_minimale')) {
-                $query->whereHas('utilisateur.avis', function ($q) use ($validated) {
-                    $q->select(DB::raw('AVG(note) as moyenne'))->groupBy('utilisateur_id')
-                        ->havingRaw('AVG(note) >= ?', [$validated['note_minimale']]);
+                $query->whereHas('utilisateur', function ($q) use ($validated) {
+                    $q->where('note', '>=', $validated['note_minimale']);
                 });
             }
 

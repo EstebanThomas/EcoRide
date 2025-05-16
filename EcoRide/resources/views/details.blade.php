@@ -15,7 +15,7 @@
                 <div class="flex flex-col justify-center items-center gap-10">
                     <p class="text-4xl font-second text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
                     <p class="text-4xl font-second text-black flex flex-row items-center justify-center gap-2">
-                        {{ number_format($moyenneNote, 1) }}
+                        {{-- {{ number_format($moyenneNote, 1) }} --}} {{$covoiturage->utilisateur->note}}
                         <img src="{{ asset('images/Note.svg') }}" alt="Logo note" class="w-10 h-10">
                     </p>
                 </div>

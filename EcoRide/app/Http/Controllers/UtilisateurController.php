@@ -276,15 +276,23 @@ class UtilisateurController extends Authenticatable
     }
 
     public function showAdminWithMessage($message, $text){
-        $data = DB::table('covoiturage')
+        $dataCovoiturages = DB::table('covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
+
+        $dataCommission = DB::table('commission')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get();
+
         $utilisateurs = Utilisateurs::where('role_id', 2)->get();
         return view('espace-administrateur',array_merge([
             'utilisateurs' => $utilisateurs,
-            'data' => $data
+            'dataCovoiturages' => $dataCovoiturages,
+            'dataCommission' => $dataCommission,
         ], [
             $message => $text
 
@@ -362,16 +370,24 @@ class UtilisateurController extends Authenticatable
 
             if ($utilisateurSearch) {
                 $utilisateurs = Utilisateurs::where('role_id', 2)->get();
-                $data = DB::table('covoiturage')
+                $dataCovoiturages = DB::table('covoiturage')
                     ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
                     ->groupBy('jour')
                     ->orderBy('jour', 'asc')
                     ->get();
+
+                $dataCommission = DB::table('commission')
+                    ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
+                    ->groupBy(DB::raw('DATE(created_at)'))
+                    ->orderBy('date')
+                    ->get();
+
                 return view('espace-administrateur', [
                     'utilisateurs' => $utilisateurs,
                     'utilisateurSearch' => $utilisateurSearch,
                     'successSearch' => 'Recherche effectuée !',
-                    'data' => $data
+                    'dataCovoiturages' => $dataCovoiturages,
+                    'dataCommission' => $dataCommission,
                 ]);
             } else {
                 return $this->showAdminWithMessage('errorSuspend', 'Une erreur est survenue !');
@@ -399,11 +415,15 @@ class UtilisateurController extends Authenticatable
                 ->first();
 
             if($avis){
+                $covoiturage = Covoiturage::findOrFail($validated['covoiturage_id']);
+                $conducteur_id = $covoiturage->utilisateur_id;
+
                 $avis->covoiturage_id = $validated['covoiturage_id'];
                 $avis->commentaire = $validated['commentaire'];
                 $avis->note = $validated['note'];
                 $avis->statut = 'validation';
                 $avis->good_trip = $request->has('good_trip'); //checked = true
+                $avis->conducteur_id = $conducteur_id;
                 $avis->save();
             } else {
                 return back()->with('errorAvis', 'Aucun avis en attente trouvé.');
@@ -432,6 +452,17 @@ class UtilisateurController extends Authenticatable
             if ($avisTemp) {
                 $avisTemp->delete();
             }
+
+            //Update notation in utilisateurs
+            $conducteurId = $avis->conducteur_id;
+            $conducteur = Utilisateurs::find($conducteurId);
+
+            $moyenne = Avis::where('conducteur_id', $conducteurId)
+                            ->where('statut', 'valide')
+                            ->avg('note');
+            
+            $conducteur->note = $moyenne;
+            $conducteur->save();
 
             return redirect()->route('home')->with('successAvis', 'L\'avis a été validé avec succès.');
         } catch (\Exception $e) {

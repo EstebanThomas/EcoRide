@@ -119,9 +119,9 @@
                             Note minimale
                         </p>
                         <div class="flex flex-row justify-center items-center gap-2">
-                            <input type="integer" id="note_minimale" name="note_minimale"
+                            <input type="number" id="note_minimale" name="note_minimale"
                             class="bg-gray-300 font-second text-4xl uppercase text-center w-10"
-                            min="1" max="5" value="{{ old('note_minimale', $note_minimale ?? 1) }}"/>
+                            min="0" max="5" value="{{ old('note_minimale', $note_minimale ?? 1) }}"/>
                             <p class="text-4xl font-second uppercase text-center">
                                 / 5
                             </p>
@@ -149,6 +149,10 @@
                                     <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover m-2">
                                 @endif
                                 <p class="text-4xl font-second text-center text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
+                                <p class="text-4xl font-second text-center text-black flex flex-row justify-center items-center gap-2">
+                                    {{$covoiturage->utilisateur->note}} 
+                                    <img src="{{ asset('images/Note.svg') }}" alt="Logo Note" class="w-10 h-10">
+                                </p>
                             </div>
                             <div class="bg-white border border-black rounded-r-3xl w-4/6 h-full flex flex-col gap-5">
                                 <div class="border-b border-black w-full h-1/2 flex flex-row gap-3">
