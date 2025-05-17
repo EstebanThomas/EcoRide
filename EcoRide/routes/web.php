@@ -8,6 +8,10 @@ use App\Http\Controllers\PreferencesController;
 use App\Http\Controllers\CovoiturageController;
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\ContactController;
+use MongoDB\Client;
+use App\Services\MongoService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('home');
@@ -100,3 +104,30 @@ Route::post('/employe/avis/{avis}/valider/{covoiturage}', [UtilisateurController
 Route::post('/employe/avis/{id}/refuser', [UtilisateurController::class, 'AvisRefuser'])->name('avis.refuser');
 
 Route::post('/employe/avis/{avis}/resolu/{covoiturage}', [UtilisateurController::class, 'AvisResolu'])->name('avis.resolu');
+
+Route::middleware('auth')->post('/user/role', function(Request $request, MongoService $mongoService) {
+    $roles = $request->input('roles');
+    if (!is_array($roles)) {
+        return response()->json(['error' => 'Invalid roles format'], 400);
+    }
+
+    $userId = Auth::user()->utilisateur_id;
+    $mongoService->setRoles($userId, $roles);
+
+    return response()->json(['success' => true]);
+});
+
+Route::get('/test-mongo', function () {
+    $client = new Client("mongodb://localhost:27017"); // modifie l'URL si besoin
+    $db = $client->selectDatabase('test_db');
+    $collection = $db->selectCollection('test_collection');
+
+    $result = $collection->insertOne([
+        'name' => 'Test MongoDB',
+        'created_at' => now(),
+    ]);
+
+    return response()->json([
+        'inserted_id' => (string) $result->getInsertedId()
+    ]);
+});

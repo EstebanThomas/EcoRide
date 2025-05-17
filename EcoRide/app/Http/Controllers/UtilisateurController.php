@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\MongoService;
 
 class UtilisateurController extends Authenticatable
 {
@@ -36,7 +37,7 @@ class UtilisateurController extends Authenticatable
         return view('connexion');
     }
 
-    public function showProfile()
+    public function showProfile(MongoService $mongoService)
     {
         //Get preferences for placeholders
         $preferences = Preferences::where('utilisateur_id', Auth::id())->first();
@@ -72,6 +73,9 @@ class UtilisateurController extends Authenticatable
             ->where('statut', 'en attente')
             ->get();
 
+        $userId = (string) Auth::user()->utilisateur_id;
+        $roles = $mongoService->getRoles($userId);
+
         return view('/espace-utilisateur', [
             'preferences' => $preferences,
             'marques' => $marques,
@@ -80,11 +84,12 @@ class UtilisateurController extends Authenticatable
             'voyagesHistory' => $voyagesHistory,
             'utilisateur' => $utilisateur,
             'avisEnAttente' => $avisEnAttente,
+            'roles' => $roles,
         ]);
     }
 
     //createAccount Form
-    public function createAccount(Request $request)
+    public function createAccount(Request $request, MongoService $mongoService)
     {
         $validated = $request->validate([
             'pseudo' => 'required|max:20',
@@ -108,6 +113,8 @@ class UtilisateurController extends Authenticatable
             'utilisateur_id' => Auth::user()->utilisateur_id,
             'statut' => 'temporaire',
         ]);
+
+        $mongoService->setRoles($user->utilisateur_id, ['passager']);
 
         return redirect()->route('espaceUtilisateur');
     }

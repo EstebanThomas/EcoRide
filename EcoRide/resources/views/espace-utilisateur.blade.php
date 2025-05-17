@@ -114,10 +114,12 @@
                     <button type="submit" class="text-4xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">DECONNEXION</button>
                 </form>
 
-
                 <div>
-                    <button id="chauffeur/passager" class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 active:border-green1 rounded-3xl p-3 hover:border-green3"></button>
+                    <button id="chauffeur/passager" 
+                    class="text-4xl tracking-wide font-second flex flex-col justify-center items-center border-4 border-green1 active:border-green1 rounded-3xl p-3 hover:border-green3">
+                    </button>
                 </div>
+
             </div>
 
             <div>
@@ -137,9 +139,6 @@
             </button>
             <button id="sectionSaisirVoyage" onclick="ShowSection('sectionSaisirVoyage')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
             Voyages
-            </button>
-            <button id="sectionHistorique" onclick="ShowSection('sectionHistorique')" class="text-4xl font-second tracking-wide text-center hover:text-green1">
-            Historique
             </button>
         </div>
 
@@ -332,31 +331,6 @@
 
             </div>
 
-            <div id="sectionHistorique" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
-                <p class="text-4xl font-second text-center mb-5">Historique</p>
-                <div class="flex flex-row w-full gap-5 overflow-x-auto">
-                    @forelse($voyagesHistory as $voyage)
-                        <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
-                            <h3 class="text-4xl font-second text-green1 text-shadow-lg">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
-                            <p class="text-3xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
-                            <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
-                            <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
-                            <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
-                            @if($voyage->statut === 'disponible')
-                                <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
-                                    class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
-                                    <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
-                                    <p class="text-3xl font-second">Détails</p>
-                                </button>
-                            @endif
-                        </div>
-                    @empty
-                        <p class="text-5xl font-second text-center text-gray-600">Aucun voyage trouvé.</p>
-                    @endforelse
-                </div>
-
-            </div>
-
             <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
                 <div class="flex flex-col border-2 border-green1 w-full h-160 rounded-3xl p-2">
@@ -454,9 +428,34 @@
                             })
                         </script>
                     @endif
+                </div>
             
             </div>
 
+        </div>
+
+        <div id="sectionHistorique" class="flex flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl">
+            <p class="text-4xl font-second text-center mb-5">Historique</p>
+            <div class="flex flex-row w-full gap-5 overflow-x-auto">
+                @forelse($voyagesHistory as $voyage)
+                    <div class="border-2 border-green1 rounded-3xl p-4 mb-4 flex-shrink-0">
+                        <h3 class="text-4xl font-second text-green1 text-shadow-lg">De {{ $voyage->lieu_depart }} à {{ $voyage->lieu_arrivee }}</h3>
+                        <p class="text-3xl font-second">Départ : {{ \Carbon\Carbon::parse($voyage->date_depart)->format('d/m/Y') }}</p>
+                        <p class="text-3xl font-second">Statut : {{ ucfirst($voyage->statut) }}</p>
+                        <p class="text-3xl font-second">Voiture : {{ $voyage->voiture->marque->libelle ?? 'Aucune' }} {{ $voyage->voiture->modele ?? 'Aucune' }}</p>
+                        <p class="text-3xl font-second">Conducteur : {{ $voyage->utilisateur->pseudo ?? '' }}</p>
+                        @if($voyage->statut === 'disponible')
+                            <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
+                                class="flex flex-row justify-center items-center gap-2 text-4xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
+                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                <p class="text-3xl font-second">Détails</p>
+                            </button>
+                        @endif
+                    </div>
+                @empty
+                    <p class="text-5xl font-second text-center text-gray-600">Aucun voyage trouvé.</p>
+                @endforelse
+            </div>
         </div>
 
     </div>
@@ -522,35 +521,65 @@
         //Select chauffeur/passager
         const chauffeurPassagerButton = document.getElementById("chauffeur/passager");
 
+        const sections = document.getElementById("sections");
+
         const imgButton = document.createElement('img');
 
-        chauffeurPassagerButton.textContent = 'Passager';
-        imgButton.src = "{{ asset('images/Passager.svg') }}";
-        imgButton.alt = 'Logo passager';
-        chauffeurPassagerButton.appendChild(imgButton);
         imgButton.style.width = '100%';
 
         const sectionChauffeur = document.getElementById("sectionChauffeur");
 
-        chauffeurPassagerButton.addEventListener('click', function() {
-            if (chauffeurPassagerButton.innerText === "Passager") {
+        const userRoles = @json($roles);
+
+        function updateDisplay(role) {
+            chauffeurPassagerButton.setAttribute('data-role', role);
+            chauffeurPassagerButton.textContent = '';
+            if (role === 'chauffeur') {
                 chauffeurPassagerButton.textContent = 'Chauffeur';
                 imgButton.src = "{{ asset('images/Chauffeur.svg') }}";
                 imgButton.alt = 'Logo chauffeur';
                 chauffeurPassagerButton.appendChild(imgButton);
-                sectionChauffeur.classList.toggle('hidden');
-                sectionChauffeur.classList.toggle('flex');
-                sections.classList.toggle('hidden');
-            }
-            else{
+                sectionChauffeur.classList.remove('hidden');
+                sectionChauffeur.classList.add('flex');
+                sections.classList.remove('hidden');
+                sections.classList.add('flex');
+            } else {
                 chauffeurPassagerButton.textContent = 'Passager';
                 imgButton.src = "{{ asset('images/Passager.svg') }}";
                 imgButton.alt = 'Logo passager';
                 chauffeurPassagerButton.appendChild(imgButton);
-                sectionChauffeur.classList.toggle('hidden');
-                sectionChauffeur.classList.toggle('flex');
-                sections.classList.toggle('hidden');
+                sectionChauffeur.classList.add('hidden');
+                sectionChauffeur.classList.remove('flex');
+                sections.classList.add('hidden');
+                sections.classList.remove('flex');
             }
+        }
+
+        let currentRole = userRoles.length > 0 ? userRoles[0] : 'passager';
+        updateDisplay(currentRole);
+
+        chauffeurPassagerButton.addEventListener('click', function() {
+            let newRole = currentRole === 'passager' ? 'chauffeur' : 'passager';
+
+            fetch('/user/role', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ roles: [newRole] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentRole = newRole;
+                    updateDisplay(currentRole);
+                } else {
+                    alert('Erreur lors de la mise à jour du rôle.');
+                }
+            })
+            .catch(e => alert('Erreur réseau : ' + e.message));
         });
 
         //Show/Hide sections
