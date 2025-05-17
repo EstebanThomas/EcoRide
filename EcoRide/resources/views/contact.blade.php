@@ -10,24 +10,24 @@
             @csrf
 
             <div>
-                <label class="font-second text-5xl">Nom :</label>
-                <input type="text" name="name" value="{{ old('name') }}" class="w-150 border p-2 font-second text-5xl" required>
-                @error('name') <p class="text-red-500 font-second text-5xl">{{ $message }}</p> @enderror
+                <label class="font-second text-5xl xl:text-2xl">Nom :</label>
+                <input type="text" name="name" value="{{ old('name') }}" class="w-150 border p-2 font-second text-5xl xl:text-2xl" required>
+                @error('name') <p class="text-red-500 font-second text-5xl xl:text-2xl">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="font-second text-5xl">Email :</label>
-                <input type="email" name="email" value="{{ old('email') }}" class="w-150 border p-2 font-second text-5xl" required>
-                @error('email') <p class="text-red-500 font-second text-5xl">{{ $message }}</p> @enderror
+                <label class="font-second text-5xl xl:text-2xl">Email :</label>
+                <input type="email" name="email" value="{{ old('email') }}" class="w-150 border p-2 font-second text-5xl xl:text-2xl" required>
+                @error('email') <p class="text-red-500 font-second text-5xl xl:text-2xl">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="font-second text-5xl">Message :</label>
-                <textarea name="message" rows="5" class="w-180 border p-2 font-second text-5xl" required>{{ old('message') }}</textarea>
-                @error('message') <p class="text-red-500 font-second text-5xl">{{ $message }}</p> @enderror
+                <label class="font-second text-5xl xl:text-2xl">Message :</label>
+                <textarea name="message" rows="5" class="w-180 border p-2 font-second text-5xl xl:text-2xl" required>{{ old('message') }}</textarea>
+                @error('message') <p class="text-red-500 font-second text-5xl xl:text-2xl">{{ $message }}</p> @enderror
             </div>
 
-            <button type="submit" class="bg-green1 hover:bg-green2 active:bg-green1 text-black border border-black text-center rounded-3xl font-second text-6xl p-8 pt-1 pb-1">Envoyer</button>
+            <button type="submit" class="bg-green1 hover:bg-green2 active:bg-green1 text-black border border-black text-center rounded-3xl font-second text-6xl xl:text-2xl p-8 pt-1 pb-1">Envoyer</button>
         </form>
     </div>
 

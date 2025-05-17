@@ -13,32 +13,32 @@
 
                 @csrf
 
-                <h2 class="font-second text-5xl text-black text-center mt-2 mb-2 uppercase">
+                <h2 class="font-second text-5xl xl:text-3xl text-black text-center mt-2 mb-2 uppercase">
                     Créer un compte employé
                 </h2>
 
                 <div class="flex flex-col p-20 pt-10 pb-10 xl:pt-5 xl:pb-5">
-                    <label for="pseudo" class="font-second text-4xl">PSEUDO</label>
+                    <label for="pseudo" class="font-second text-4xl xl:text-2xl">PSEUDO</label>
                     <input type="text" id="pseudo" name="pseudo" placeholder="Entrez un pseudo" required
                     class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl uppercase placeholder-black p-2"/>
                 </div>
 
                 <div class="flex flex-col p-20 pt-10 pb-10 xl:pt-5 xl:pb-5">
-                    <label for="mail" class="font-second text-4xl">MAIL</label>
+                    <label for="mail" class="font-second text-4xl xl:text-2xl">MAIL</label>
                     <input type="email" id="mail" name="mail" placeholder="Entrez un adresse mail valide" required
                     class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl uppercase placeholder-black p-2"/>
                 </div>
 
                 <div class="flex flex-col p-20 pt-10 pb-10 xl:pt-5 xl:pb-5">
                     <div>
-                        <label for="password" class="font-second text-4xl">MOT DE PASSE</label>
+                        <label for="password" class="font-second text-4xl xl:text-2xl">MOT DE PASSE</label>
                         <input type="password" id="password" name="password" placeholder="Entrez un mot de passe valide" required minlength="12" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$"
                         title="Le mote de passe doit contenir : au moins 12 caractères, au moins une minuscule, au moins une majuscule et au moins un chiffre."
                         class="bg-green4 w-full h-18 xl:h-10 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl placeholder-black p-2"/>
                     </div>
 
                 <div class="flex flex-col justify-center items-center mt-2 p-20 pt-10 pb-10 xl:pt-5 xl:pb-5">
-                    <button type="submit" class="uppercase border-2 border-black text-4xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl w-2xs h-18 xl:w-3xs xl:h-12">
+                    <button type="submit" class="flex justify-center items-center uppercase border-2 border-black text-4xl xl:text-2xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl w-2xs h-18 xl:w-3xs xl:h-12 p-1">
                         Enregistrer
                     </button>
                 </div>
@@ -48,28 +48,28 @@
 
         <!--Suspend an account-->
         <div class="mt-10 border-2 border-green1 rounded-3xl">
-            <h2 class="font-second text-5xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
+            <h2 class="font-second text-5xl xl:text-3xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
                 Suspendre un compte
             </h2>
-            <h2 class="font-second text-4xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
+            <h2 class="font-second text-4xl xl:text-2xl text-black text-center mt-2 mb-2 uppercase pl-20 pr-20">
                 Comptes employés
             </h2>
             @foreach ($utilisateurs as $user)
                 <div class="flex flex-col justify-center items-center gap-2 border rounded-3xl border-black m-4 ml-10 mr-10">
-                    <p class="text-3xl font-second text-black">{{ $user->pseudo }}</p>
-                    <p class="text-3xl font-second text-black">{{ $user->email }}</p>
+                    <p class="text-3xl xl:text-2xl font-second text-black">{{ $user->pseudo }}</p>
+                    <p class="text-3xl xl:text-2xl font-second text-black">{{ $user->email }}</p>
                     <p>
                         @if ($user->suspendu)
                             <form action="{{ route('admin.reactiver', $user->utilisateur_id) }}" method="POST">
                                 @csrf
-                                <button class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                                <button class="uppercase border-2 border-black text-3xl xl:text-2xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
                                     Réactiver
                                 </button>
                             </form>
                         @else
                             <form action="{{ route('admin.suspendre', $user->utilisateur_id) }}" method="POST">
                                 @csrf
-                                <button class="uppercase border-2 border-black text-3xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
+                                <button class="uppercase border-2 border-black text-3xl xl:text-2xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
                                     Suspendre
                                 </button>
                             </form>
@@ -81,28 +81,28 @@
             <!--Search an account-->
             <form method="POST" action="{{ route('admin.rechercher') }}" class="m-4 border-2 border-green1 rounded-3xl flex flex-col justify-center items-center gap-2 p-2">
                 @csrf
-                <input type="email" name="email" required placeholder="Entrer un email" class="text-3xl font-second bg-gray-200 rounded-3xl p-1 text-center">
-                <button type="submit" class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                <input type="email" name="email" required placeholder="Entrer un email" class="text-3xl xl:text-2xl font-second bg-gray-200 rounded-3xl p-1 text-center">
+                <button type="submit" class="uppercase border-2 border-black text-3xl xl:text-2xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
                     Rechercher
                 </button>
             </form>
 
             @if(isset($utilisateurSearch))
                 <div class="m-5 border-2 border-green1 rounded-3xl p-2 flex flex-col justify-center items-center gap-2">
-                    <p class="text-3xl font-second">Pseudo : {{ $utilisateurSearch->pseudo }}</p>
-                    <p class="text-3xl font-second">Email : {{ $utilisateurSearch->email }}</p>
-                    <p class="text-3xl font-second">Rôle : {{ $utilisateurSearch->roles->libelle }}</p>
+                    <p class="text-3xl xl:text-2xl font-second">Pseudo : {{ $utilisateurSearch->pseudo }}</p>
+                    <p class="text-3xl xl:text-2xl font-second">Email : {{ $utilisateurSearch->email }}</p>
+                    <p class="text-3xl xl:text-2xl font-second">Rôle : {{ $utilisateurSearch->roles->libelle }}</p>
                     @if ($utilisateurSearch->suspendu)
                         <form action="{{ route('admin.reactiver', $utilisateurSearch->utilisateur_id) }}" method="POST">
                             @csrf
-                            <button class="uppercase border-2 border-black text-3xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
+                            <button class="uppercase border-2 border-black text-3xl xl:text-2xl font-second bg-green1 hover:bg-green2 active:bg-green1 rounded-3xl p-1">
                                 Réactiver
                             </button>
                         </form>
                     @else
                         <form action="{{ route('admin.suspendre', $utilisateurSearch->utilisateur_id) }}" method="POST">
                             @csrf
-                            <button class="uppercase border-2 border-black text-3xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
+                            <button class="uppercase border-2 border-black text-3xl xl:text-2xl font-second bg-red-500 hover:bg-red-400 active:bg-red-500 rounded-3xl p-1">
                                 Suspendre
                             </button>
                         </form>
@@ -114,9 +114,9 @@
         <!--Gaphics-->
         
         <div>
-            <p class="uppercase text-4xl font-second m-5 flex flex-row justify-center items-center gap-1">
+            <p class="uppercase text-4xl xl:text-2xl font-second m-5 flex flex-row justify-center items-center gap-1">
                 Total de crédits gagné par la plateforme : 
-                <p class="uppercase text-6xl font-second flex flex-row justify-center items-center gap-2">
+                <p class="uppercase text-3xl font-second flex flex-row justify-center items-center gap-2">
                     {{Auth::user()->credits}}
                     <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
                 </p>
