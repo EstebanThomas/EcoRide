@@ -114,9 +114,12 @@
         <!--Gaphics-->
         
         <div>
-            <p class="uppercase text-4xl font-second m-10 flex flex-row justify-center items-center gap-2">
-                Total de crédits gagné par la plateforme : {{Auth::user()->credits}}
-                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+            <p class="uppercase text-4xl font-second m-5 flex flex-row justify-center items-center gap-1">
+                Total de crédits gagné par la plateforme : 
+                <p class="uppercase text-6xl font-second flex flex-row justify-center items-center gap-2">
+                    {{Auth::user()->credits}}
+                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                </p>
             </p>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

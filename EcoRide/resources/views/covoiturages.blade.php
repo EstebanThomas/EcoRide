@@ -175,14 +175,14 @@
                                         Détails
                                     </button>
                                 </div>
-                                <div class="w-full h-1/2 flex flex-col justify-center items-center gap-10">
+                                <div class="w-full h-1/2 flex flex-col justify-center items-center gap-5">
                                     <div class="w-full flex flex-row justify-center items-center gap-5">
                                         <img src="{{ asset('images/Date.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
                                         <p class="font-second text-5xl text-black">
                                             {{ \Carbon\Carbon::parse($covoiturage->date_depart)->format('d/m/Y') }}
                                         </p>
                                     </div>
-                                    <div class="flex flex-row justify-center gap-15">
+                                    <div class="flex flex-row justify-center gap-5 p-5">
                                         <div class="flex flex-row  items-center justify-center gap-2">
                                             <img src="{{ asset('images/Depart.svg') }}" alt="Logo de la date de départ" class="w-10 h-10">
                                             <p class="font-second text-5xl text-black">

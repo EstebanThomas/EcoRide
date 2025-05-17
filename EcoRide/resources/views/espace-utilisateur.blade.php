@@ -235,7 +235,7 @@
                     </div>
                 </div>
 
-                <form class="flex flex-col justify-center items-center gap-5 ml-5 mr-5" method="POST" action="{{ route('covoiturage.ajouter') }}">
+                <form class="flex flex-col justify-center items-center gap-7 ml-5 mr-5" method="POST" action="{{ route('covoiturage.ajouter') }}">
 
                     @csrf
 
@@ -291,7 +291,7 @@
                                 <span class="font-second text-4xl xl:text-3xl" id="prix_total"> - 2.00 </span>
                                 <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
                             </p>
-                            <p class="flex font-second text-3xl xl:text-2xl">
+                            <p class="flex font-second text-center text-3xl xl:text-2xl">
                                 (La plateforme prend 2 crédits de frais de service.)
                             </p>
                         </div>
@@ -331,7 +331,7 @@
 
             </div>
 
-            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
+            <div id="sectionVehicules" class="section flex-col justify-start w-200 xl:w-300 h-350 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
                 <div class="flex flex-col border-2 border-green1 w-full h-160 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes véhicules</p>
@@ -640,7 +640,7 @@
             vehicules.forEach(vehicule => {
 
                 const card = document.createElement('div');
-                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-70 h-140 flex-shrink-0";
+                card.className = "border-2 border-green1 shadow-md rounded-3xl p-4 w-100 h-205 flex-shrink-0";
                     card.innerHTML = `
                     <h2 class="flex justify-center text-4xl font-second mb-2">${vehicule.modele}</h2>
                     <p class="text-3xl font-second">Marque :<br><p class="text-4xl font-second tracking-wide">${vehicule.marque.libelle}</p></p>

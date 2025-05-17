@@ -3,13 +3,13 @@
 @section('content')
 
     <div class="w-full h-full mt-75 xl:mt-5 flex justify-center items-center flex-col">
-        <div class="flex flex-row ml-2 mr-2">
-            <div class="flex flex-row justify-center items-center gap-5 w-2/3 border-4 border-green1 rounded-3xl p-1">
+        <div class="flex flex-col xl:flex-row ml-2 mr-2 justify-center items-center gap-5 xl:gap-2">
+            <div class="flex flex-row justify-center items-center gap-10 xl:gap-5 w-full xl:w-2/3 border-4 border-green1 rounded-3xl p-5 xl:p-2">
                 <div>
                     @if($covoiturage->utilisateur->photo)
-                        <img src="{{ asset('storage/' .$covoiturage->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-3xl object-cover m-10">
+                        <img src="{{ asset('storage/' .$covoiturage->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-3xl object-cover m-5">
                     @else
-                        <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-3xl object-cover m-10">
+                        <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-3xl object-cover m-5">
                     @endif
                 </div>
                 <div class="flex flex-col justify-center items-center gap-10">
@@ -47,9 +47,12 @@
                 </form>
             @endif
         @if($user)
-            <div class="flex flex-row items-center justify-center gap-2 w-80">
-                <p class="text-5xl font-second text-black">Vous avez : {{$user->credits}}</p>
-                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+            <div class="flex flex-row xl:flex-col items-center justify-center gap-2 w-80">
+                <p class="text-5xl font-second text-black">Vous avez :</p>
+                <p class="flex flex-row justify-center items-center gap-2 text-5xl font-second text-black">
+                    {{$user->credits}}
+                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                </p>
             </div>
         @else
             <div class="flex flex-row items-center justify-center w-100">
@@ -125,11 +128,11 @@
         </div>
 
         <!--Reviews-->
-        <div class="mt-5 w-3/4 flex flex-col justify-center items-center mb-5">
+        <div class="mt-5 w-5/6 flex flex-col justify-center items-center mb-5">
             <h1 class="text-6xl font-second text-black uppercase m-2">
                 AVIS
             </h1>
-            <div class="border-4 rounded-3xl w-3/4 border-green1 p-2 overflow-y-auto h-200 flex flex-col items-center gap-4">
+            <div class="border-4 rounded-3xl w-5/6 border-green1 p-2 overflow-y-auto h-200 flex flex-col items-center gap-4">
                 @forelse($avis as $a)
                     <div class="border-3 border-green2 rounded-3xl p-4 my-2 w-full xl:w-200 text-5xl font-second">
                         <p class="flex flex-row justify-center items-center gap-5 p-1">
