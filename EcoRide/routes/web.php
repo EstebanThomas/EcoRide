@@ -98,3 +98,5 @@ Route::post('/avis', [UtilisateurController::class, 'avisCreate'])->name('avis.c
 Route::post('/employe/avis/{avis}/valider/{covoiturage}', [UtilisateurController::class, 'AvisValider'])->name('avis.valider');
 
 Route::post('/employe/avis/{id}/refuser', [UtilisateurController::class, 'AvisRefuser'])->name('avis.refuser');
+
+Route::post('/employe/avis/{avis}/resolu/{covoiturage}', [UtilisateurController::class, 'AvisResolu'])->name('avis.resolu');

@@ -55,6 +55,10 @@
                             <p>Commentaire : {{ $avis->commentaire }}</p>
                             <p>Note : {{ $avis->note }} / 5</p>
                             <p>Statut : {{ $avis->statut }}<p>
+                            <form action="{{ route('avis.resolu', ['avis' => $avis->avis_id, 'covoiturage' => $avis->covoiturage->covoiturage_id]) }}" method="POST" class="m-1 flex justify-center items-center">
+                                @csrf
+                                <button class="bg-green1 hover:bg-green2 active:bg-green1 border-2 p-2 rounded-3xl">Résolu</button>
+                            </form>
                         </div>
                     @endforeach
                 </div>

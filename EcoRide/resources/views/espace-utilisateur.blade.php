@@ -224,7 +224,7 @@
                                         @elseif($voyage->statut === 'en cours')
                                             <button type="button" onclick="arreterVoyage({{ $voyage->covoiturage_id }})"
                                             class="uppercase text-4xl tracking-wide text-center font-second border-2 border-black hover:bg-green2 bg-white rounded-3xl p-3">
-                                                Arrêter
+                                                Arrivée à destination
                                             </button>
                                         @endif
                                     </div>

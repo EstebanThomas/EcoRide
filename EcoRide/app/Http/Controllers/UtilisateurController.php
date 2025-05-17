@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UtilisateurController extends Authenticatable
 {
@@ -397,6 +398,7 @@ class UtilisateurController extends Authenticatable
         }
     }
 
+    //Create review
     public function avisCreate(Request $request)
     {
         try {
@@ -428,7 +430,12 @@ class UtilisateurController extends Authenticatable
             } else {
                 return back()->with('errorAvis', 'Aucun avis en attente trouvé.');
             }
-            
+
+            if($avis->good_trip){
+                $driver = $covoiturage->utilisateur;
+                $driver->credits += $covoiturage->prix_personne; 
+                $driver->save();
+            }
 
             return back()->with('successAvis', 'Votre avis a bien été enregistré, il sera validé par un employé avant sa publication.');
         } catch (\Exception $e) {
@@ -478,6 +485,34 @@ class UtilisateurController extends Authenticatable
             $avis->save();
 
             return redirect()->route('home')->with('successAvisRefus', 'L\'avis a été refusé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+    public function avisResolu($avis_id, $covoiturage_id)
+    {
+        try {
+            $covoiturage = Covoiturage::findOrFail($covoiturage_id);
+
+            $avisTemp = Avis::where('utilisateur_id', $covoiturage->utilisateur_id)
+                            ->where('statut', 'temporaire')
+                            ->first();
+
+            if ($avisTemp) {
+                $avisTemp->delete();
+            }
+
+            $avis = Avis::findOrFail($avis_id);
+            $avis->good_trip = true;
+            $avis->save();
+
+            //Give credits to driver
+            $driver = $covoiturage->utilisateur;
+            $driver->credits += $covoiturage->prix_personne; 
+            $driver->save();
+
+            return redirect()->route('home')->with('successAvis', 'L\'avis a été validé avec succès.');
         } catch (\Exception $e) {
             return redirect()->route('home')->with('errorAvis', 'Une erreur est survenue : ' . $e->getMessage());
         }

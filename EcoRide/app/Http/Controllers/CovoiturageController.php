@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Utilisateurs;
 use App\Models\Commission;
 use App\Mail\VoyageAnnule;
+use App\Mail\VoyageTermine;
 use Illuminate\Support\Facades\Mail;
 
 class CovoiturageController extends Controller
@@ -331,10 +332,8 @@ class CovoiturageController extends Controller
 
             $participants = json_decode($covoiturage->participants ?? '[]', true);
             $nombreParticipants = is_array($participants) ? count($participants) : 0;
-            $prixTotal = $covoiturage->prix_personne * $nombreParticipants;
 
             $driver = $covoiturage->utilisateur;
-            $driver->credits += $prixTotal; 
             $driver->credits -= 2; //For EcoRide
             $driver->save();
 
@@ -349,12 +348,20 @@ class CovoiturageController extends Controller
             ]);
 
             foreach ($participants as $participantId) {
-            DB::table('avis')->insert([
-                'utilisateur_id' => $participantId,
-                'covoiturage_id' => $covoiturage->covoiturage_id,
-                'statut' => 'en attente'
-            ]);
-        }
+                DB::table('avis')->insert([
+                    'utilisateur_id' => $participantId,
+                    'covoiturage_id' => $covoiturage->covoiturage_id,
+                    'statut' => 'en attente'
+                ]);
+
+                $utilisateur = Utilisateurs::find($participantId);
+
+                try{
+                    Mail::to($utilisateur->email)->send(new VoyageTermine($utilisateur, $covoiturage));
+                } catch (\Exception $e) {
+                        Log::error("Erreur envoi mail à {$utilisateur->email} : " . $e->getMessage());
+                }
+            }
 
             return back()->with('successStop', 'Le voyage est terminé !');
         } catch(\Exception){
