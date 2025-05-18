@@ -22,11 +22,18 @@
     --font-second: "Second", "sans-serif";
 
     --breakpoint-xs: 375px;
+
+    --text-xl: 1.5rem;
+    --text-2xl: 2.25rem;
+    --text-3xl: 3rem;
+    --text-4xl: 3.2rem;
+    --text-5xl: 3.5rem;
+
 }
 
 @layer base{
     body{
-        @apply tracking-wide;
+        @apply tracking-wider leading-3;
     }
 }
 

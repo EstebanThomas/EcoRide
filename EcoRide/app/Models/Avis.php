@@ -23,7 +23,7 @@ class Avis extends Model
         'good_trip',
         'covoiturage_id',
         'utilisateur_id',
-
+        'conducteur_id'
     ];
 
     //Get foreign key 'utilisateur_id'
