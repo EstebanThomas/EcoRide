@@ -16,6 +16,8 @@ class Covoiturage extends Model
 
     protected $primaryKey = 'covoiturage_id'; //Name Of the Primary Key
 
+    protected $casts = ['participants' => 'array',];
+
     protected $fillable = [
         'date_depart',
         'heure_depart',
@@ -30,10 +32,6 @@ class Covoiturage extends Model
         'utilisateur_id',
         'voiture_id',
         'preferences_id',
-    ];
-
-    protected $casts = [
-        'participants' => 'array',
     ];
 
         //Get foreign key 'utilisateur_id'

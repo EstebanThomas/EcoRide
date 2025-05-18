@@ -191,7 +191,7 @@
 
             <div id="sectionSaisirVoyage" class="section flex-col justify-center items-center w-200 xl:w-300 p-5 mt-5 mb-10 gap-4 bg-green4 rounded-3xl hidden">
 
-                <div class="flex flex-col border-2 border-green1 w-full h-120 rounded-3xl p-2">
+                <div class="flex flex-col border-2 border-green1 w-full h-170 xl:h-160 rounded-3xl p-2">
                     <p class="flex justify-center items-center font-second text-3xl">Mes voyages</p>
                     <div class="flex mt-5 gap-5 overflow-x-auto">
                         @forelse($voyages as $voyage)

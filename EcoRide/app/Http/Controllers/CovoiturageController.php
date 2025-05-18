@@ -42,7 +42,15 @@ class CovoiturageController extends Controller
 
             $user = Auth::user();
 
-            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+            $participants = $covoiturage->participants ?? [];
+
+            if (is_string($participants)) {
+                $participants = json_decode($participants, true);
+            }
+
+            if (!is_array($participants)) {
+                $participants = [];
+            }
 
             $alreadyParticipating = $user && in_array($user->utilisateur_id, $participants);
 
@@ -189,7 +197,7 @@ class CovoiturageController extends Controller
             $voyage->statut = 'annulé';
             $voyage->save();
 
-            $participants = $voyage->participants ? json_decode($voyage->participants, true) : [];
+            $participants = $voyage->participants ?? [];
 
             foreach ($participants as $participantId) {
                 $utilisateur = Utilisateurs::find($participantId);
@@ -218,7 +226,15 @@ class CovoiturageController extends Controller
         try {
             $user = Auth::user();
             $covoiturage = Covoiturage::find($id);
-            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+            $participants = $covoiturage->participants ?? [];
+
+            if (is_string($participants)) {
+                $participants = json_decode($participants, true);
+            }
+
+            if (!is_array($participants)) {
+                $participants = [];
+            }
             
             if (!$user){
                 return redirect()->route('page.connexion');
@@ -248,7 +264,7 @@ class CovoiturageController extends Controller
 
             $participants[] = $user->utilisateur_id;
 
-            $covoiturage->participants = json_encode($participants);
+            $covoiturage->participants = $participants;
             $covoiturage->nb_place -= 1;
             $covoiturage->save();
 
@@ -274,18 +290,26 @@ class CovoiturageController extends Controller
         try {
             $user = Auth::user();
             $covoiturage = Covoiturage::find($id);
-            $participants = $covoiturage->participants ? json_decode($covoiturage->participants, true) : [];
+            $participants = $covoiturage->participants ?? [];
+
+            if (is_string($participants)) {
+                $participants = json_decode($participants, true);
+            }
+
+            if (!is_array($participants)) {
+                $participants = [];
+            }
 
             if (!in_array($user->utilisateur_id, $participants)){
                 return back()->with('errorParticipation', 'Vous ne participez pas à ce covoiturage.');
             }
 
-            $participants = array_diff($participants, [$user->utilisateur_id]);
-            $covoiturage->participants = json_encode(array_values($participants));
+            $participants = array_values(array_diff($participants, [$user->utilisateur_id]));
+            $covoiturage->participants = json_encode($participants);
             $covoiturage->nb_place += 1;
             $covoiturage->save();
 
-            if($covoiturage->statut = "plein"){
+            if($covoiturage->statut === "plein"){
                 $covoiturage->statut = "disponible";
                 $covoiturage->save();
 
@@ -330,7 +354,7 @@ class CovoiturageController extends Controller
             $covoiturage->statut = "terminé";
             $covoiturage->save();
 
-            $participants = json_decode($covoiturage->participants ?? '[]', true);
+            $participants = $covoiturage->participants ?? [];
             $nombreParticipants = is_array($participants) ? count($participants) : 0;
 
             $driver = $covoiturage->utilisateur;

@@ -57,15 +57,27 @@ class UtilisateurController extends Authenticatable
             ->get();
 
         $participationVoyages = $allCovoiturages->filter(function ($voyage) use ($utilisateur){
-            $participants = json_decode($voyage->participants, true);
-            return is_array($participants) && in_array($utilisateur->utilisateur_id, $participants);
+            $participants = $voyage->participants ?? [];
+
+            // if (!is_array($participants)) {
+            //     $participants = [];
+            // }
+
+            // $participants = array_map('intval', $participants);
+
+            return is_array($participants) && in_array((int)$utilisateur->utilisateur_id, array_map('intval', $participants));
         });
 
         $voyagesHistory = $voyages->merge($participationVoyages);
 
         $voyagesHistory->map(function ($voyage){
-            $participantID = json_decode($voyage->participants ?? '[]', true);
-            $voyage->participantUsers = Utilisateurs::whereIn('utilisateur_id', $participantID)->get();
+            $participantID = $voyage->participants ?? [];
+
+                if (!is_array($participantID)) {
+                    $participantID = [];
+                }
+
+            $voyage->participantUsers = Utilisateurs::whereIn('utilisateur_id', array_map('intval', $participantID))->get();
             return $voyage;
         });
 
