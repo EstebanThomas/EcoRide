@@ -7,9 +7,9 @@
 
         <nav class="absolute flex justify-evenly items-center w-[800px] h-[75] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-2"> <!-- xs:top-[45px] left-1/2 and top-1/2 = put corner high right center and -translate-x-1/2 -translate-y-1/2 = recenter -->
             <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/"><img src="{{ asset('Images/Accueil.svg') }}" alt="Logo Accueil">ACCUEIL</a>
-            <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/covoiturages"><img src="{{ asset('images/Covoiturages.svg') }}" alt="Logo Covoiturages">COVOITURAGES</a>
+            <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/covoiturages"><img src="{{ asset('Images/Covoiturages.svg') }}" alt="Logo Covoiturages">COVOITURAGES</a>
             <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/connexion"><img src="{{ asset('Images/Connexion.svg') }}" alt="Logo Connexion">CONNEXION</a>
-            <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/contact"><img src="{{ asset('images/Contact.svg') }}" alt="Logo Contact">CONTACT</a>
+            <a class="font-second text-2xl xl:text-xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col hover:text-green1 active:text-black" href="/contact"><img src="{{ asset('Images/Contact.svg') }}" alt="Logo Contact">CONTACT</a>
         </nav>
 
         @Auth
@@ -56,10 +56,10 @@
         <img src="{{ asset('images/EcoRide_Logo_WiBg.png') }}" alt="Logo" class="absolute w-[300px] h-[150px] top-[80px] left-1/2 -translate-x-1/2">
 
         <nav class="absolute flex justify-evenly items-center h-[110px] w-[calc(100%-4rem)] top-[230px] left-1/2 -translate-x-1/2 bg-green4 rounded-3xl border border-green1 p-2"> <!-- left-1/2 and top-1/2 = put corner high right center and -translate-x-1/2 -translate-y-1/2 = recenter -->
-            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/"><img src="{{ asset('images/Accueil.svg') }}" alt="Logo Accueil" class="w-15 h-15">ACCUEIL</a>
-            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/covoiturages"><img src="{{ asset('images/Covoiturages.svg') }}" alt="Logo Covoiturages" class="w-15 h-15">COVOITURAGES</a>
-            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/connexion"><img src="{{ asset('images/Connexion.svg') }}" alt="Logo Connexion" class="w-15 h-15">CONNEXION</a>
-            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/contact"><img src="{{ asset('images/Contact.svg') }}" alt="Logo Contact" class="w-15 h-15">CONTACT</a>
+            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/"><img src="{{ asset('Images/Accueil.svg') }}" alt="Logo Accueil" class="w-15 h-15">ACCUEIL</a>
+            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/covoiturages"><img src="{{ asset('Images/Covoiturages.svg') }}" alt="Logo Covoiturages" class="w-15 h-15">COVOITURAGES</a>
+            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/connexion"><img src="{{ asset('Images/Connexion.svg') }}" alt="Logo Connexion" class="w-15 h-15">CONNEXION</a>
+            <a class="font-second text-3xl tracking-wide flex w-[200px] h-[55px] items-center justify-center flex-col" href="/contact"><img src="{{ asset('Images/Contact.svg') }}" alt="Logo Contact" class="w-15 h-15">CONTACT</a>
         </nav>
 
         @Auth

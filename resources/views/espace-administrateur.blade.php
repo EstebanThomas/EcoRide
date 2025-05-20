@@ -118,7 +118,7 @@
                 Total de crédits gagné par la plateforme : 
                 <p class="uppercase text-3xl font-second flex flex-row justify-center items-center gap-2">
                     {{Auth::user()->credits}}
-                    <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                    <img src="{{ asset('Images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10">
                 </p>
             </p>
 

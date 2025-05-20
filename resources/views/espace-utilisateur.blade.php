@@ -25,7 +25,7 @@
                                 <label for="note" class="font-second text-4xl xl:text-2xl tracking-wide">Note :</label>
                                 <input type="number" id="note" name="note" min="1" max="5" value="5" required
                                 class="bg-green4 focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl p-1 items-center"/>
-                                <img src="{{ asset('images/Note.svg') }}" alt="Logo crédit" class="w-10 h-10">
+                                <img src="{{ asset('Images/Note.svg') }}" alt="Logo crédit" class="w-10 h-10">
                                 <p class="font-second text-4xl"> (Minimum 1 et maximum 5)</p>
                             </div>
                             <div class="flex justify-center items-center gap-2">
@@ -101,7 +101,7 @@
                 @if(Auth::user()->photo)
                     <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Photo utilisateur" class="w-40 h-40 rounded-full object-cover">
                 @else
-                    <img src="{{ asset('images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
+                    <img src="{{ asset('Images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
                 @endif
 
                 <button type="submit" class="text-4xl xl:text-2xl font-second tracking-wide border-2 border-black bg-green1 rounded-3xl p-3 hover:bg-green2 active:bg-green1">ENREGISTRER MODIFICATION</button>
@@ -124,7 +124,7 @@
 
             <div>
                 <p class="text-4xl xl:text-3xl font-second text-black flex flex-row justify-center items-center">Crédits : {{$utilisateur->credits}} 
-                <img src="{{ asset('images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10"></p>
+                <img src="{{ asset('Images/Credit.svg') }}" alt="Logo crédit" class="w-10 h-10"></p>
             </div>
 
         </div>
@@ -289,7 +289,7 @@
                             <p class="flex flex-row font-second text-4xl xl:text-2xl gap-2">
                                 Total : 
                                 <span class="font-second text-4xl xl:text-2xl" id="prix_total"> - 2.00 </span>
-                                <img class="mt-1" src="{{ asset('images/Credit.svg') }}" alt="Logo crédits">
+                                <img class="mt-1" src="{{ asset('Images/Credit.svg') }}" alt="Logo crédits">
                             </p>
                             <p class="flex font-second text-center text-3xl xl:text-xl">
                                 (La plateforme prend 2 crédits de frais de service.)
@@ -360,7 +360,7 @@
                     </div>
 
                     <div class="flex justify-center items-center gap-2">
-                    <label for="immatriculation" class="font-second text-3xl xl:text-2xl">IMMATRICULATION :</label>
+                        <label for="immatriculation" class="font-second text-3xl xl:text-2xl">IMMATRICULATION :</label>
                         <input type="text" id="immatriculation" name="immatriculation" required oninvalid="this.setCustomValidity('Format attendu : AB-123-CD')"
                         class="bg-white focus:border-2 focus:border-green1 focus:outline focus:outline-green1 font-second text-4xl xl:text-2xl placeholder-black p-1 items-center uppercase"/>
                     </div>
@@ -447,7 +447,7 @@
                         @if($voyage->statut === 'disponible')
                             <button type="button" onclick="window.location.href='{{ route('covoiturage.details', ['id' => $voyage->covoiturage_id]) }}'"
                                 class="flex flex-row justify-center items-center gap-2 text-4xl xl:text-2xl font-second tracking-wide p-3 hover:text-green1 hover:underline hover:decoration-black active:text-black active:decoration-green1">
-                                <img src="{{ asset('images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
+                                <img src="{{ asset('Images/Details.svg') }}" alt="Logo nombre de passager" class="w-10 h-10">
                                 <p class="text-3xl xl:text-2xl font-second">Détails</p>
                             </button>
                         @endif
@@ -613,7 +613,7 @@
         document.getElementById('photo').addEventListener('change', function() {
             var file = this.files[0];
             if (file) {
-                var maxSize = 2 * 1024 * 1024; // Limite de 2 Mo (en octets)
+                var maxSize = 2 * 1024 * 1024; // Limit 2 Mo
                 if (file.size > maxSize) {
                     Swal.fire({
                         title: 'Erreur !',
