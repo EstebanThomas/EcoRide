@@ -12,7 +12,7 @@ class Utilisateurs extends Authenticatable
 
     use HasFactory;
 
-    protected $table = 'utilisateurs';//Name of the table
+    protected $table = 'Utilisateurs';//Name of the table
 
     protected $tableVoiture = 'voiture';
 
