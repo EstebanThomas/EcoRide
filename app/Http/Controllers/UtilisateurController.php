@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\MongoService;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
 
 class UtilisateurController extends Authenticatable
 {
@@ -214,10 +214,9 @@ class UtilisateurController extends Authenticatable
         //photo
         if($request->hasFile('photo')){
 
-            $uploadedFileUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
+            // $uploadedFileUrl = Cloudinary::upload($request->file('photo')->getRealPath())->getSecurePath();
             
-            $validated['photo_url'] = $uploadedFileUrl;
-
+            // $validated['photo_url'] = $uploadedFileUrl;
 
             $picture = $request->file('photo');
             $namePicture = uniqid().'.'.$picture->getClientOriginalExtension();
@@ -226,6 +225,14 @@ class UtilisateurController extends Authenticatable
             $path = $picture->storeAs('photos', $namePicture, 'public');
 
             $validated['photo'] = $path;
+
+            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+
+            $uploadedFile = $cloudinary->uploadApi()->upload($request->file('photo')->getRealPath());
+
+            $uploadedFileUrl = $uploadedFile['secure_url'];
+
+            $validated['photo_url'] = $uploadedFileUrl;
         }
 
         if (!empty($validated)){        
