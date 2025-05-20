@@ -13,7 +13,7 @@ class MongoService
     public function __construct()
     {
         //Connexion .env (MONGO_URI)
-        $uri = env('MONGO_DB_DSN', 'mongodb://127.0.0.1:27017');
+        $uri = env('DB_MONGO_DSN', 'mongodb://127.0.0.1:27017');
         $this->client = new Client($uri);
 
         $this->collection = $this->client->selectCollection('EcoRideRoles', 'users_roles');
