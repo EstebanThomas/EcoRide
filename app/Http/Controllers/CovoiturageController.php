@@ -244,7 +244,7 @@ class CovoiturageController extends Controller
                 return back()->with('errorParticipation', 'Il n\'y a plus de places disponibles.');
             }
 
-            $errorDriver = DB::table('covoiturage')
+            $errorDriver = DB::table('Covoiturage')
                 ->where('date_depart', '>', now()) //Search in future rides
                 ->where('covoiturage_id', "=", $covoiturage->covoiturage_id) //On this ride
                 ->where('utilisateur_id', $user->utilisateur_id) //is the driver
@@ -268,7 +268,7 @@ class CovoiturageController extends Controller
             $covoiturage->nb_place -= 1;
             $covoiturage->save();
 
-            DB::table('utilisateurs')
+            DB::table('Utilisateurs')
                 ->where('utilisateur_id', $user->utilisateur_id)
                 ->decrement('credits', $covoiturage->prix_personne);
 
@@ -313,14 +313,14 @@ class CovoiturageController extends Controller
                 $covoiturage->statut = "disponible";
                 $covoiturage->save();
 
-                DB::table('utilisateurs')
+                DB::table('Utilisateurs')
                     ->where('utilisateur_id', $user->utilisateur_id)
                     ->increment('credits', $covoiturage->prix_personne);
 
                 return back()->with('successParticipation', 'Vous avez quitté ce covoiturage, il est maintenant disponible.');
             }
 
-            DB::table('utilisateurs')
+            DB::table('Utilisateurs')
                 ->where('utilisateur_id', $user->utilisateur_id)
                 ->increment('credits', $covoiturage->prix_personne);
 
@@ -361,7 +361,7 @@ class CovoiturageController extends Controller
             $driver->credits -= 2; //For EcoRide
             $driver->save();
 
-            DB::table('utilisateurs')
+            DB::table('Utilisateurs')
                 ->where('role_id', 1)
                 ->increment('credits', 2);
 
@@ -372,7 +372,7 @@ class CovoiturageController extends Controller
             ]);
 
             foreach ($participants as $participantId) {
-                DB::table('avis')->insert([
+                DB::table('Avis')->insert([
                     'utilisateur_id' => $participantId,
                     'covoiturage_id' => $covoiturage->covoiturage_id,
                     'statut' => 'en attente'

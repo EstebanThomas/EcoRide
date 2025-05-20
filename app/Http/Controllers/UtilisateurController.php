@@ -255,13 +255,13 @@ class UtilisateurController extends Authenticatable
     //Admin view
     public function showAdmin(){
         
-        $dataCovoiturages = DB::table('covoiturage')
+        $dataCovoiturages = DB::table('Covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
 
-        $dataCommission = DB::table('commission')
+        $dataCommission = DB::table('Commission')
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date')
@@ -296,13 +296,13 @@ class UtilisateurController extends Authenticatable
     }
 
     public function showAdminWithMessage($message, $text){
-        $dataCovoiturages = DB::table('covoiturage')
+        $dataCovoiturages = DB::table('Covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
 
-        $dataCommission = DB::table('commission')
+        $dataCommission = DB::table('Commission')
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date')
@@ -390,13 +390,13 @@ class UtilisateurController extends Authenticatable
 
             if ($utilisateurSearch) {
                 $utilisateurs = Utilisateurs::where('role_id', 2)->get();
-                $dataCovoiturages = DB::table('covoiturage')
+                $dataCovoiturages = DB::table('Covoiturage')
                     ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
                     ->groupBy('jour')
                     ->orderBy('jour', 'asc')
                     ->get();
 
-                $dataCommission = DB::table('commission')
+                $dataCommission = DB::table('Commission')
                     ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
                     ->groupBy(DB::raw('DATE(created_at)'))
                     ->orderBy('date')
