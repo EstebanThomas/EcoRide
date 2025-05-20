@@ -99,7 +99,7 @@
                 </div>
 
                 @if(Auth::user()->photo)
-                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Photo utilisateur" class="w-40 h-40 rounded-full object-cover">
+                    <img src="{{ asset('Storage/' . Auth::user()->photo) }}" alt="Photo utilisateur" class="w-40 h-40 rounded-full object-cover">
                 @else
                     <img src="{{ asset('Images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-40 h-40 rounded-full object-cover">
                 @endif
