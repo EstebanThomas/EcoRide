@@ -137,7 +137,8 @@
                     <div class="border-3 border-green2 rounded-3xl p-4 my-2 w-full xl:w-200 text-5xl xl:text-3xl font-second">
                         <p class="flex flex-row justify-center items-center gap-5 p-1">
                             @if($covoiturage->utilisateur->photo)
-                                <img src="{{ asset('storage/' .$a->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
+                                {{-- <img src="{{ asset('storage/' .$a->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border"> --}}
+                                <img src="{{ Auth::user()->photo_url }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
                             @else
                                 <img src="{{ asset('Images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-full object-cover m-2 border">
                             @endif
