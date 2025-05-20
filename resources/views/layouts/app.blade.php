@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta name="csrf-token" content="{{csrf_token()}}">
         <title>@yield('title', 'EcoRide')</title>
-        {{-- <link rel="icon" type="image/png" href="{{ asset('images/EcoRide_Logo_WiBg.png') }}"> --}}
+        <link rel="icon" type="image/png" href="{{ asset('Images/EcoRide_Logo_WiBg.png') }}">
     </head>
 
     <body>
