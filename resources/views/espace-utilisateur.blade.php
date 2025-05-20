@@ -536,7 +536,7 @@
             chauffeurPassagerButton.textContent = '';
             if (role === 'chauffeur') {
                 chauffeurPassagerButton.textContent = 'Chauffeur';
-                imgButton.src = "{{ asset('images/Chauffeur.svg') }}";
+                imgButton.src = "{{ asset('Images/Chauffeur.svg') }}";
                 imgButton.alt = 'Logo chauffeur';
                 chauffeurPassagerButton.appendChild(imgButton);
                 sectionChauffeur.classList.remove('hidden');
@@ -545,7 +545,7 @@
                 sections.classList.add('flex');
             } else {
                 chauffeurPassagerButton.textContent = 'Passager';
-                imgButton.src = "{{ asset('images/Passager.svg') }}";
+                imgButton.src = "{{ asset('Images/Passager.svg') }}";
                 imgButton.alt = 'Logo passager';
                 chauffeurPassagerButton.appendChild(imgButton);
                 sectionChauffeur.classList.add('hidden');
