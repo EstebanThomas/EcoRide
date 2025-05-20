@@ -12,7 +12,7 @@ class Roles extends Model
 
     use HasFactory;
 
-    protected $table = 'roles'; //Name of the table
+    protected $table = 'Roles'; //Name of the table
 
     protected $primaryKey = 'role_id'; //Name Of the Primary Key
 

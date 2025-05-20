@@ -12,7 +12,7 @@ class Covoiturage extends Model
 
     use HasFactory;
 
-    protected $table = 'covoiturage'; //Name of the table
+    protected $table = 'Covoiturage'; //Name of the table
 
     protected $primaryKey = 'covoiturage_id'; //Name Of the Primary Key
 

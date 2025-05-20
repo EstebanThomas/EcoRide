@@ -12,7 +12,7 @@ class Commission extends Model
 
     use HasFactory;
 
-    protected $table = 'commission'; //Name of the table
+    protected $table = 'Commission'; //Name of the table
 
     protected $primaryKey = 'commission_id'; //Name Of the Primary Key
 

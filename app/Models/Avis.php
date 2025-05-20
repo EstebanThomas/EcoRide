@@ -12,7 +12,7 @@ class Avis extends Model
 
     use HasFactory;
 
-    protected $table = 'avis'; //Name of the table
+    protected $table = 'Avis'; //Name of the table
 
     protected $primaryKey = 'avis_id'; //Name Of the Primary Key
 

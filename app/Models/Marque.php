@@ -12,7 +12,7 @@ class Marque extends Model
 
     use HasFactory;
 
-    protected $table = 'marque'; //Name of the table
+    protected $table = 'Marque'; //Name of the table
 
     protected $primaryKey = 'marque_id'; //Name Of the Primary Key
 
