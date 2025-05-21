@@ -123,7 +123,7 @@ class UtilisateurController extends Authenticatable
 
         $avis = Avis::create([
             'note'=> 5,
-            'utilisateur_id' => Auth::user()->utilisateur_id,
+            'conducteur_id' => Auth::user()->utilisateur_id,
             'statut' => 'temporaire',
         ]);
 
