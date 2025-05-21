@@ -65,16 +65,16 @@
             <p class="text-center font-second text-black text-4xl xl:text-3xl uppercase">préférences</p>
             <div class="flex flex-row justify-center items-center gap-20">
                 <div class="flex flex-row justify-center items-center gap-5 bg-green4 border-2 border-green1 rounded-3xl p-2 mt-5">
-                    <p class="font-second text-black text-4xl xl:text-3xl uppercase">Fumeurs<p>
-                    @if($covoiturage->preferences->fumeur === 1)
+                    <p class="font-second text-black text-4xl xl:text-3xl uppercase">Fumeurs</p>
+                    @if($covoiturage->fumeur === 'Oui')
                         <img src="{{ asset('Images/Fumeur.svg') }}" alt="Logo fumeur acceptés" class="w-10 h-10">
                     @else
                         <img src="{{ asset('Images/NonFumeur.svg') }}" alt="Logo fumeur refusés" class="w-10 h-10">
                     @endif
                 </div>
                 <div class="flex flex-row justify-center items-center gap-5 bg-green4 border-2 border-green1 rounded-3xl p-2 mt-5">
-                    <p class="font-second text-black text-4xl xl:text-3xl uppercase">Animaux<p>
-                    @if($covoiturage->preferences->animaux === 1)
+                    <p class="font-second text-black text-4xl xl:text-3xl uppercase">Animaux</p>
+                    @if($covoiturage->animaux === 'Oui')
                         <img src="{{ asset('Images/Animal.svg') }}" alt="Logo animaux acceptés" class="w-10 h-10">
                     @else
                         <img src="{{ asset('Images/PasAnimal.svg') }}" alt="Logo animaux refusés" class="w-10 h-10">
