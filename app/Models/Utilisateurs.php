@@ -14,7 +14,7 @@ class Utilisateurs extends Authenticatable
 
     protected $table = 'Utilisateurs';//Name of the table
 
-    protected $tableVoiture = 'voiture';
+    protected $tableVoiture = 'Voiture';
 
     protected $primaryKey = 'utilisateur_id'; //Name Of the Primary Key
 

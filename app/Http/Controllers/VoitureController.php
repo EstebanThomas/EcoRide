@@ -18,11 +18,11 @@ class VoitureController extends Controller
 
         $validated = $request->validate([
             'modele' => 'required|max:20',
-            'immatriculation' => 'required|unique:voiture,immatriculation|max:9|regex:/^[A-Za-z]{2}-\d{3}-[A-Za-z]{2}$/',
+            'immatriculation' => 'required|unique:Voiture,immatriculation|max:9|regex:/^[A-Za-z]{2}-\d{3}-[A-Za-z]{2}$/',
             'datePremiereImmatriculation' => 'required|date|before_or_equal:today|after_or_equal:1950-01-01',
             'couleur' => 'required|max:20|regex:/^[A-Za-z0-9\s\-]+$/',
             'energie' => 'nullable',
-            'marque' => 'required|exists:marque,marque_id',
+            'marque' => 'required|exists:Marque,marque_id',
         ]);
 
         $energie = $request->has('energie') ? 'Oui' : 'Non';
@@ -51,7 +51,7 @@ class VoitureController extends Controller
     //Get user's cars
     public function afficherVehicules()
     {
-        $vehicules = Voiture::with('marque')
+        $vehicules = Voiture::with('Marque')
             ->where('utilisateur_id', Auth::id())
             ->get();
         return response()->json($vehicules);
