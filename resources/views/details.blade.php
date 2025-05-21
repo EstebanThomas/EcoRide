@@ -7,7 +7,8 @@
             <div class="flex flex-row justify-center items-center gap-10 xl:gap-5 w-full xl:w-2/3 border-4 border-green1 rounded-3xl p-5 xl:p-2">
                 <div>
                     @if($covoiturage->utilisateur->photo)
-                        <img src="{{ asset('storage/' .$covoiturage->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-3xl object-cover m-5">
+                        {{-- <img src="{{ asset('storage/' .$covoiturage->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-3xl object-cover m-5"> --}}
+                        <img src="{{ $covoiturage->utilisateur->photo_url }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
                     @else
                         <img src="{{ asset('Images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-3xl object-cover m-5">
                     @endif
@@ -138,7 +139,7 @@
                         <p class="flex flex-row justify-center items-center gap-5 p-1">
                             @if($covoiturage->utilisateur->photo)
                                 {{-- <img src="{{ asset('storage/' .$a->utilisateur->photo) }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border"> --}}
-                                <img src="{{ Auth::user()->photo_url }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
+                                <img src="{{ $covoiturage->utilisateur->photo_url }}" alt="Photo utilisateur" class="w-30 h-30 rounded-full object-cover m-2 border">
                             @else
                                 <img src="{{ asset('Images/PhotoDeProfilDefaut.png') }}" alt="Photo utilisateur par défaut" class="w-30 h-30 rounded-full object-cover m-2 border">
                             @endif
