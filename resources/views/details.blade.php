@@ -42,7 +42,7 @@
                     @csrf
                     <button type="button" onclick="confirmerParticipation()"
                     class="flex flex-col items-center justify-center text-4xl font-second text-black gap-2 border-4 rounded-3xl border-green1 hover:border-black hover:bg-green4 hover:underline hover:decoration-green1 active:border-green1 active:decoration-black p-5 pt-20 pb-20">
-                        <img src="{{ asset('images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
+                        <img src="{{ asset('Images/Participer.svg') }}" alt="Logo participer" class="w-15 h-15">
                         PARTICIPER
                     </button>
                 </form>

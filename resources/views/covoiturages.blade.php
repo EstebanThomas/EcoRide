@@ -152,7 +152,7 @@
                                 <p class="text-4xl xl:text-2xl font-second text-center text-black">{{ $covoiturage->utilisateur->pseudo }}</p>
                                 <p class="text-4xl xl:text-2xl font-second text-center text-black flex flex-row justify-center items-center gap-2">
                                     {{$covoiturage->utilisateur->note}} 
-                                    <img src="{{ asset('images/Note.svg') }}" alt="Logo Note" class="w-10 h-10">
+                                    <img src="{{ asset('Images/Note.svg') }}" alt="Logo Note" class="w-10 h-10">
                                 </p>
                             </div>
                             <div class="bg-white border border-black rounded-r-3xl w-4/6 h-full flex flex-col gap-5">
