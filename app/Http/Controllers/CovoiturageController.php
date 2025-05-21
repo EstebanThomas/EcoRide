@@ -89,7 +89,7 @@ class CovoiturageController extends Controller
             'lieu_arrivee' => 'required|max:50|regex:/^[A-Za-z0-9\s\-]+$/',
             'nb_place' => 'required|integer|min:1|max:7',
             'prix_personne' => 'required|numeric|min:0|max:100',
-            'select_voiture' => 'required|exists:voiture,voiture_id',
+            'select_voiture' => 'required|exists:Voiture,voiture_id',
         ]);
 
         try {

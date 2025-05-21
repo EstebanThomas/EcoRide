@@ -249,7 +249,7 @@ class UtilisateurController extends Authenticatable
     public function ajouterVehicule(Request $request){
         $validated = $request->validate([
             'modele' => 'required|max:20',
-            'immatriculation' => 'required|unique:voiture,immatriculation|max:9|regex:/^[A-Z]{2}-\d{3}-[A-Z]{2}$/',
+            'immatriculation' => 'required|unique:Voiture,immatriculation|max:9|regex:/^[A-Z]{2}-\d{3}-[A-Z]{2}$/',
             'datePremiereImmatriculation' => 'required|date|before_or_equal:today',
             'couleur' => 'required|max:20|regex:/^[A-Za-z0-9\s\-]+$/',
             'energie' => 'required|regex:/^[A-Za-z0-9\s\-]+$/'
@@ -338,7 +338,7 @@ class UtilisateurController extends Authenticatable
         try{
                 $validated = $request->validate([
                 'pseudo' => 'required|max:20',
-                'mail' => 'required|email|unique:utilisateurs,email',
+                'mail' => 'required|email|unique:Utilisateurs,email',
                 'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
             ]);
             $user = Utilisateurs::create([
@@ -436,7 +436,7 @@ class UtilisateurController extends Authenticatable
     {
         try {
             $validated = $request->validate([
-                'covoiturage_id' => 'required|exists:covoiturage,covoiturage_id',
+                'covoiturage_id' => 'required|exists:Covoiturage,covoiturage_id',
                 'commentaire' => 'required|string|max:255',
                 'note' => 'required|integer|min:1|max:5',
                 'good_trip' => 'nullable',
