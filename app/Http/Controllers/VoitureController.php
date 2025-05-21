@@ -42,8 +42,8 @@ class VoitureController extends Controller
             return redirect()->route('espaceUtilisateur')->with('successAdd', 'Véhicule ajouté !');
         }
         catch (\Exception $e){
-            Log::error('Erreur lors de l\'ajout du véhicule : '.$e->getMessage());
-            return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de l\'ajout. Veuillez réessayer.' . $e->getMessage()]);
+            // Log::error('Erreur lors de l\'ajout du véhicule : '.$e->getMessage());
+            return redirect()->back()->withInput()->withErrors(['general' => 'Une erreur est survenue lors de l\'ajout. Veuillez réessayer.']);
         }
     }
 
