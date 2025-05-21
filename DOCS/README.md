@@ -20,10 +20,28 @@ Mise en place de l’environnement de travail EcoRide
 3- Mise en place de la base de données MySQL
     Démarrage de MySQL via XAMPP.
 
-    Configuration des identifiants de connexion dans le fichier .env :
+    Créer le fichier .env grâce au ficher .env.example et configurer les identifiants de connexion dans le fichier .env :
+        APP_URL=http://localhost
+
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
         DB_DATABASE=ecoride
         DB_USERNAME=root
         DB_PASSWORD=
+
+        SESSION_DRIVER=file
+
+        MAIL_MAILER=smtp
+        MAIL_HOST=mailpit
+        MAIL_PORT=1025
+        MAIL_USERNAME=null
+        MAIL_PASSWORD=null
+        MAIL_ENCRYPTION=null
+        MAIL_FROM_ADDRESS="ecoride.et@gmail.com"
+        MAIL_FROM_NAME="${APP_NAME}"
+
+        
     Importation d’un premier fichier structure_local.sql contenant la structure de la base de données (tables, relations, etc.).
     Importation d’un second fichier data_local.sql contenant des données de la table marque, et le compte administrateur.
 
