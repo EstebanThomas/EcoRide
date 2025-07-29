@@ -120,6 +120,14 @@
                     </button>
                 </div>
 
+                <form action="{{ route('utilisateur.supprimer', ['utilisateur_id' => $utilisateur->utilisateur_id]) }}" method="POST" id="formSupprimer">
+                    @csrf
+                    <button type="button" class="text-4xl xl:text-2xl font-second tracking-wide border-2 border-black bg-red-500 rounded-3xl p-3 hover:bg-red-400 active:bg-red-500"
+                    onclick="confirmerSuppression()">
+                        SUPPRIMER
+                    </button>
+                </form>
+
             </div>
 
             <div>
@@ -480,6 +488,22 @@
             document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
                     title: @json(session('errorAvis')),
+                    icon: 'error',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    @if(session('errorSuppression'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('errorSuprression')),
+                    text: 'Erreur lors de la suppression de l\'utilisateur.',
                     icon: 'error',
                     showConfirmButton: true,
                     customClass:{
@@ -926,6 +950,26 @@
                     );
                 }
             })
+        }
+
+        //Confirm delete
+        function confirmerSuppression() {
+            Swal.fire({
+                title: 'Supprimer le compte ?',
+                text: "Cette action est irréversible.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'SUPPRIMER',
+                cancelButtonText: 'Annuler',
+                reverseButtons: true,
+                customClass:{
+                        popup: 'custom-swal'
+                    }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formSupprimer').submit();
+                }
+            });
         }
     </script>
 

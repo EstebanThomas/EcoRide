@@ -231,6 +231,62 @@ class UtilisateurController extends Authenticatable
         }
     }
 
+    //Delete account
+    public function supprimerCompte($utilisateur_id)
+    {
+        try {
+
+            if (Auth::id() !== (int)$utilisateur_id) {
+                return back()->with('errorSuppression', 'Vous ne pouvez pas supprimer un compte qui n\'est pas le vôtre.');
+            }
+
+            //Check if user exists and if it has any associated data
+            $user = Utilisateurs::findOrFail($utilisateur_id);
+
+            $userCovoiturage = DB::table('covoiturage')
+                ->where('utilisateur_id', $utilisateur_id)
+                ->exists();
+
+            if ($userCovoiturage) {
+                DB::delete('DELETE FROM covoiturage WHERE utilisateur_id = ?', [$utilisateur_id]);
+            }
+
+            $userAvis = DB::table('avis')
+                ->where('utilisateur_id', $utilisateur_id)
+                ->exists();
+
+            if ($userAvis) {
+                DB::delete('DELETE FROM avis WHERE utilisateur_id = ?', [$utilisateur_id]);
+            }
+
+            
+            $userVoiture = DB::table('voiture')
+                ->where('utilisateur_id', $utilisateur_id)
+                ->exists();
+
+            if ($userVoiture) {
+                DB::delete('DELETE FROM voiture WHERE utilisateur_id = ?', [$utilisateur_id]);
+            }
+
+            $userPreferences = DB::table('preferences')
+                ->where('utilisateur_id', $utilisateur_id)
+                ->exists();
+
+            if ($userPreferences) {
+                DB::delete('DELETE FROM preferences WHERE utilisateur_id = ?', [$utilisateur_id]);
+            }
+
+            DB::delete('DELETE FROM utilisateurs WHERE utilisateur_id = ?', [$utilisateur_id]);
+
+            Auth::logout();
+
+            return redirect()->route('home')->with('successSuppression', 'Vous avez supprimer votre compte.');
+        } catch (\Exception $e){
+            Log::error('Erreur lors de la suppression du compte : '.$e->getMessage());
+            return redirect()->route('espaceUtilisateur')->with('errorSuppression', 'Une erreur est survenue lors de la suppression : ');
+        }
+    }
+
     //Add car
     public function ajouterVehicule(Request $request){
         $validated = $request->validate([
