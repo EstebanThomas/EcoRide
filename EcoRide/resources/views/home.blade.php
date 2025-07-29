@@ -148,4 +148,20 @@
             })
         </script>
     @endif
+
+        @if(session('successSuppression'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: @json(session('successSuprression')),
+                    text: 'Votre compte a été supprimé avec succès.',
+                    icon: 'success',
+                    showConfirmButton: true,
+                    customClass:{
+                        popup: 'custom-swal'
+                    }
+                });
+            })
+        </script>
+    @endif
 @endsection
