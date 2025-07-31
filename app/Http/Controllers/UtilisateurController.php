@@ -117,7 +117,7 @@ class UtilisateurController extends Authenticatable
             'email' => $validated['mail'],
             'password' => Hash::make($validated['password']),
             'credits' => 20,
-            'note' => 5,
+            'note' => 5.0,
         ]);
 
         Auth::login($user);
