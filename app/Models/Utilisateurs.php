@@ -36,6 +36,7 @@ class Utilisateurs extends Authenticatable
         'credits',
         'suspendu',
         'role_id',
+        'note',
     ];
 
     public function covoiturages()
