@@ -12,7 +12,7 @@ class Preferences extends Model
 
     use HasFactory;
 
-    protected $table = 'Preferences'; //Name of the table
+    protected $table = 'preferences'; //Name of the table
 
     protected $primaryKey = 'preferences_id'; //Name Of the Primary Key
 
