@@ -236,7 +236,7 @@ class UtilisateurController extends Authenticatable
         }
 
         if (!empty($validated)){        
-            DB::table('Utilisateurs')
+            DB::table('utilisateurs')
                 ->where('utilisateur_id', Auth::id())
                 ->update($validated);
             return redirect()->route('espaceUtilisateur');
@@ -249,7 +249,7 @@ class UtilisateurController extends Authenticatable
     public function ajouterVehicule(Request $request){
         $validated = $request->validate([
             'modele' => 'required|max:20',
-            'immatriculation' => 'required|unique:Voiture,immatriculation|max:9|regex:/^[A-Z]{2}-\d{3}-[A-Z]{2}$/',
+            'immatriculation' => 'required|unique:voiture,immatriculation|max:9|regex:/^[A-Z]{2}-\d{3}-[A-Z]{2}$/',
             'datePremiereImmatriculation' => 'required|date|before_or_equal:today',
             'couleur' => 'required|max:20|regex:/^[A-Za-z0-9\s\-]+$/',
             'energie' => 'required|regex:/^[A-Za-z0-9\s\-]+$/'
@@ -269,13 +269,13 @@ class UtilisateurController extends Authenticatable
     //Admin view
     public function showAdmin(){
         
-        $dataCovoiturages = DB::table('Covoiturage')
+        $dataCovoiturages = DB::table('covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
 
-        $dataCommission = DB::table('Commission')
+        $dataCommission = DB::table('commission')
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date')
@@ -310,13 +310,13 @@ class UtilisateurController extends Authenticatable
     }
 
     public function showAdminWithMessage($message, $text){
-        $dataCovoiturages = DB::table('Covoiturage')
+        $dataCovoiturages = DB::table('covoiturage')
             ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
             ->groupBy('jour')
             ->orderBy('jour', 'asc')
             ->get();
 
-        $dataCommission = DB::table('Commission')
+        $dataCommission = DB::table('commission')
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date')
@@ -338,7 +338,7 @@ class UtilisateurController extends Authenticatable
         try{
                 $validated = $request->validate([
                 'pseudo' => 'required|max:20',
-                'mail' => 'required|email|unique:Utilisateurs,email',
+                'mail' => 'required|email|unique:utilisateurs,email',
                 'password' => 'required|min:12|regex:/[a-z]/|regex:/[A-Z]/|regex:/\d/'
             ]);
             $user = Utilisateurs::create([
@@ -404,13 +404,13 @@ class UtilisateurController extends Authenticatable
 
             if ($utilisateurSearch) {
                 $utilisateurs = Utilisateurs::where('role_id', 2)->get();
-                $dataCovoiturages = DB::table('Covoiturage')
+                $dataCovoiturages = DB::table('covoiturage')
                     ->select(DB::raw('DATE(date_depart) as jour'), DB::raw('COUNT(*) as total'))
                     ->groupBy('jour')
                     ->orderBy('jour', 'asc')
                     ->get();
 
-                $dataCommission = DB::table('Commission')
+                $dataCommission = DB::table('commission')
                     ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(montant) as total_credits'))
                     ->groupBy(DB::raw('DATE(created_at)'))
                     ->orderBy('date')
@@ -436,7 +436,7 @@ class UtilisateurController extends Authenticatable
     {
         try {
             $validated = $request->validate([
-                'covoiturage_id' => 'required|exists:Covoiturage,covoiturage_id',
+                'covoiturage_id' => 'required|exists:covoiturage,covoiturage_id',
                 'commentaire' => 'required|string|max:255',
                 'note' => 'required|integer|min:1|max:5',
                 'good_trip' => 'nullable',
