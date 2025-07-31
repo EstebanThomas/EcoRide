@@ -30,13 +30,13 @@ class CovoiturageController extends Controller
 
         return view('covoiturages', [
             'covoiturages' => $covoiturages,
-            'utilisateurs' => $utilisateur,
+            'utilisateur' => $utilisateur,
         ]);
     }
 
     public function showRideDetails($id){
         try{
-            $covoiturage = Covoiturage::with('utilisateurs', 'voiture', 'voiture.marque', 'utilisateurs.preferences')
+            $covoiturage = Covoiturage::with('utilisateur', 'voiture', 'voiture.marque', 'utilisateur.preferences')
             ->where('covoiturage_id', $id)
             ->firstOrFail();
 
