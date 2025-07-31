@@ -120,6 +120,12 @@ class UtilisateurController extends Authenticatable
             'note' => 5.0,
         ]);
 
+        Preferences::create([
+            'utilisateur_id' => $user->utilisateur_id,
+            'fumeur' => 1,
+            'animaux' => 1,
+        ]);
+
         Auth::login($user);
 
         $avis = Avis::create([
