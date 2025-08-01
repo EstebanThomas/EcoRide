@@ -20,7 +20,7 @@
             @yield('content')
         </div>
 
-        <footer class="bottom-0 w-full">
+        <footer class="w-full">
         @include('partials.footer')
         </footer>
 
