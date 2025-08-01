@@ -16,9 +16,9 @@
 
         <x-cookie-banner/>
 
-        <div class="content flex-grow">
+        <main class="content flex-grow">
             @yield('content')
-        </div>
+        </main>
 
         <footer class="w-full">
         @include('partials.footer')
