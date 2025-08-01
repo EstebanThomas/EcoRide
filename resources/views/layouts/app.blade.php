@@ -20,7 +20,7 @@
             @yield('content')
         </main>
 
-        <footer>
+        <footer class="bg-green1 w-full h-82 xl:h-10 flex xl:flex-row flex-col justify-center items-center xl:gap-25 gap-2">
         @include('partials.footer')
         </footer>
 
