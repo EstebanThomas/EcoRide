@@ -10,17 +10,17 @@
         <link rel="icon" type="image/png" href="{{ asset('images/EcoRide_Logo_WiBg.png') }}">
     </head>
 
-    <body>
+    <body class="flex flex-col min-h-screen">
 
         @include('partials.header')
 
         <x-cookie-banner/>
 
-        <div class="content">
+        <div class="content flex-grow">
             @yield('content')
         </div>
 
-        <footer>
+        <footer class="bottom-0 w-full">
         @include('partials.footer')
         </footer>
 
