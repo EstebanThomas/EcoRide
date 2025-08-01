@@ -10,7 +10,7 @@
         <link rel="icon" type="image/png" href="{{ asset('Images/EcoRide_Logo_WiBg.png') }}">
     </head>
 
-    <body  class="flex flex-col min-h-screen">
+    <body class="flex flex-col min-h-screen">
 
         @include('partials.header')
 
@@ -20,7 +20,7 @@
             @yield('content')
         </main>
 
-        <footer class="w-full">
+        <footer>
         @include('partials.footer')
         </footer>
 
